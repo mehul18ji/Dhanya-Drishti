@@ -97,9 +97,9 @@ Lesion-area estimate (`lesion_pixels / leaf_pixels × 100`), all 120 `seg-v2` im
 > `data/processed/segmentation_audit/baseline-seg-v1/`; it is not mixed into the active
 > evidence set.
 >
-> **Phase 2 evidence verification (2026-11-07):** after the commissioned regeneration, the
-> committed 12-panel evidence set under `docs/segmentation_audit/` was checked byte-for-byte
-> against the pipeline-produced panels in
+> **Phase 2 evidence verification (2026-11-07, checkpoint `2a93073`):** after the
+> commissioned regeneration, the committed 12-panel evidence set under
+> `docs/segmentation_audit/` was checked byte-for-byte against the pipeline-produced panels in
 > `data/processed/segmentation_audit/seg-v2/panels/`. All 12 SHA-256 hashes match, so the
 > committed evidence set is exactly what the active `seg-v2` pipeline produced from the frozen
 > audit inputs. No further regeneration was required.
