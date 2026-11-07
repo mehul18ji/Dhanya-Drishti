@@ -1,4 +1,4 @@
-"""Phase 0 contract: the health endpoint exists and reports honestly."""
+"""Health and root contract: the API reports the model it actually loaded."""
 
 from __future__ import annotations
 
@@ -14,15 +14,17 @@ def test_health_returns_ok(client: TestClient) -> None:
     assert body["runtime_storage"] == "temporary"
 
 
-def test_health_reports_no_model_before_phase_4(client: TestClient) -> None:
+def test_health_reports_the_loaded_model(client: TestClient) -> None:
+    """Phase 4 M2: the bundle is loaded at startup, so health must say so."""
     body = client.get("/api/v1/health").json()
 
-    assert body["model_loaded"] is False
-    assert body["model_version"] is None
+    assert body["model_loaded"] is True
+    assert body["model_version"] == "svm-v1.0.0"
 
 
-def test_root_advertises_docs_and_health(client: TestClient) -> None:
+def test_root_advertises_docs_health_and_model_info(client: TestClient) -> None:
     body = client.get("/").json()
 
     assert body["docs"] == "/docs"
     assert body["health"] == "/api/v1/health"
+    assert body["model_info"] == "/api/v1/model-info"
