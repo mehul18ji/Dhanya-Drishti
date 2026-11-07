@@ -67,19 +67,15 @@ Warning histogram (one image may raise several):
 | Rejections | 0 | every dataset image is a real, analysable leaf photo |
 
 Timing on CPU (whole pipeline, one image) from the committed `seg-v2` audit summary:
-Timing on CPU (whole pipeline, one image) from the committed `seg-v2` audit summary:
 
 | mean | p50 | p95 | max |
 |---:|---:|---:|---:|
 | 189.13 ms | 171.61 ms | 227.43 ms | 1 631.91 ms |
-| 189.13 ms | 171.61 ms | 227.43 ms | 1 631.91 ms |
 
-Lesion-area estimate (`lesion_pixels / leaf_pixels × 100`), all 120 `seg-v2` images:
 Lesion-area estimate (`lesion_pixels / leaf_pixels × 100`), all 120 `seg-v2` images:
 
 | mean | p50 | p95 |
 |---:|---:|---:|
-| 13.707 % | 10.446 % | 39.903 % |
 | 13.707 % | 10.446 % | 39.903 % |
 
 > **Phase 2 gate:** "≥ 110/120 dataset images produce a plausible leaf mask" — met at
@@ -88,25 +84,6 @@ Lesion-area estimate (`lesion_pixels / leaf_pixels × 100`), all 120 `seg-v2` im
 > dataset contains only photographable leaves. Rejection behaviour itself is proven by
 > `tests/test_leaf_segmentation.py::test_non_leaf_image_is_not_forced_into_a_prediction`
 > and `tests/test_vision_pipeline.py::test_non_leaf_image_is_rejected_without_lesion_stage`.
->
-> **Commissioning note (2026-11-07):** the committed evidence set under
-> `docs/segmentation_audit/` was regenerated from the frozen audit inputs using the active
-> `seg-v2` configuration, so `curated_manifest.json`, `audit_summary.json` and the 12 PNG
-> panels now all report `segmentation_config_version = seg-v2` and
-> `segmentation_config_sha256 = c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1`.
-> The committed `audit_summary.json` also records `lesion_area_percentage` for seg-v2
-> (mean 13.707%, p50 10.446%, p95 39.903%).
-> The archived baseline (`seg-v1`) remains separately preserved at
-> `backend/configs/archive/segmentation.seg-v1.yaml` and
-> `data/processed/segmentation_audit/baseline-seg-v1/`; it is not mixed into the active
-> evidence set.
->
-> **Phase 2 evidence verification (2026-11-07):** after the commissioned regeneration, the
-> committed 12-panel evidence set under `docs/segmentation_audit/` was checked byte-for-byte
-> against the pipeline-produced panels in
-> `data/processed/segmentation_audit/seg-v2/panels/`. All 12 SHA-256 hashes match, so the
-> committed evidence set is exactly what the active `seg-v2` pipeline produced from the frozen
-> audit inputs. No further regeneration was required.
 >
 > **Commissioning note (2026-11-07):** the committed evidence set under
 > `docs/segmentation_audit/` was regenerated from the frozen audit inputs using the active
@@ -191,7 +168,6 @@ failure — not to the audit score.
 | Brown spot mean lesion area | 22.00 % | 12.98 % |
 | Leaf smut mean lesion area | 22.57 % | 11.37 % |
 | Images with 0 % lesion | 0 | 0 |
-| Mean pipeline time | 172.16 ms | 189.13 ms |
 | Mean pipeline time | 172.16 ms | 189.13 ms |
 
 The halved lesion area is the intended outcome: `seg-v1` was measuring shadow, not

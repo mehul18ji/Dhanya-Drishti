@@ -67,6 +67,12 @@
 | P-11 | A lesion estimate that cannot be calibrated is reported as unreliable, never as a confident number. | A fully brown leaf used to return "0 % lesions" because it was its own colour reference; `LESION_REFERENCE_UNAVAILABLE` + `reliable=False` now force the Phase 4 `uncertain` path. (`tests/test_lesion_segmentation.py`) |
 | P-12 | Visual evidence policy: the full 120-image render set stays in git-ignored `data/processed/segmentation_audit/`, while a fixed, reproducible 12-panel curated set is committed under `docs/segmentation_audit/`. | Keeps the repository light while giving the mentor inspectable proof; `curated_manifest.json` records source path and reason per panel. |
 
+## 4b. Decisions resolved in Phase 3
+
+| ID | Decision | Evidence |
+|---|---|---|
+| P-13 | **Locked missing-value rule.** Raw feature matrices preserve `NaN` values for unreliable lesion/spatial features. During later classifier training, missing-value imputation and missingness indicators must be fitted only on each training fold inside the scikit-learn pipeline. Uncertain lesion values must never be replaced with `0.0`, and images must not be silently dropped. | `backend/app/vision/feature_extraction.py` writes `NaN` + `missing_features` for an uncalibrated lesion; `backend/tests/test_feature_extraction.py` pins "uncertain is missing, not 0.0" against "a measured 0 % stays 0 %". Related: P-11. |
+
 ## 5. Open questions for later phases
 
 | ID | Open question | Planned resolution |
