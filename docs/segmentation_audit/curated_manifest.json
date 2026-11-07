@@ -2,7 +2,7 @@
   "segmentation_config_version": "seg-v2",
   "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
   "quality_config_version": "quality-v1",
-  "generated_at": "2026-11-07T14:26:43+00:00",
+  "generated_at": "2026-11-07T15:17:46+00:00",
   "regenerate_with": "python scripts/run_segmentation_audit.py",
   "items": [
     {

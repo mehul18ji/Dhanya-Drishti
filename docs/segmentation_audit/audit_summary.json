@@ -2,7 +2,7 @@
   "segmentation_config_version": "seg-v2",
   "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
   "quality_config_version": "quality-v1",
-  "generated_at": "2026-11-07T14:26:43+00:00",
+  "generated_at": "2026-11-07T15:17:46+00:00",
   "overall": {
     "images": 120,
     "leaf_found": 120,
@@ -86,9 +86,15 @@
   },
   "rejection_histogram": {},
   "timing_ms": {
-    "mean": 130.61,
-    "p50": 117.38,
-    "p95": 138.29,
-    "max": 1578.96
+    "mean": 189.13,
+    "p50": 171.61,
+    "p95": 227.43,
+    "max": 1631.91
+  },
+  "quality_config_sha256": "c4cfe9e2f9110db2b13a021dc43ed860e19bdd33f65d64d3dece1e34ce3e062e",
+  "lesion_area_percentage": {
+    "mean": 13.707,
+    "p50": 10.446,
+    "p95": 39.903
   }
 }

@@ -112,6 +112,8 @@ Environment:
 
 ## 6. Rules that prevent damage
 
+- Environment and tooling: the required classical ML pipeline runs locally on CPU through versioned Python scripts. Google Colab is out of scope for the required workflow; local Jupyter notebooks are optional exploration tools only.
+
 - Do not edit or delete files under `data/raw/`.
 - Do not commit raw images, `.env`, SQLite files or `backend/.runtime/`.
 - Do not add TensorFlow, CUDA or MobileNetV2 to Version 1.
