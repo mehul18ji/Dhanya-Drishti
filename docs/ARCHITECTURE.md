@@ -72,6 +72,7 @@ Implementation status:
 | Training / evaluation / artifacts | `app/ml/*`, `scripts/*` | 3 | Done |
 | Inference + artifacts | `app/services/inference_service.py`, `app/artifacts/production/` | 3-4 | Done |
 | Severity | `app/vision/severity.py`, `configs/severity.yaml` | 4 | Done (M5) |
+| Prediction composition | `app/services/prediction_service.py` | 4 | Done (M6) |
 | SQLite history | `app/db/*`, `app/services/history_service.py` | 4 | Not started |
 | Dashboard | `frontend/src/*` | 0 / 5 | Shell only |
 

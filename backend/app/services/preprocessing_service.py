@@ -161,7 +161,9 @@ class PreprocessingOutcome:
         return self.status == STATUS_REJECTED
 
 
-def _require_service(inference_service: InferenceService | None) -> InferenceService:
+def require_inference_service(
+    inference_service: InferenceService | None,
+) -> InferenceService:
     """Refuse to analyse before the production bundle is verified and loaded."""
     if inference_service is not None:
         return inference_service
@@ -233,7 +235,7 @@ def preprocess_upload(
     classified. Unreadable bytes (normally caught during upload validation) become
     a typed 422 rather than a crash.
     """
-    service = _require_service(inference_service)
+    service = require_inference_service(inference_service)
 
     try:
         pipeline = run_segmentation(
