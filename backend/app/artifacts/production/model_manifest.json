@@ -1,0 +1,137 @@
+{
+  "bundle_version": "1.0.0",
+  "bundle_status": "approved_phase3_m5_export",
+  "exported_at": "2026-11-07T18:58:15+00:00",
+  "model": {
+    "name": "svm",
+    "estimator": "SVC(kernel='rbf', class_weight='balanced')",
+    "hyperparameters": {
+      "C": 1.0,
+      "class_weight": "balanced",
+      "gamma": "scale",
+      "kernel": "rbf",
+      "random_state": 42
+    },
+    "classes": [
+      "bacterial_leaf_blight",
+      "brown_spot",
+      "leaf_smut"
+    ],
+    "calibrated_probabilities": false,
+    "confidence_note": "The pipeline exposes decision_function, not calibrated probabilities (scikit-learn 1.9 deprecates SVC(probability=True)). Confidence handling is a Phase 4 decision and must not claim probabilities."
+  },
+  "features": {
+    "feature_set_version": "1.0.0",
+    "feature_count": 50,
+    "schema_file": "feature_schema.json",
+    "lesion_dependent_features": [
+      "lesion_area_ratio",
+      "lesion_count_per_kpx",
+      "lesion_largest_ratio",
+      "lesion_mean_ratio",
+      "lesion_perimeter_ratio",
+      "lesion_compactness",
+      "lesion_centroid_dx",
+      "lesion_centroid_dy",
+      "lesion_spread_x",
+      "lesion_spread_y",
+      "lesion_border_mean_distance",
+      "lesion_quadrant_tl_ratio",
+      "lesion_quadrant_tr_ratio",
+      "lesion_quadrant_bl_ratio",
+      "lesion_quadrant_br_ratio"
+    ],
+    "input_shape": "one row of 50 float64 values in schema order; NaN allowed"
+  },
+  "preprocessing": {
+    "file": "preprocessing.json",
+    "steps": [
+      "imputer (median + missingness indicators)",
+      "scaler (StandardScaler)"
+    ],
+    "fitted_on": "the 96 development rows (fold-local during selection)"
+  },
+  "training": {
+    "run": "run_20261107T175000Z_svm",
+    "source_file": "development_winner_pipeline.joblib",
+    "source_sha256": "7a8c1e3aea62f2f666c93eca40f89196c922f5cd7a50ea7215fd18570a2a68b2",
+    "development_rows": 96,
+    "selection_metric": "cv_macro_f1_mean",
+    "cv_protocol": "frozen manifest folds cv_fold 0-4 replayed with PredefinedSplit; no generated splitter",
+    "cv": {
+      "macro_f1_mean": 0.8411814329461389,
+      "macro_f1_std": 0.06037020284815041,
+      "accuracy_mean": 0.8436842105263157,
+      "balanced_accuracy_mean": 0.8396825396825397
+    }
+  },
+  "evaluation": {
+    "file": "evaluation_report.json",
+    "cv_macro_f1_mean": 0.8411814329461389,
+    "cv_macro_f1_std": 0.06037020284815041,
+    "out_of_fold_macro_f1": 0.8439841968067775,
+    "held_out": {
+      "n": 24,
+      "metrics": {
+        "accuracy": 0.7916666666666666,
+        "balanced_accuracy": 0.7916666666666666,
+        "macro_precision": 0.8059163059163059,
+        "macro_recall": 0.7916666666666666,
+        "macro_f1": 0.7854636591478696
+      },
+      "status": "evaluated_once_after_selection_not_recomputed"
+    }
+  },
+  "provenance": {
+    "dataset_version": "ds-cc74ed659044",
+    "dataset_checksum_sha256": "cc74ed659044a56034d02e96a9da47679a1164dfdc1ac7a3a980ff16964c7f79",
+    "split_protocol": "v1",
+    "seed": 42,
+    "segmentation_config_version": "seg-v2",
+    "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
+    "quality_config_version": "quality-v1",
+    "quality_config_sha256": "c4cfe9e2f9110db2b13a021dc43ed860e19bdd33f65d64d3dece1e34ce3e062e"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "scikit_learn": "1.9.0",
+    "numpy": "2.4.6",
+    "joblib": "1.5.3"
+  },
+  "reproducibility": {
+    "produced_by": "scripts/export_artifacts.py",
+    "retrained_during_export": false,
+    "identical_to_reference_pipeline": true,
+    "reference_run": "run_20261107T173626Z_svm"
+  },
+  "artifacts": {
+    "model_pipeline.joblib": {
+      "sha256": "6109e6e0c7f3c38ebb5aa4a66e3848c87c532e5d7b1a7425eada25b9e40b5a6a",
+      "bytes": 38981
+    },
+    "preprocessing.json": {
+      "sha256": "6622e7ec1a45730a2a5dd5a2188d8100bd5c2e8a71234ca05ceb0f15fa9217d6",
+      "bytes": 8086
+    },
+    "feature_schema.json": {
+      "sha256": "875638860e39ed1a734b559a940836637b3f6f2935d17f0cdbeb56ac4fcff731",
+      "bytes": 4221
+    },
+    "segmentation_config.json": {
+      "sha256": "84d11bb385abb8199d0f874cef58fcba59824bf8dcf4d7915130350e41404f10",
+      "bytes": 557
+    },
+    "evaluation_report.json": {
+      "sha256": "7bac8b24008367d9378fb6d264ea8a5a7931342c35c9c857133390ba456fe427",
+      "bytes": 19152
+    }
+  },
+  "known_failure_cases": [
+    "A faint lesion band can survive on the dark lower edge of some Bacterial Leaf Blight strips; the border exclusion reduces it but does not remove it.",
+    "Segmentation thresholds are calibrated on white-paper studio photographs; noisy or cluttered phone backgrounds are untested.",
+    "There is no healthy-leaf class: the model always returns one of the three diseases and must not be presented as a diseased/healthy test.",
+    "Images whose lesion stage reports no healthy-green reference yield NaN lesion and spatial features; those values must stay missing (never 0.0) and must be imputed within a training fold only.",
+    "The dataset is 120 visually similar images, so scores are optimistic and the single 24-image held-out result carries roughly +/-0.05-0.08 macro-F1 noise."
+  ],
+  "severity_disclaimer": "Severity is an experimental estimate from lesion area and may not reflect the actual severity of the disease."
+}

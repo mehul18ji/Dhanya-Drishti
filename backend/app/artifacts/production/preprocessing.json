@@ -1,0 +1,324 @@
+{
+  "pipeline_steps": [
+    "imputer",
+    "scaler",
+    "model"
+  ],
+  "imputer": {
+    "class": "SimpleImputer",
+    "strategy": "median",
+    "add_indicator": true,
+    "indicator_features": [],
+    "statistics": [
+      {
+        "feature": "rgb_r_mean",
+        "median": 0.52993813155
+      },
+      {
+        "feature": "rgb_r_std",
+        "median": 0.11183852705
+      },
+      {
+        "feature": "rgb_g_mean",
+        "median": 0.53421372175
+      },
+      {
+        "feature": "rgb_g_std",
+        "median": 0.09085606784
+      },
+      {
+        "feature": "rgb_b_mean",
+        "median": 0.1980861649
+      },
+      {
+        "feature": "rgb_b_std",
+        "median": 0.13552301375
+      },
+      {
+        "feature": "hsv_h_mean",
+        "median": 0.1725347042
+      },
+      {
+        "feature": "hsv_h_std",
+        "median": 0.029144693165
+      },
+      {
+        "feature": "hsv_s_mean",
+        "median": 0.64004436135
+      },
+      {
+        "feature": "hsv_s_std",
+        "median": 0.14354883135000002
+      },
+      {
+        "feature": "hsv_v_mean",
+        "median": 0.5529491007
+      },
+      {
+        "feature": "hsv_v_std",
+        "median": 0.10439718515
+      },
+      {
+        "feature": "lab_l_mean",
+        "median": 0.55106025935
+      },
+      {
+        "feature": "lab_l_std",
+        "median": 0.09343117848
+      },
+      {
+        "feature": "lab_a_mean",
+        "median": 0.45500968394999997
+      },
+      {
+        "feature": "lab_a_std",
+        "median": 0.02669754624
+      },
+      {
+        "feature": "lab_b_mean",
+        "median": 0.66371682285
+      },
+      {
+        "feature": "lab_b_std",
+        "median": 0.03844121471
+      },
+      {
+        "feature": "hsv_s_p90",
+        "median": 0.8019607961
+      },
+      {
+        "feature": "hsv_v_p10",
+        "median": 0.4529411793
+      },
+      {
+        "feature": "lab_a_p90",
+        "median": 0.4980392158
+      },
+      {
+        "feature": "lab_b_p90",
+        "median": 0.7039215863
+      },
+      {
+        "feature": "glcm_contrast",
+        "median": 3.3312377929999997
+      },
+      {
+        "feature": "glcm_dissimilarity",
+        "median": 0.5775829851500001
+      },
+      {
+        "feature": "glcm_homogeneity",
+        "median": 0.83899098635
+      },
+      {
+        "feature": "glcm_energy",
+        "median": 0.3762948215
+      },
+      {
+        "feature": "glcm_correlation",
+        "median": 0.7870194911999999
+      },
+      {
+        "feature": "leaf_area_fraction",
+        "median": 0.13482284545
+      },
+      {
+        "feature": "leaf_fill_ratio",
+        "median": 0.81945317985
+      },
+      {
+        "feature": "leaf_aspect_ratio",
+        "median": 0.1669921875
+      },
+      {
+        "feature": "leaf_perimeter_ratio",
+        "median": 2.3666056395
+      },
+      {
+        "feature": "leaf_circularity",
+        "median": 0.2856000364
+      },
+      {
+        "feature": "leaf_solidity",
+        "median": 0.9666405916
+      },
+      {
+        "feature": "leaf_convexity",
+        "median": 0.9591592848
+      },
+      {
+        "feature": "leaf_equivalent_diameter_ratio",
+        "median": 0.4143194109
+      },
+      {
+        "feature": "lesion_area_ratio",
+        "median": 0.10480105135000001
+      },
+      {
+        "feature": "lesion_count_per_kpx",
+        "median": 0.2184886113
+      },
+      {
+        "feature": "lesion_largest_ratio",
+        "median": 0.050931135190000004
+      },
+      {
+        "feature": "lesion_mean_ratio",
+        "median": 0.012298328335
+      },
+      {
+        "feature": "lesion_perimeter_ratio",
+        "median": 0.37034127115
+      },
+      {
+        "feature": "lesion_compactness",
+        "median": 0.26487663385000004
+      },
+      {
+        "feature": "lesion_centroid_dx",
+        "median": -0.02107448038
+      },
+      {
+        "feature": "lesion_centroid_dy",
+        "median": 0.055866325275
+      },
+      {
+        "feature": "lesion_spread_x",
+        "median": 0.2583169043
+      },
+      {
+        "feature": "lesion_spread_y",
+        "median": 0.1829511151
+      },
+      {
+        "feature": "lesion_border_mean_distance",
+        "median": 0.16186816245000002
+      },
+      {
+        "feature": "lesion_quadrant_tl_ratio",
+        "median": 0.1467711255
+      },
+      {
+        "feature": "lesion_quadrant_tr_ratio",
+        "median": 0.1524691433
+      },
+      {
+        "feature": "lesion_quadrant_bl_ratio",
+        "median": 0.2955683619
+      },
+      {
+        "feature": "lesion_quadrant_br_ratio",
+        "median": 0.28238426145
+      }
+    ]
+  },
+  "scaler": {
+    "class": "StandardScaler",
+    "mean": [
+      0.5210718112010416,
+      0.1206744231388542,
+      0.5391897732958334,
+      0.10695768283791666,
+      0.2052571244234375,
+      0.13795803033802082,
+      0.17578222401041663,
+      0.03654990442208334,
+      0.6489464854843748,
+      0.16164738619072913,
+      0.5576785296791665,
+      0.114923324625625,
+      0.5527333648249999,
+      0.10594478455104167,
+      0.4512245897187503,
+      0.030366843837604168,
+      0.6687358388031251,
+      0.04253490864833335,
+      0.788112757725,
+      0.4448938003397916,
+      0.49660949160625006,
+      0.705555573105208,
+      3.466803441738541,
+      0.6454633438666665,
+      0.8205421684968752,
+      0.3833784302677084,
+      0.7976932314562503,
+      0.16222027937489586,
+      0.8118486292677088,
+      0.19660164547708328,
+      2.423830541447917,
+      0.3291572042135418,
+      0.9591323702249999,
+      0.9504086126906249,
+      0.43983011817187495,
+      0.1381453573792292,
+      0.2671013888148959,
+      0.08811022094138539,
+      0.02508567546725104,
+      0.5162806861938543,
+      0.3904486010992709,
+      -0.011835548493333334,
+      0.05681948803278128,
+      0.24144869142583328,
+      0.18531480043500012,
+      0.1699249794861458,
+      0.18865074454491668,
+      0.20480880292754164,
+      0.30830627209697903,
+      0.29823417756919796
+    ],
+    "scale": [
+      0.08516199153432566,
+      0.042362682934796406,
+      0.0676651083131886,
+      0.04719635666828807,
+      0.05816516598161726,
+      0.03872981239183041,
+      0.021994723918472302,
+      0.023994133630431222,
+      0.09539691692548677,
+      0.06117849638385343,
+      0.07316036468948665,
+      0.04547659622675459,
+      0.06739511753879897,
+      0.04546345201202022,
+      0.020089122526354156,
+      0.012759064000805459,
+      0.03222905361646012,
+      0.014242858520532505,
+      0.10615199407110962,
+      0.1024089460852241,
+      0.026513649960349075,
+      0.031493162237543865,
+      1.7861104588584718,
+      0.2549372696299212,
+      0.06504285768737296,
+      0.10679710321074491,
+      0.10575031369540645,
+      0.09096717414800573,
+      0.1104513563414107,
+      0.0934867828004014,
+      0.18749789071016756,
+      0.1280214551397333,
+      0.03800361149174807,
+      0.03686518247724627,
+      0.11443225455899204,
+      0.12610151175052842,
+      0.2072882544982226,
+      0.1007704004312175,
+      0.04473186513601506,
+      0.46559324942384345,
+      0.36312053127063504,
+      0.11260982506148592,
+      0.12886339770354932,
+      0.07393843020540661,
+      0.06667356209291207,
+      0.049953428380639785,
+      0.1747728814975416,
+      0.19069679946821308,
+      0.19089238361873404,
+      0.21067942118605062
+    ]
+  },
+  "nan_policy": "Median imputation and missingness indicators are steps inside the fitted pipeline, so their statistics come from the development rows. An uncalibrated lesion value is NaN on input and is never turned into 0.0 before imputation.",
+  "inference_contract": "Pass one float64 row of the 50 schema-ordered features, NaN allowed for lesion/spatial features; the pipeline imputes, scales and predicts."
+}

@@ -1,0 +1,9 @@
+{
+  "segmentation_config_version": "seg-v2",
+  "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
+  "quality_config_version": "quality-v1",
+  "quality_config_sha256": "c4cfe9e2f9110db2b13a021dc43ed860e19bdd33f65d64d3dece1e34ce3e062e",
+  "segmentation_source": "backend/configs/segmentation.yaml",
+  "quality_source": "backend/configs/quality_thresholds.yaml",
+  "note": "The bundle pins the Phase 2 configurations that produced the features; a different hash means the features are not comparable."
+}

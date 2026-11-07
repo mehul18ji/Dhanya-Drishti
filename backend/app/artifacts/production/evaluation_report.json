@@ -1,0 +1,663 @@
+{
+  "report": "phase3_m4_evaluation_report",
+  "generated_at": "2026-11-07T18:51:07+00:00",
+  "feature_set_version": "1.0.0",
+  "provenance": {
+    "split_version": "v1",
+    "seed": 42,
+    "dataset_version": "ds-cc74ed659044",
+    "dataset_checksum_sha256": "cc74ed659044a56034d02e96a9da47679a1164dfdc1ac7a3a980ff16964c7f79",
+    "dataset_manifest_sha256": "41335b8128a5ca656f5ac7da51ec06b072ce7a1d375041118843e90055f5df1d",
+    "duplicate_groups_sha256": "61081e774319bd2c95f95a3d02f5576b669279e7514c339125a30e200f692422",
+    "counts": {
+      "cv": 96,
+      "per_class_cv": {
+        "bacterial_leaf_blight": 32,
+        "brown_spot": 32,
+        "leaf_smut": 32
+      },
+      "per_class_test": {
+        "bacterial_leaf_blight": 8,
+        "brown_spot": 8,
+        "leaf_smut": 8
+      },
+      "per_class_total": {
+        "bacterial_leaf_blight": 40,
+        "brown_spot": 40,
+        "leaf_smut": 40
+      },
+      "test": 24,
+      "total": 120
+    },
+    "generated_by": "scripts/build_feature_matrix.py"
+  },
+  "configs": {
+    "segmentation_config_version": "seg-v2",
+    "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
+    "quality_config_version": "quality-v1",
+    "quality_config_sha256": "c4cfe9e2f9110db2b13a021dc43ed860e19bdd33f65d64d3dece1e34ce3e062e"
+  },
+  "development": {
+    "source_run": "run_20261107T175000Z_svm",
+    "source_files": [
+      "model_comparison.json",
+      "cv_predictions.csv"
+    ],
+    "rows": 96,
+    "cv_protocol": {
+      "outer": "frozen manifest folds cv_fold 0-4 (PredefinedSplit)",
+      "inner": "remaining frozen manifest folds (PredefinedSplit) per outer fold",
+      "generated_splitter": false
+    },
+    "selection_metric": "cv_macro_f1_mean",
+    "models": {
+      "svm": {
+        "cv": {
+          "accuracy": {
+            "mean": 0.8436842105263157,
+            "std": 0.057741423797484086,
+            "min": 0.7894736842105263,
+            "max": 0.9473684210526315
+          },
+          "balanced_accuracy": {
+            "mean": 0.8396825396825397,
+            "std": 0.05968760532369262,
+            "min": 0.7777777777777778,
+            "max": 0.9444444444444445
+          },
+          "macro_precision": {
+            "mean": 0.8692857142857143,
+            "std": 0.053486175550853214,
+            "min": 0.8166666666666668,
+            "max": 0.9583333333333334
+          },
+          "macro_recall": {
+            "mean": 0.8396825396825397,
+            "std": 0.05968760532369262,
+            "min": 0.7777777777777778,
+            "max": 0.9444444444444445
+          },
+          "macro_f1": {
+            "mean": 0.8411814329461389,
+            "std": 0.06037020284815041,
+            "min": 0.7775401069518716,
+            "max": 0.9474747474747475
+          }
+        },
+        "cv_macro_f1_mean": 0.8411814329461389,
+        "cv_macro_f1_std": 0.06037020284815041,
+        "out_of_fold": {
+          "metrics": {
+            "accuracy": 0.84375,
+            "balanced_accuracy": 0.84375,
+            "macro_precision": 0.845343137254902,
+            "macro_recall": 0.84375,
+            "macro_f1": 0.8439841968067775
+          },
+          "confusion_matrix": [
+            [
+              27,
+              2,
+              3
+            ],
+            [
+              3,
+              26,
+              3
+            ],
+            [
+              0,
+              4,
+              28
+            ]
+          ],
+          "per_class": {
+            "bacterial_leaf_blight": {
+              "precision": 0.9,
+              "recall": 0.84375,
+              "f1": 0.8709677419354839,
+              "support": 32
+            },
+            "brown_spot": {
+              "precision": 0.8125,
+              "recall": 0.8125,
+              "f1": 0.8125,
+              "support": 32
+            },
+            "leaf_smut": {
+              "precision": 0.8235294117647058,
+              "recall": 0.875,
+              "f1": 0.8484848484848485,
+              "support": 32
+            }
+          },
+          "labels": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "n": 96
+        },
+        "used_held_out_rows": false
+      },
+      "random_forest": {
+        "cv": {
+          "accuracy": {
+            "mean": 0.801578947368421,
+            "std": 0.041160452202141366,
+            "min": 0.7368421052631579,
+            "max": 0.85
+          },
+          "balanced_accuracy": {
+            "mean": 0.7984126984126985,
+            "std": 0.04421710564185435,
+            "min": 0.7301587301587302,
+            "max": 0.8571428571428572
+          },
+          "macro_precision": {
+            "mean": 0.8276984126984127,
+            "std": 0.04313577852858133,
+            "min": 0.7555555555555555,
+            "max": 0.875
+          },
+          "macro_recall": {
+            "mean": 0.7984126984126985,
+            "std": 0.04421710564185435,
+            "min": 0.7301587301587302,
+            "max": 0.8571428571428572
+          },
+          "macro_f1": {
+            "mean": 0.7935022493846022,
+            "std": 0.038715813009996214,
+            "min": 0.7348484848484849,
+            "max": 0.8492063492063492
+          }
+        },
+        "cv_macro_f1_mean": 0.7935022493846022,
+        "cv_macro_f1_std": 0.038715813009996214,
+        "out_of_fold": {
+          "metrics": {
+            "accuracy": 0.8020833333333334,
+            "balanced_accuracy": 0.8020833333333334,
+            "macro_precision": 0.802445103613068,
+            "macro_recall": 0.8020833333333334,
+            "macro_f1": 0.8005770614256632
+          },
+          "confusion_matrix": [
+            [
+              29,
+              2,
+              1
+            ],
+            [
+              4,
+              24,
+              4
+            ],
+            [
+              3,
+              5,
+              24
+            ]
+          ],
+          "per_class": {
+            "bacterial_leaf_blight": {
+              "precision": 0.8055555555555556,
+              "recall": 0.90625,
+              "f1": 0.8529411764705882,
+              "support": 32
+            },
+            "brown_spot": {
+              "precision": 0.7741935483870968,
+              "recall": 0.75,
+              "f1": 0.7619047619047619,
+              "support": 32
+            },
+            "leaf_smut": {
+              "precision": 0.8275862068965517,
+              "recall": 0.75,
+              "f1": 0.7868852459016393,
+              "support": 32
+            }
+          },
+          "labels": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "n": 96
+        },
+        "used_held_out_rows": false
+      },
+      "knn": {
+        "cv": {
+          "accuracy": {
+            "mean": 0.7610526315789474,
+            "std": 0.07602303193796965,
+            "min": 0.6842105263157895,
+            "max": 0.8947368421052632
+          },
+          "balanced_accuracy": {
+            "mean": 0.7571428571428571,
+            "std": 0.07655336858277773,
+            "min": 0.6666666666666666,
+            "max": 0.8888888888888888
+          },
+          "macro_precision": {
+            "mean": 0.8253154253154253,
+            "std": 0.055818631295874964,
+            "min": 0.7566137566137566,
+            "max": 0.9166666666666666
+          },
+          "macro_recall": {
+            "mean": 0.7571428571428571,
+            "std": 0.07655336858277773,
+            "min": 0.6666666666666666,
+            "max": 0.8888888888888888
+          },
+          "macro_f1": {
+            "mean": 0.7506782106782107,
+            "std": 0.08527239473758047,
+            "min": 0.6316017316017316,
+            "max": 0.8857142857142858
+          }
+        },
+        "cv_macro_f1_mean": 0.7506782106782107,
+        "cv_macro_f1_std": 0.08527239473758047,
+        "out_of_fold": {
+          "metrics": {
+            "accuracy": 0.7604166666666666,
+            "balanced_accuracy": 0.7604166666666666,
+            "macro_precision": 0.7739385727190605,
+            "macro_recall": 0.7604166666666666,
+            "macro_f1": 0.7602275365683772
+          },
+          "confusion_matrix": [
+            [
+              28,
+              3,
+              1
+            ],
+            [
+              9,
+              21,
+              2
+            ],
+            [
+              4,
+              4,
+              24
+            ]
+          ],
+          "per_class": {
+            "bacterial_leaf_blight": {
+              "precision": 0.6829268292682927,
+              "recall": 0.875,
+              "f1": 0.7671232876712328,
+              "support": 32
+            },
+            "brown_spot": {
+              "precision": 0.75,
+              "recall": 0.65625,
+              "f1": 0.7,
+              "support": 32
+            },
+            "leaf_smut": {
+              "precision": 0.8888888888888888,
+              "recall": 0.75,
+              "f1": 0.8135593220338984,
+              "support": 32
+            }
+          },
+          "labels": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "n": 96
+        },
+        "used_held_out_rows": false
+      }
+    },
+    "selected": {
+      "model": "svm",
+      "cv_macro_f1_mean": 0.8411814329461389,
+      "cv_macro_f1_std": 0.06037020284815041,
+      "best_params": {
+        "model__C": 1.0,
+        "model__gamma": "scale"
+      }
+    }
+  },
+  "baselines": {
+    "majority_class": {
+      "class": "bacterial_leaf_blight",
+      "n": 96,
+      "metrics": {
+        "accuracy": 0.3333333333333333,
+        "balanced_accuracy": 0.3333333333333333,
+        "macro_precision": 0.1111111111111111,
+        "macro_recall": 0.3333333333333333,
+        "macro_f1": 0.16666666666666666,
+        "confusion_matrix": [
+          [
+            32,
+            0,
+            0
+          ],
+          [
+            32,
+            0,
+            0
+          ],
+          [
+            32,
+            0,
+            0
+          ]
+        ],
+        "per_class": {
+          "bacterial_leaf_blight": {
+            "precision": 0.3333333333333333,
+            "recall": 1.0,
+            "f1": 0.5,
+            "support": 32
+          },
+          "brown_spot": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 32
+          },
+          "leaf_smut": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 32
+          }
+        },
+        "labels": [
+          "bacterial_leaf_blight",
+          "brown_spot",
+          "leaf_smut"
+        ],
+        "n": 96
+      }
+    },
+    "stratified_random": {
+      "seed": 42,
+      "class_prior": {
+        "bacterial_leaf_blight": 0.3333333333333333,
+        "brown_spot": 0.3333333333333333,
+        "leaf_smut": 0.3333333333333333
+      },
+      "n": 96,
+      "metrics": {
+        "accuracy": 0.23958333333333334,
+        "balanced_accuracy": 0.23958333333333334,
+        "macro_precision": 0.23844289670902574,
+        "macro_recall": 0.23958333333333334,
+        "macro_f1": 0.23897283272283273,
+        "confusion_matrix": [
+          [
+            6,
+            10,
+            16
+          ],
+          [
+            13,
+            10,
+            9
+          ],
+          [
+            12,
+            13,
+            7
+          ]
+        ],
+        "per_class": {
+          "bacterial_leaf_blight": {
+            "precision": 0.1935483870967742,
+            "recall": 0.1875,
+            "f1": 0.19047619047619047,
+            "support": 32
+          },
+          "brown_spot": {
+            "precision": 0.30303030303030304,
+            "recall": 0.3125,
+            "f1": 0.3076923076923077,
+            "support": 32
+          },
+          "leaf_smut": {
+            "precision": 0.21875,
+            "recall": 0.21875,
+            "f1": 0.21875,
+            "support": 32
+          }
+        },
+        "labels": [
+          "bacterial_leaf_blight",
+          "brown_spot",
+          "leaf_smut"
+        ],
+        "n": 96
+      }
+    },
+    "label_distribution": {
+      "bacterial_leaf_blight": 32,
+      "brown_spot": 32,
+      "leaf_smut": 32
+    }
+  },
+  "held_out": {
+    "final": true,
+    "used_for_selection": false,
+    "n": 24,
+    "metrics": {
+      "accuracy": 0.7916666666666666,
+      "balanced_accuracy": 0.7916666666666666,
+      "macro_precision": 0.8059163059163059,
+      "macro_recall": 0.7916666666666666,
+      "macro_f1": 0.7854636591478696
+    },
+    "confusion_matrix": [
+      [
+        6,
+        1,
+        1
+      ],
+      [
+        1,
+        5,
+        2
+      ],
+      [
+        0,
+        0,
+        8
+      ]
+    ],
+    "per_class": {
+      "bacterial_leaf_blight": {
+        "precision": 0.8571428571428571,
+        "recall": 0.75,
+        "f1": 0.8,
+        "support": 8
+      },
+      "brown_spot": {
+        "precision": 0.8333333333333334,
+        "recall": 0.625,
+        "f1": 0.7142857142857143,
+        "support": 8
+      },
+      "leaf_smut": {
+        "precision": 0.7272727272727273,
+        "recall": 1.0,
+        "f1": 0.8421052631578947,
+        "support": 8
+      }
+    },
+    "labels": [
+      "bacterial_leaf_blight",
+      "brown_spot",
+      "leaf_smut"
+    ]
+  },
+  "held_out_predictions": [
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0367",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "bacterial_leaf_blight"
+    },
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0373",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "bacterial_leaf_blight"
+    },
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0377",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "bacterial_leaf_blight"
+    },
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0382",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "bacterial_leaf_blight"
+    },
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0385",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "brown_spot"
+    },
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0396",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "bacterial_leaf_blight"
+    },
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0404",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "bacterial_leaf_blight"
+    },
+    {
+      "image_id": "bacterial_leaf_blight__DSC_0702",
+      "y_true": "bacterial_leaf_blight",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "brown_spot__DSC_0108",
+      "y_true": "brown_spot",
+      "y_pred": "brown_spot"
+    },
+    {
+      "image_id": "brown_spot__DSC_0117",
+      "y_true": "brown_spot",
+      "y_pred": "brown_spot"
+    },
+    {
+      "image_id": "brown_spot__DSC_0119",
+      "y_true": "brown_spot",
+      "y_pred": "brown_spot"
+    },
+    {
+      "image_id": "brown_spot__DSC_0304",
+      "y_true": "brown_spot",
+      "y_pred": "brown_spot"
+    },
+    {
+      "image_id": "brown_spot__DSC_0324",
+      "y_true": "brown_spot",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "brown_spot__DSC_0325",
+      "y_true": "brown_spot",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "brown_spot__DSC_0333",
+      "y_true": "brown_spot",
+      "y_pred": "bacterial_leaf_blight"
+    },
+    {
+      "image_id": "brown_spot__DSC_0337",
+      "y_true": "brown_spot",
+      "y_pred": "brown_spot"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0316",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0327",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0328",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0331",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0502",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0503",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0507",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    },
+    {
+      "image_id": "leaf_smut__DSC_0509",
+      "y_true": "leaf_smut",
+      "y_pred": "leaf_smut"
+    }
+  ],
+  "held_out_source": {
+    "run": "run_20261107T173626Z_svm",
+    "file": "model_comparison.json",
+    "note": "Evaluated exactly once after selection on the pre-correction run whose fitted pipeline is identical to the corrected one. Restated verbatim; not recomputed, not tuned against, not overwritten by this report."
+  },
+  "consistency": {
+    "cv_predictions_rows_per_model": {
+      "svm": 96,
+      "random_forest": 96,
+      "knn": 96
+    },
+    "recomputed_out_of_fold_matches_recorded": {
+      "svm": true,
+      "random_forest": true,
+      "knn": true
+    },
+    "max_metric_difference": {
+      "svm": 0.0,
+      "random_forest": 0.0,
+      "knn": 0.0
+    },
+    "held_out_ids_disjoint_from_development": true,
+    "held_out_ids_checked": 24,
+    "held_out_prediction_rows": 24,
+    "held_out_predictions_reused_not_regenerated": true
+  },
+  "limitations": [
+    "96 development images and 24 held-out images from one small, visually similar 3-class dataset. Scores are optimistically biased by dataset size and near-duplicate similarity and are not a real-world accuracy claim.",
+    "There is no healthy-leaf class. The system predicts only Bacterial Leaf Blight, Brown Spot and Leaf Smut and must never be described as a diseased/healthy classifier.",
+    "Severity is an experimental lesion-area estimate and is always shown with its disclaimer; nothing in this report validates severity clinically.",
+    "The selected SVM pipeline exposes no calibrated probabilities, so confidence handling remains a Phase 4 decision.",
+    "Baselines and models are scored on the same development labels; they are reference points, not independent replications.",
+    "The single 24-image held-out evaluation is restated, not repeated: its sampling noise is roughly +/-0.05-0.08 macro F1 and is stated rather than explained away."
+  ],
+  "caveat": "Scores come from 96 development rows and 24 held-out rows of one small, visually similar 3-class dataset with no healthy class. They are optimistically biased by dataset size and near-duplicate similarity and are **not** a real-world accuracy claim. Severe/uncertain handling is a Phase 4 concern; nothing here is validated on field photographs."
+}
