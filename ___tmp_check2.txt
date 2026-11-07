@@ -1,0 +1,12 @@
+Contexts containing '39.90':
+'n_pixels / leaf_pixels × 100`), all 120 `seg-v2` images:\n\n| mean | p50 | p95 |\n|---:|---:|---:|\n| 13.707 % | 10.446 % | 39.903 % |\n\n> **Phase 2 gate:** "≥ 110/1'
+
+'> The committed `audit_summary.json` also records `lesion_area_percentage` for seg-v2\n> (mean 13.707%, p50 10.446%, p95 39.903%).\n> The archived baseline (`seg-'
+
+'\n| Mean lesion area | 25.476 % | 13.707 % |\n| Median lesion area | 21.565 % | 10.446 % |\n| p95 lesion area | 51.075 % | 39.903 % |\n| BLB mean lesion area | 31.8'
+
+
+Interpretation:
+The three occurrences are substrings of '39.903' (the fresh seg-v2 p95).
+Fresh seg-v2 p95 = 39.903
+Baseline seg-v1 p95 = 51.075

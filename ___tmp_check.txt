@@ -1,0 +1,10 @@
+'39.90' found 3 times
+', all 120 `seg-v2` images:\n\n| mean | p50 | p95 |\n|---:|---:|---:|\n| 13.707 % | 10.446 % | 39.903 % |\n\n> **Phase 2 gate:** "≥ 110/120 dataset images produce a plausible leaf mask" —'
+'.json` also records `lesion_area_percentage` for seg-v2\n> (mean 13.707%, p50 10.446%, p95 39.903%).\n> The archived baseline (`seg-v1`) remains separately preserved at\n> `backend/co'
+' | 13.707 % |\n| Median lesion area | 21.565 % | 10.446 % |\n| p95 lesion area | 51.075 % | 39.903 % |\n| BLB mean lesion area | 31.86 % | 16.77 % |\n| Brown spot mean lesion area | 22'
+
+OLD seg-v2 lesion numbers absent: False
+OLD seg-v2 timing numbers absent: True
+FRESH seg-v2 lesion present: True
+BASELINE lesion present: True
+BASELINE lesion value: 25.476

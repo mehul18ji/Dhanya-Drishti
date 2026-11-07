@@ -39,9 +39,10 @@ Image input
 - Use Python + FastAPI for the backend.
 - Use OpenCV for image processing.
 - Use scikit-learn for SVM, Random Forest, and KNN.
+- Use scikit-image for GLCM.
 - Use SQLite only as temporary runtime storage for prediction history.
 - Use VS Code for development.
-- Use Jupyter notebooks and/or Google Colab for dataset exploration and model-training experiments.
+- Use local Python scripts and, optionally, local Jupyter notebooks for dataset exploration and experiments.
 - Run locally on CPU first.
 - Deploy later with Vercel for the frontend and Render for the backend.
 - Treat MobileNetV2 as a future optional experiment only. It must never replace the mandatory classical machine-learning workflow.
@@ -797,19 +798,19 @@ Use VS Code for:
 - Git history and commits.
 - Reviewing generated artifacts.
 
-### Jupyter or Google Colab
+### Jupyter notebooks
 
-Use Jupyter or Google Colab for:
+Use local Jupyter notebooks only for optional exploration and visualization, for example:
 
 - Dataset audit.
 - Viewing image sizes and examples.
 - Testing segmentation parameters.
 - Visualizing masks.
 - Feature experimentation.
-- Training-model comparisons.
+- Training-model comparison visualization.
 - Evaluation charts.
 
-Notebook experiments must be migrated into reusable Python modules before they become part of the production pipeline. The deployed backend must not depend on notebook-only code.
+Notebook experiments must be migrated into reusable Python modules before they become part of the production pipeline. The deployed backend must not depend on notebook-only code. Local Python scripts under `scripts/` are the authoritative training and artifact-export path, and they must be enough to reproduce the final model without any notebook.
 
 ### CPU-first policy
 

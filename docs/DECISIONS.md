@@ -25,6 +25,8 @@
 
 ## 2. Engineering decisions made during Phase 0
 
+- Environment and tooling: the required classical ML pipeline runs locally on CPU through versioned Python scripts. Google Colab is out of scope for the required workflow; local Jupyter notebooks are optional exploration tools only.
+
 | ID | Decision | Rationale |
 |---|---|---|
 | E-01 | Plan lives in `PHASE_PLAN.txt` at the repository root. | Persistent, tool-agnostic, visible to any agent; `PRD.txt` stays untouched as the authority. |
