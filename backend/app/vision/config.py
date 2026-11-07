@@ -24,6 +24,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[2]
 CONFIG_DIR = BACKEND_DIR / "configs"
 DEFAULT_SEGMENTATION_PATH = CONFIG_DIR / "segmentation.yaml"
 DEFAULT_QUALITY_PATH = CONFIG_DIR / "quality_thresholds.yaml"
+DEFAULT_SEVERITY_PATH = CONFIG_DIR / "severity.yaml"
 
 
 class _StrictModel(BaseModel):
@@ -340,4 +341,52 @@ def load_quality_config(path: str | Path | None = None) -> QualityConfig:
     """Load and validate `quality_thresholds.yaml`, recording its exact hash."""
     resolved = (Path(path) if path is not None else DEFAULT_QUALITY_PATH).resolve()
     config, digest = _load_quality_cached(str(resolved))
+    return config.model_copy(update={"source_path": str(resolved), "content_sha256": digest})
+
+
+class SeverityThresholds(_StrictModel):
+    """Lesion-area cut-offs in percent, inclusive on the lower edge."""
+
+    mild_max_percent: float = Field(gt=0.0, le=100.0)
+    moderate_max_percent: float = Field(gt=0.0, le=100.0)
+
+    @model_validator(mode="after")
+    def _ordered(self) -> "SeverityThresholds":
+        if self.moderate_max_percent <= self.mild_max_percent:
+            raise ValueError(
+                "moderate_max_percent must be greater than mild_max_percent"
+            )
+        return self
+
+
+class SeverityLabels(_StrictModel):
+    mild: str = Field(min_length=1, max_length=32)
+    moderate: str = Field(min_length=1, max_length=32)
+    severe: str = Field(min_length=1, max_length=32)
+
+
+class SeverityConfig(_StrictModel):
+    severity_config_version: str = Field(min_length=1, max_length=64)
+    severity_method: str = Field(min_length=1, max_length=128)
+    thresholds: SeverityThresholds
+    labels: SeverityLabels
+    disclaimer: str = Field(min_length=1)
+    short_note: str = Field(min_length=1)
+    # Filled in by the loader; never read from YAML.
+    source_path: str = ""
+    content_sha256: str = ""
+
+
+@lru_cache(maxsize=8)
+def _load_severity_cached(path_string: str) -> tuple[SeverityConfig, str]:
+    path = Path(path_string)
+    raw = path.read_bytes()
+    config = SeverityConfig.model_validate(_read_yaml(path))
+    return config, hashlib.sha256(raw).hexdigest()
+
+
+def load_severity_config(path: str | Path | None = None) -> SeverityConfig:
+    """Load and validate `severity.yaml`, recording its exact hash."""
+    resolved = (Path(path) if path is not None else DEFAULT_SEVERITY_PATH).resolve()
+    config, digest = _load_severity_cached(str(resolved))
     return config.model_copy(update={"source_path": str(resolved), "content_sha256": digest})

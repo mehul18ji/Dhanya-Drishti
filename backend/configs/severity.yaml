@@ -1,0 +1,32 @@
+# DhanyaDrishti — experimental severity configuration (Phase 4, PRD §12)
+#
+# Version 1 severity is an EXPERIMENTAL visible-lesion-area estimate, never a
+# trained or agronomically validated grade. The approved dataset contains no
+# Mild/Moderate/Severe labels, so these buckets are the PRD's locked default and
+# must always be displayed with the disclaimer below.
+#
+# Buckets (lesion area as a percentage of the detected leaf area):
+#   < mild_max_percent ................ Mild
+#   mild .. < moderate_max_percent .... Moderate
+#   >= moderate_max_percent ........... Severe
+#
+# Boundaries are inclusive on the lower edge: 10.0 % is Moderate, 25.0 % is Severe.
+
+severity_config_version: "severity-v1"
+
+severity_method: "experimental_lesion_area_thresholds"
+
+thresholds:
+  mild_max_percent: 10.0        # 10.0 % is already Moderate
+  moderate_max_percent: 25.0    # 25.0 % is already Severe
+
+labels:
+  mild: "Mild"
+  moderate: "Moderate"
+  severe: "Severe"
+
+# Exact wording required by PRD §12 ("Required disclaimer"). Do not paraphrase.
+disclaimer: "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade."
+
+# Short note that accompanies the severity value in the API response (PRD §15).
+short_note: "Experimental lesion-area estimate."

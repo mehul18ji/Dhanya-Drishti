@@ -92,7 +92,7 @@ Environment:
 - Root `.env` (copy of `.env.example`) → backend settings.
 - `frontend/.env` (copy of `frontend/.env.example`) → `VITE_API_BASE_URL`.
 
-## 5. Current state (Phase 3 complete; Phase 4 M1–M4 complete)
+## 5. Current state (Phase 3 complete; Phase 4 M1–M5 complete)
 
 - Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint,
   `GET /api/v1/model-info`, upload validation, the artifact-backed inference service and the
@@ -120,9 +120,12 @@ Environment:
   scores that are never described as probabilities), M2 lifespan wiring + truthful `/health`
   + `model-info`, M3 upload validation, M4 `services/preprocessing_service.py` (validated upload
   -> decode -> segmentation -> 50-feature vector, with `predicted` / `uncertain` / `rejected`
-  mapping, a model-first 503 gate and schema/config provenance refusal). `/predict`, severity,
-  temporary history, artifact serving and the dashboard wiring do not exist yet.
-- Tests: 152 backend (`backend/`) + 6 split invariants (root `tests/`).
+  mapping, a model-first 503 gate and schema/config provenance refusal), M5 `vision/severity.py`
+  + `configs/severity.yaml` (`severity-v1`: <10 % Mild, 10–<25 % Moderate, ≥25 % Severe; `None`
+  with a reason code for an unreliable, missing or invalid lesion area; PRD §12 disclaimer
+  verbatim, config version + SHA-256 on every result). `/predict`, temporary history, artifact
+  serving and the dashboard wiring do not exist yet.
+- Tests: 177 backend (`backend/`) + 6 split invariants (root `tests/`).
 
 ## 6. Rules that prevent damage
 
