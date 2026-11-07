@@ -1,0 +1,338 @@
+{
+  "confirmed_groups": [
+    {
+      "class_folder": "Bacterial leaf blight",
+      "evidence": [
+        {
+          "dhash_hamming": 111,
+          "hist_correlation": 0.9987,
+          "orb_inlier_ratio": 0.9888,
+          "orb_inliers": 88,
+          "orb_matches": 89,
+          "path_a": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg",
+          "ssim": 0.7571
+        }
+      ],
+      "group_id": "dup-bacterial_leaf_blight-01",
+      "label": "bacterial_leaf_blight",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg"
+      ]
+    },
+    {
+      "class_folder": "Bacterial leaf blight",
+      "evidence": [
+        {
+          "dhash_hamming": 72,
+          "hist_correlation": 0.9961,
+          "orb_inlier_ratio": 0.8438,
+          "orb_inliers": 27,
+          "orb_matches": 32,
+          "path_a": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG",
+          "ssim": 0.7468
+        }
+      ],
+      "group_id": "dup-bacterial_leaf_blight-02",
+      "label": "bacterial_leaf_blight",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG"
+      ]
+    },
+    {
+      "class_folder": "Brown spot",
+      "evidence": [
+        {
+          "dhash_hamming": 68,
+          "hist_correlation": 0.7829,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 16,
+          "orb_matches": 16,
+          "path_a": "data/raw/rice_leaf_diseases/Brown spot/DSC_0299.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Brown spot/DSC_0300.JPG",
+          "ssim": 0.8347
+        }
+      ],
+      "group_id": "dup-brown_spot-01",
+      "label": "brown_spot",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0299.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0300.JPG"
+      ]
+    },
+    {
+      "class_folder": "Brown spot",
+      "evidence": [
+        {
+          "dhash_hamming": 135,
+          "hist_correlation": 0.8763,
+          "orb_inlier_ratio": 0.8571,
+          "orb_inliers": 12,
+          "orb_matches": 14,
+          "path_a": "data/raw/rice_leaf_diseases/Brown spot/DSC_0302.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Brown spot/DSC_0303.JPG",
+          "ssim": 0.7954
+        }
+      ],
+      "group_id": "dup-brown_spot-02",
+      "label": "brown_spot",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0302.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0303.JPG"
+      ]
+    },
+    {
+      "class_folder": "Brown spot",
+      "evidence": [
+        {
+          "dhash_hamming": 96,
+          "hist_correlation": 0.9559,
+          "orb_inlier_ratio": 0.8889,
+          "orb_inliers": 8,
+          "orb_matches": 9,
+          "path_a": "data/raw/rice_leaf_diseases/Brown spot/DSC_0306.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Brown spot/DSC_0307.JPG",
+          "ssim": 0.7725
+        }
+      ],
+      "group_id": "dup-brown_spot-03",
+      "label": "brown_spot",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0306.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0307.JPG"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 82,
+          "hist_correlation": 0.9652,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 50,
+          "orb_matches": 50,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0308.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0309.JPG",
+          "ssim": 0.6852
+        }
+      ],
+      "group_id": "dup-leaf_smut-01",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0308.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0309.JPG"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 100,
+          "hist_correlation": 0.9908,
+          "orb_inlier_ratio": 0.9176,
+          "orb_inliers": 78,
+          "orb_matches": 85,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0312.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0313.JPG",
+          "ssim": 0.7469
+        }
+      ],
+      "group_id": "dup-leaf_smut-02",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0312.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0313.JPG"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 71,
+          "hist_correlation": 0.9726,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 21,
+          "orb_matches": 21,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0314.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0315.jpg",
+          "ssim": 0.7925
+        }
+      ],
+      "group_id": "dup-leaf_smut-03",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0314.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0315.jpg"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 100,
+          "hist_correlation": 0.9566,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 51,
+          "orb_matches": 51,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0318.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0319.jpg",
+          "ssim": 0.7475
+        }
+      ],
+      "group_id": "dup-leaf_smut-04",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0318.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0319.jpg"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 132,
+          "hist_correlation": 0.9457,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 63,
+          "orb_matches": 63,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0321.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0322.jpg",
+          "ssim": 0.7086
+        },
+        {
+          "dhash_hamming": 94,
+          "hist_correlation": 0.9519,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 38,
+          "orb_matches": 38,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0321.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG",
+          "ssim": 0.7376
+        },
+        {
+          "dhash_hamming": 142,
+          "hist_correlation": 0.8876,
+          "orb_inlier_ratio": 0.8049,
+          "orb_inliers": 33,
+          "orb_matches": 41,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0322.jpg",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG",
+          "ssim": 0.7022
+        }
+      ],
+      "group_id": "dup-leaf_smut-05",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0321.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0322.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 79,
+          "hist_correlation": 0.8529,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 5,
+          "orb_matches": 5,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0335.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg",
+          "ssim": 0.8383
+        }
+      ],
+      "group_id": "dup-leaf_smut-06",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0335.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 83,
+          "hist_correlation": 0.9721,
+          "orb_inlier_ratio": 1.0,
+          "orb_inliers": 29,
+          "orb_matches": 29,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0338.JPG",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0339.jpg",
+          "ssim": 0.742
+        }
+      ],
+      "group_id": "dup-leaf_smut-07",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0338.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0339.jpg"
+      ]
+    },
+    {
+      "class_folder": "Leaf smut",
+      "evidence": [
+        {
+          "dhash_hamming": 18,
+          "hist_correlation": 0.9999,
+          "orb_inlier_ratio": 0.9754,
+          "orb_inliers": 119,
+          "orb_matches": 122,
+          "path_a": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg",
+          "path_b": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg",
+          "ssim": 0.9606
+        }
+      ],
+      "group_id": "dup-leaf_smut-08",
+      "label": "leaf_smut",
+      "paths": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg"
+      ]
+    }
+  ],
+  "method": {
+    "candidate_rule": "dhash_hamming <= 10 OR (orb_inliers >= 5 AND orb_inlier_ratio >= 0.80) OR (ssim >= 0.97 AND hist_correlation >= 0.98)",
+    "generator": "scripts/find_near_duplicates.py",
+    "min_or_inliers_accepted": 5,
+    "min_orb_ratio_accepted": 0.8,
+    "signals": [
+      "md5 exact hash",
+      "dHash 16x16 (256-bit)",
+      "HSV histogram correlation",
+      "SSIM on a 256x256 grey canvas",
+      "ORB + RANSAC homography inliers"
+    ]
+  },
+  "rejected_candidates": [
+    {
+      "path_a": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0395.JPG",
+      "path_b": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG",
+      "reason": "Different leaves: the lesion streaks, blade thickness and tip shape differ."
+    },
+    {
+      "path_a": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG",
+      "path_b": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0396.JPG",
+      "reason": "Different leaves: unrelated lesion layout and blade edge."
+    }
+  ],
+  "review_version": "v1",
+  "reviewed_on": "2026-11-07",
+  "reviewer": "AI agent session, visual adjudication of ORB-flagged candidates",
+  "summary": {
+    "by_class": {
+      "bacterial_leaf_blight": 4,
+      "brown_spot": 6,
+      "leaf_smut": 17
+    },
+    "confirmed_pair_relationships": 15,
+    "groups": 13,
+    "images_in_groups": 27,
+    "rejected_candidates": 2
+  },
+  "usage": "scripts/make_splits.py keeps every group entirely inside one partition; the held-out test set uses only singleton images."
+}

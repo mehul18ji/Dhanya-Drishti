@@ -1,0 +1,51 @@
+# DhanyaDrishti — image-quality configuration (Phase 2)
+#
+# Hard rejects stop analysis; warnings let analysis continue but must be shown
+# to the user and may downgrade the result to `uncertain` in Phase 4.
+# Thresholds are calibrated against the 120-image dataset; see
+# docs/SEGMENTATION_NOTES.md and docs/DATASET_AUDIT.md.
+
+quality_config_version: "quality-v1"
+
+# Laplacian variance is measured on the 768-px working image, not the canvas,
+# so the blur threshold is resolution-stable for this pipeline.
+dimensions:
+  hard_reject_short_side_px: 64
+  soft_warn_short_side_px: 224
+  hard_reject_total_pixels: 4096
+  soft_warn_total_pixels: 50176      # 224 * 224
+
+brightness:
+  hard_reject_mean_v_below: 40
+  hard_reject_mean_v_above: 242
+  warn_mean_v_below: 85
+  warn_mean_v_above: 230
+
+contrast:
+  hard_reject_std_v_below: 5
+  warn_std_v_below: 16
+
+# Over/under-exposure is judged inside the leaf mask only (E-19): white paper
+# backgrounds dominate global exposure statistics and would cause false alarms.
+exposure:
+  leaf_overexposed_v_above: 245
+  hard_reject_leaf_overexposed_fraction_above: 0.85
+  warn_leaf_overexposed_fraction_above: 0.40
+  underexposed_v_below: 25
+  warn_leaf_underexposed_fraction_above: 0.55
+
+blur:
+  hard_reject_laplacian_variance_below: 8
+  warn_laplacian_variance_below: 40
+
+leaf:
+  hard_reject_area_fraction_below: 0.005
+  warn_area_fraction_below: 0.02
+  warn_full_frame_fallback: true
+  warn_multi_leaf: true
+  warn_weak_fill_ratio_below: 0.35
+
+segmentation:
+  # If the lesion mask covers more than this fraction of the leaf, treat the
+  # result as a segmentation warning (not a hard reject).
+  warn_lesion_fraction_above: 0.65

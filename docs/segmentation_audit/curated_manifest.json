@@ -1,0 +1,69 @@
+{
+  "segmentation_config_version": "seg-v2",
+  "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
+  "quality_config_version": "quality-v1",
+  "generated_at": "2026-11-07T14:26:43+00:00",
+  "regenerate_with": "python scripts/run_segmentation_audit.py",
+  "items": [
+    {
+      "source": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG",
+      "panel": "Bacterial_leaf_blight__DSC_0365.png",
+      "reason": "Bacterial leaf blight at the dataset's dominant 3.4:1 strip resolution"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG",
+      "panel": "Bacterial_leaf_blight__DSC_0703.png",
+      "reason": "Second Bacterial leaf blight leaf; confirms BLB is not a single template"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg",
+      "panel": "Brown_spot__DSC_0121.png",
+      "reason": "Brown spot, near-square frame (1.33:1)"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Brown spot/DSC_0105.jpg",
+      "panel": "Brown_spot__DSC_0105.png",
+      "reason": "Brown spot at the dataset's most extreme 5.3:1 aspect ratio"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Brown spot/DSC_0114.jpg",
+      "panel": "Brown_spot__DSC_0114.png",
+      "reason": "Tiny image (296x88): exercises the soft small-image warning"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Brown spot/DSC_0109.jpg",
+      "panel": "Brown_spot__DSC_0109.png",
+      "reason": "Background-free close-up (>=71% leaf-green): exercises the full-frame fallback"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg",
+      "panel": "Leaf_smut__DSC_0504.png",
+      "reason": "Leaf smut, near-square portrait-ish frame (1.25:1)"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0501.jpg",
+      "panel": "Leaf_smut__DSC_0501.png",
+      "reason": "Leaf smut at 5.0:1 aspect ratio"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0502.jpg",
+      "panel": "Leaf_smut__DSC_0502.png",
+      "reason": "Smallest image in the dataset (301x71); boundary case for the size gate"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0511.jpg",
+      "panel": "Leaf_smut__DSC_0511.png",
+      "reason": "Background-free close-up (>=74% leaf-green): full-frame fallback"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0508.jpg",
+      "panel": "Leaf_smut__DSC_0508.png",
+      "reason": "Pure leaf close-up named in the phase plan"
+    },
+    {
+      "source": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0515.jpg",
+      "panel": "Leaf_smut__DSC_0515.png",
+      "reason": "Pure leaf close-up named in the phase plan"
+    }
+  ]
+}

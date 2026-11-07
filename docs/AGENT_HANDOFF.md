@@ -45,6 +45,8 @@ If `PROJECT_STATUS.md` and reality disagree, trust reality, then fix the status 
 | Current state | `PROJECT_STATUS.md` |
 | Locked decisions | `docs/DECISIONS.md` |
 | System design | `docs/ARCHITECTURE.md` |
+| Dataset audit, duplicates, splits | `docs/DATASET_AUDIT.md`, `data/splits/` |
+| Phase 2 segmentation evidence | `docs/SEGMENTATION_NOTES.md`, `docs/segmentation_audit/` |
 | Backend app | `backend/app/` |
 | Calibration thresholds (Phase 2+) | `backend/configs/*.yaml` |
 | Production model artifacts | `backend/app/artifacts/production/` |
@@ -70,6 +72,19 @@ cd frontend
 npm install
 npm run dev          # http://localhost:5173
 npm run build        # type-check + production build
+
+# Dataset audit + frozen splits (from repository root)
+python scripts/audit_dataset.py
+python scripts/find_near_duplicates.py
+python scripts/build_duplicate_groups.py
+python scripts/make_splits.py
+python scripts/make_splits.py --verify
+python -m pytest tests -q
+
+# Phase 2 segmentation audit + committed evidence set (from repository root)
+python scripts/run_segmentation_audit.py
+python scripts/run_segmentation_audit.py --only leaf_smut --limit 5   # quick spot-check
+python scripts/run_segmentation_audit.py --no-panels --no-curated     # numbers only
 ```
 
 Environment:
@@ -77,12 +92,23 @@ Environment:
 - Root `.env` (copy of `.env.example`) → backend settings.
 - `frontend/.env` (copy of `frontend/.env.example`) → `VITE_API_BASE_URL`.
 
-## 5. Current state (Phase 0 done)
+## 5. Current state (Phase 2 complete)
 
-- Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint, 3 tests.
+- Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint.
 - Frontend: dashboard shell (header/nav/footer), three routed pages, health badge, API client stub.
 - Data: raw dataset in `data/raw/rice_leaf_diseases/` (40/40/40), git-ignored.
-- No prediction pipeline or model exists yet — that is expected.
+- Audit: manifest + summary generated; dataset version `ds-cc74ed659044`.
+- Duplicates: 13 confirmed groups (27 images) recorded in `data/splits/duplicate_groups.json`.
+- Splits: frozen v1 — 24-image singleton-only test (8/class) + group-aware stratified
+  5-fold CV over 96 images; seed 42; reproducible via `scripts/make_splits.py --verify`.
+- Vision pipeline (`backend/app/vision/`): config (`seg-v2`, `quality-v1`), preprocessing,
+  quality, leaf segmentation, lesion segmentation, `pipeline.py` orchestration and
+  `diagnostics.py` panels. All thresholds live in `backend/configs/*.yaml`.
+- Phase 2 audit: 120/120 plausible leaf masks (dev 96/96, held-out test 24/24),
+  0 rejected, 33 uncertain, 8 full-frame fallbacks, 130.6 ms mean per image on CPU.
+  Evidence: `docs/SEGMENTATION_NOTES.md`, `docs/segmentation_audit/` (12 curated panels).
+- Tests: 70 backend (`backend/`) + 6 split invariants (root `tests/`).
+- No feature extractor, model, prediction API or dashboard wiring exists yet — Phase 3 onward.
 
 ## 6. Rules that prevent damage
 

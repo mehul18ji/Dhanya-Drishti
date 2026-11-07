@@ -23,6 +23,11 @@
 > - All numbers in §6 are *starting points for calibration*, not validated constants.
 > - Section 12 lists the first five concrete actions to take from a clean state.
 
+**Execution status (updated 2026-11-07):** Phase 0, Phase 1 and Phase 2 are complete.
+Phase 3 is next. The seven Phase 2 milestones defined in §5 (Phase 2 → "Phase 2 milestones")
+are kept as the audit trail of how the phase was closed; `PROJECT_STATUS.md` names the next
+exact task and does not redefine them.
+
 ### Context summary (what this project is, in one paragraph)
 
 DhanyaDrishti is a **mentor/evaluator-facing academic web dashboard**, not a deep-learning
@@ -350,7 +355,8 @@ results. Do the review before any model training, not after.
    with a `segmentation_config_version`.
 
 **Deliverables:** preprocessing, quality, leaf segmentation, lesion segmentation modules,
-config YAML, mask visualizations, `docs/SEGMENTATION_NOTES.md` (with before/after grids).
+config YAML, mask visualizations, `docs/SEGMENTATION_NOTES.md` (with before/after grids),
+a shared pipeline orchestrator and a reproducible 120-image audit script.
 
 **Definition of done**
 - Portrait, landscape, square, 5:1 strip, and pure-close-up images all process **without
@@ -367,6 +373,84 @@ config YAML, mask visualizations, `docs/SEGMENTATION_NOTES.md` (with before/afte
 - Lesion mask swallowing shadow/leaf edges → use leaf-mask erosion before scoring and a
   "distance from leaf border" exclusion band (config).
 - Total segmentation failure on close-ups → the 0.65 full-frame fallback is mandatory.
+
+#### Phase 2 milestones (authoritative definitions)
+
+`PROJECT_STATUS.md` refers to these by number only. A milestone is complete when its evidence
+is in the repository and the tests pass — never merely because a module file exists.
+
+**M1 — Configuration and reproducibility**
+- Purpose: every threshold, kernel size and K-Means setting is data, not scattered code.
+- Deliverables: `backend/configs/segmentation.yaml` (`seg-v1`),
+  `backend/configs/quality_thresholds.yaml` (`quality-v1`), `app/vision/config.py` with strict
+  validation (unknown keys, impossible ranges, even kernels) and a SHA-256 content hash.
+- Evidence: `tests/test_vision_config.py`, and the config version/hash recorded in every audit output.
+- DoD: configs load, hash stably across loads and reject typos; no module hard-codes a threshold
+  that belongs in YAML.
+
+**M2 — Preprocessing and image-quality checks**
+- Purpose: EXIF-correct, aspect-preserving, never-stretched working data, plus honest quality gates.
+- Deliverables: `app/vision/preprocessing.py` (EXIF orientation, aspect-preserving working
+  image, margin crop, letterbox, reversible `CanvasTransform`, denoise); `app/vision/quality.py`
+  (dimensions, brightness, contrast, blur, leaf-mask-only exposure) with **separate** warning
+  and rejection lists.
+- Evidence: `tests/test_preprocessing.py`, `tests/test_quality.py`; the <1 % aspect-drift
+  assertion across portrait/landscape/square/5:1.
+- DoD: no distortion on any aspect ratio; over-exposure is judged inside the leaf mask only
+  (decision E-19).
+
+**M3 — Leaf segmentation**
+- Purpose: find one plausible primary leaf, or refuse honestly.
+- Deliverables: `app/vision/leaf_segmentation.py` — HSV green/yellow/brown candidates + Lab
+  chroma, seeded K-Means merge, morphology and component cleanup, area/centrality/border
+  candidate scoring (never "squareness"), ≥0.65 green-ratio full-frame fallback, multi-leaf
+  warning (verbatim PRD §7 text), `NO_CLEAR_LEAF_FOUND` failure.
+- Evidence: `tests/test_leaf_segmentation.py`; the leaf-mask column of the 120-image audit.
+- DoD: synthetic single-leaf, close-up, two-leaf and non-leaf cases behave as documented, and
+  two runs on the same image give identical masks.
+
+**M4 — Lesion-region segmentation**
+- Purpose: find lesions **relative to the leaf's own tissue**, never by absolute colour alone.
+- Deliverables: `app/vision/lesion_segmentation.py` — leaf-relative HSV/Lab shifts (hue
+  distance, a*/b* deviation, value drop), seeded K-Means cluster agreement, morphology,
+  minimum component scaled by leaf area, border-exclusion band, final leaf-mask intersection,
+  plausibility warning, and an explicit "no healthy reference" unreliable state.
+- Evidence: `tests/test_lesion_segmentation.py`; the lesion column of the audit.
+- DoD: the lesion mask never leaves the leaf; a fully brown/necrotic leaf is reported as
+  unreliable (never as "0 % lesions"); identical runs give identical masks.
+
+**M5 — Shared pipeline orchestration and diagnostic outputs**
+- Purpose: one composition of the stages, used by the audit script now and the API in Phase 4.
+- Deliverables: `app/vision/pipeline.py` (typed result carrying quality report, leaf/canvas/
+  lesion outputs, per-stage timings; early exit on decode or leaf failure) and
+  `app/vision/diagnostics.py` (leaf-mask render, lesion-mask render, overlay, 4-up panel).
+- Evidence: `tests/test_vision_pipeline.py`, `tests/test_diagnostics.py`, and the panels the
+  audit script writes.
+- DoD: one call turns bytes or a path into masks + quality report + timings; the module persists
+  nothing and imports no web framework.
+
+**M6 — Full 120-image audit and controlled calibration**
+- Purpose: measure the real pipeline and correct only systematic, visually verified failures.
+- Deliverables: `scripts/run_segmentation_audit.py` → `data/processed/segmentation_audit/`
+  (git-ignored per-image panels, `segmentation_audit.json` and `.csv`) plus a curated ~12-image
+  evidence set in `docs/segmentation_audit/` (original, leaf mask, lesion mask, overlay) chosen
+  to cover all three classes, aspect extremes, close-ups, multi-leaf and difficult lesions.
+- Evidence: the audit summary, reporting **development (CV/train) images and the 24 held-out
+  test images separately**, with pass / uncertain / rejected counts and the reason code behind
+  every failure.
+- DoD: ≥110/120 plausible leaf masks; every remaining image has a documented reason; **no
+  calibration decision is taken from the held-out test images** (split protocol v1); any
+  threshold change is justified by a documented systematic failure, versioned `seg-v2` with
+  `seg-v1` preserved, with before/after audit numbers in `docs/DECISIONS.md`.
+
+**M7 — Documentation, evidence review and phase freeze**
+- Purpose: the phase is reviewable without reading code.
+- Deliverables: `docs/SEGMENTATION_NOTES.md` (config version + hash, counts, curated image
+  identifiers, known limitations, regeneration command), `notebooks/02_segmentation_experiments.ipynb`,
+  refreshed `PROJECT_STATUS.md`, `docs/AGENT_HANDOFF.md` and `README.md` status.
+- Evidence: committed panels referenced by name, the audit JSON, notebook tables.
+- DoD: `python -m pytest` green; `python scripts/run_segmentation_audit.py` reproduces the
+  reported counts; `PROJECT_STATUS.md` names the Phase 3 next task.
 
 ---
 

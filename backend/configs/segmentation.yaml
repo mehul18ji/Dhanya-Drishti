@@ -1,0 +1,148 @@
+# DhanyaDrishti — segmentation configuration (Phase 2)
+#
+# Every threshold, kernel size and K-Means setting used by the classical CV
+# pipeline lives here (PRD §9). Code must never hard-code these values.
+#
+# Changing any value requires bumping `segmentation_config_version` and
+# re-running `scripts/run_segmentation_audit.py` so the visual audit and the
+# recorded metrics stay tied to the configuration that produced them.
+#
+# Version history:
+#   seg-v1  initial Phase 2 baseline (archived: archive/segmentation.seg-v1.yaml)
+#   seg-v2  three corrections after the seg-v1 visual audit:
+#           1. leaf.lab.min_chroma 10 -> 20 (warm paper shadow merged into the
+#              leaf mask in 40 BLB images),
+#           2. lesion.min_healthy_reference_fraction added (a fully necrotic
+#              leaf was reported as "0 % lesions"),
+#           3. lesion.border_exclusion_px 2 -> 6 (leaf-edge shading was counted
+#              as lesion along the whole leaf outline).
+#           Before/after evidence: docs/SEGMENTATION_NOTES.md;
+#           rationale: docs/DECISIONS.md (P-09).
+
+segmentation_config_version: "seg-v2"
+
+preprocessing:
+  # Detection happens on an aspect-preserving working image whose longest side
+  # is at most this many pixels. The original is never stretched.
+  working_long_side: 768
+  # Fixed processing canvas for lesion segmentation and feature extraction.
+  canvas_size: 512
+  # Neutral letterbox padding (0 = black). Padding is never analysed.
+  pad_value: 0
+  # Safety margin around the selected leaf bbox, as a fraction of the bbox
+  # longest side, so edge lesions are not clipped (PRD §8).
+  crop_margin_fraction: 0.08
+  denoise:
+    method: "bilateral"       # none | bilateral | fast_nlmeans
+    bilateral_diameter: 5
+    bilateral_sigma_color: 35
+    bilateral_sigma_space: 35
+    nlmeans_h: 7
+    nlmeans_template_window: 7
+    nlmeans_search_window: 21
+
+leaf:
+  # OpenCV HSV ranges (H is 0-179, S/V are 0-255). Leaf tissue can be green,
+  # yellowing or brown, so all three are candidates; the white paper background
+  # has low saturation and is excluded.
+  hsv:
+    green:  {h_min: 25, h_max: 100, s_min: 35, v_min: 25}
+    yellow: {h_min: 15, h_max: 35,  s_min: 40, v_min: 40}
+    brown:  {h_min: 5,  h_max: 25,  s_min: 35, v_min: 20}
+  lab:
+    enabled: true
+    l_min: 20
+    l_max: 245
+    a_min: 90
+    a_max: 150
+    b_min: 125
+    b_max: 205
+    # Reject near-neutral pixels (|a-128| + |b-128| below this). Paper, grey
+    # shadows and black text are neutral; leaf tissue has visible chroma.
+    # Measured on the dataset: warm paper shadow sits at chroma 9-13, leaf
+    # tissue at 40+. seg-v1 used 10 and therefore merged the BLB scan shadow
+    # into the leaf mask (40 images), which then produced false "lesions" along
+    # the leaf edge. 20 keeps every leaf pixel and drops the shadow.
+    min_chroma: 20
+  kmeans:
+    enabled: true
+    k: 4
+    sample_pixels: 20000
+    random_state: 42
+    n_init: 10
+    max_iter: 100
+    # A cluster is tissue only if its centroid is visibly coloured. Warm-toned
+    # paper sits around S=20-25 and must never be accepted, however much of the
+    # colour mask leaks into its cluster.
+    min_cluster_saturation: 35
+  morphology:
+    open_kernel: 3
+    close_kernel: 7
+    open_iterations: 1
+    close_iterations: 1
+    min_component_area_fraction: 0.002
+  candidate:
+    min_area_fraction: 0.008
+    min_fill_ratio: 0.30
+    centrality_weight: 0.25
+    border_penalty: 0.25
+    border_touch_band_px: 2
+  fallback:
+    # Background-free close-ups (>=65% leaf-like pixels) use the full frame as
+    # the leaf mask (Phase 1 measured 15 such images; see docs/DATASET_AUDIT.md).
+    enabled: true
+    leaf_green_fraction_threshold: 0.65
+    # If a valid candidate already covers this much of the frame, the frame is
+    # the leaf; using the full frame avoids clipping at the border.
+    candidate_area_fraction_for_full_frame: 0.90
+  multi_leaf:
+    enabled: true
+    secondary_area_ratio: 0.45
+    secondary_centrality_min: 0.25
+    secondary_centroid_distance_ratio: 0.25
+  # Erosion (working-image pixels) used only when computing leaf statistics,
+  # so the bright/dark paper edge does not poison lesion thresholds.
+  border_erosion_px: 3
+
+lesion:
+  # Lesion segmentation runs on the letterboxed processing canvas.
+  # The leaf outline carries 3-6 px of anti-aliased/shaded tissue at this
+  # canvas size; without this band it becomes a lesion along every leaf edge
+  # (measured: -3 to -11 percentage points of inflation on development images).
+  border_exclusion_px: 6
+  min_saturation: 25
+  min_value: 15
+  # Relative-to-leaf conditions (PRD §9 Stage C).
+  hue_delta_min: 14
+  lab_a_delta_min: 9
+  lab_b_delta_min: 12
+  value_drop_ratio: 0.72
+  # Pixels that still look like healthy green tissue are never lesions.
+  green_hue_tolerance: 9
+  green_lab_a_tolerance: 7
+  green_lab_b_tolerance: 9
+  kmeans:
+    enabled: true
+    k: 3
+    sample_pixels: 20000
+    random_state: 42
+    n_init: 10
+    max_iter: 100
+    hue_delta_min: 16
+    lab_a_delta_min: 10
+    value_drop_ratio: 0.70
+  morphology:
+    open_kernel: 3
+    close_kernel: 5
+    open_iterations: 1
+    close_iterations: 1
+  # Minimum connected lesion component, as a fraction of leaf area. At a
+  # 512-px canvas this removes only single-pixel speckle.
+  min_lesion_area_fraction_of_leaf: 0.0006
+  # Lesion colours are defined relative to the leaf's healthy tissue. If less
+  # than this fraction of the leaf still looks healthy-green, no valid
+  # reference exists (e.g. an almost fully necrotic leaf) and the estimate must
+  # be reported as unreliable instead of "0 % lesions".
+  min_healthy_reference_fraction: 0.01
+  # Guard: a mask covering most of the leaf is probably a segmentation failure.
+  max_plausible_lesion_fraction: 0.65

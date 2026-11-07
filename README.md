@@ -19,15 +19,15 @@ Upload one photograph of a diseased rice leaf and receive:
 
 ## Status
 
-**Current phase: Phase 0 — Repository foundation (complete).**
+**Current phase: Phase 2 — Classical CV pipeline (complete).**
 
 | Area | State |
 |---|---|
 | Repository foundation, docs, env templates | Done |
 | Frontend dashboard shell (routing, layout, pages) | Done |
 | Backend health API + typed config | Done |
-| Dataset audit and reproducible splits | Not started (Phase 1) |
-| Classical CV pipeline (leaf/lesion segmentation) | Not started (Phase 2) |
+| Dataset audit and reproducible splits | Done (Phase 1) |
+| Classical CV pipeline (preprocessing, quality, leaf + lesion segmentation, audit) | Done (Phase 2) |
 | Features + SVM/RF/KNN comparison | Not started (Phase 3) |
 | Prediction API + temporary history | Not started (Phase 4) |
 | Upload / result / history UI | Not started (Phase 5) |
@@ -106,7 +106,31 @@ The frontend reads its own `frontend/.env` (see `frontend/.env.example`).
 
 The approved 120-image dataset is placed at `data/raw/rice_leaf_diseases/` and is **not**
 committed. See [`data/README.md`](./data/README.md) for provenance, verified characteristics
-and split rules.
+and split rules, and [`docs/DATASET_AUDIT.md`](./docs/DATASET_AUDIT.md) for the full audit.
+
+Regenerate the audit and frozen splits:
+
+```powershell
+python scripts/audit_dataset.py
+python scripts/find_near_duplicates.py
+python scripts/build_duplicate_groups.py
+python scripts/make_splits.py
+python -m pytest tests -q
+```
+
+Run the Phase 2 segmentation audit (writes git-ignored panels + the committed
+`docs/segmentation_audit/` evidence set):
+
+```powershell
+python scripts/run_segmentation_audit.py
+```
+
+Segmentation results and the calibration record are in
+[`docs/SEGMENTATION_NOTES.md`](./docs/SEGMENTATION_NOTES.md).
+
+**Split protocol v1:** seed 42, 24-image held-out test set (8 per class, singleton images
+only), 96-image stratified group-aware 5-fold cross-validation. Verified to reproduce
+byte-identically.
 
 ## Documentation map
 
@@ -118,6 +142,9 @@ and split rules.
 | `docs/DECISIONS.md` | Locked decisions + rationale |
 | `docs/ARCHITECTURE.md` | System diagram and component boundaries |
 | `docs/AGENT_HANDOFF.md` | Procedure for the next AI-agent session |
+| `docs/DATASET_AUDIT.md` | Phase 1 audit, duplicate review and split protocol |
+| `docs/SEGMENTATION_NOTES.md` | Phase 2 segmentation audit, `seg-v1`→`seg-v2` calibration, limitations |
+| `docs/segmentation_audit/` | Curated 12-panel visual evidence + audit summary |
 | `data/README.md` | Dataset provenance and rules |
 
 ## Scope limits (Version 1)

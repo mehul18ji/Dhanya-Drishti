@@ -58,10 +58,13 @@ Implementation status:
 |---|---|---|---|
 | Config / logging / errors | `app/core/*` | 0 | Done |
 | Health API | `app/api/routes_health.py` | 0 | Done |
+| Dataset audit + frozen splits | `scripts/*`, `data/splits/*` | 1 | Done |
 | Predict / history / model-info routes | `app/api/*` | 4 | Not started |
 | Upload validation | `app/services/upload_validation.py` | 4 | Not started |
-| Preprocessing + quality | `app/vision/preprocessing.py`, `quality.py` | 2 | Not started |
-| Leaf + lesion segmentation | `app/vision/leaf_segmentation.py`, `lesion_segmentation.py` | 2 | Not started |
+| Preprocessing + quality | `app/vision/preprocessing.py`, `quality.py` | 2 | Done |
+| Leaf + lesion segmentation | `app/vision/leaf_segmentation.py`, `lesion_segmentation.py` | 2 | Done |
+| Pipeline composition + diagnostics | `app/vision/pipeline.py`, `diagnostics.py` | 2 | Done |
+| Segmentation audit | `scripts/run_segmentation_audit.py`, `docs/segmentation_audit/` | 2 | Done |
 | Feature extraction | `app/vision/feature_extraction.py` | 3 | Not started |
 | Training / evaluation / artifacts | `app/ml/*`, `scripts/*` | 3 | Not started |
 | Inference + artifacts | `app/ml/inference.py`, `model_loader.py` | 3-4 | Not started |

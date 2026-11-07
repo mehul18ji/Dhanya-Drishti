@@ -1,0 +1,132 @@
+{
+  "counts": {
+    "bacterial_leaf_blight": 8,
+    "brown_spot": 8,
+    "leaf_smut": 8
+  },
+  "items": [
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "f89063b62e714c5245f6042608981366",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG"
+    },
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "48124cacc810b2a5d74c65a56b55e8d8",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0373.JPG"
+    },
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "598484c84e5649d1f5121ff15faffd97",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG"
+    },
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "ad1605d77eef6b5d128e437257a5f5db",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0382.JPG"
+    },
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "26e7d1c4a3b39fb2e9c024200ec456a4",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0385.jpg"
+    },
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "818d839e19517ff4cf957a8074419f0f",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0396.JPG"
+    },
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "5213cf5d1b1bf9f9f6f83212c9b76a10",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0404.JPG"
+    },
+    {
+      "label": "bacterial_leaf_blight",
+      "md5": "dd11b736cf398afa60169308d521b92c",
+      "path": "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "0fc77f0048620fdc1dced25d24abc02b",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0108.jpg"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "35ebee9f5b5098ed35746ef0ea3efe10",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0117.jpg"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "307653fbd277912c9a59aede653fb9af",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "caf870cc18f57bbde819836f96992636",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0304.JPG"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "0306ce9d35c31034a2599358b56d4b7c",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0324.JPG"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "df47f3788fafef3500c6c295ae87e3e6",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0325.JPG"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "e9100135ff25e10eea2ec3470dc4fe1c",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0333.JPG"
+    },
+    {
+      "label": "brown_spot",
+      "md5": "df32e98f937ab7cdc82096416e6bbbcc",
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0337.JPG"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "f357b8db4baa00d5feb9b775c6ad7601",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0316.JPG"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "8f7a581a44b95e0b8321a91663279c34",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "094de99a6b4caf4f82df5129900e1c62",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0328.jpg"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "19afc9d2eacd9b6e8642c73d92192d6e",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0331.JPG"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "00008070123c76db364dc1a60c45973e",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0502.jpg"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "d978ed33675856ef778d439af482a405",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0503.jpg"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "76165e0be58ff3d0d016655c60c41439",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0507.jpg"
+    },
+    {
+      "label": "leaf_smut",
+      "md5": "7753e5204ccb317aca6436776e18cfd1",
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg"
+    }
+  ],
+  "seed": 42,
+  "split_version": "v1",
+  "test_per_class": 8
+}

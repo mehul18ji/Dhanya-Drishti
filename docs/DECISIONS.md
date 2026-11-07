@@ -39,24 +39,42 @@
 | E-10 | No model or vision package is imported by the Phase 0 app. | Keeps startup light and honest; ML wiring belongs to Phase 3-4. |
 | E-11 | Design tokens (`ink`, `accent`, `warn`) live in Tailwind theme, not ad-hoc hex values. | Enforces the PRD §6 visual direction consistently across pages. |
 | E-12 | `backend/.runtime/` is git-ignored and wiped at startup. | PRD §16 temporary-storage contract. |
+| E-13 | Class folder names are mapped to stable slugs: `Bacterial leaf blight → bacterial_leaf_blight`, `Brown spot → brown_spot`, `Leaf smut → leaf_smut`. | Folder names contain spaces and inconsistent capitalisation; slugs are safe in JSON, CSV and feature reports. |
+| E-14 | `dataset_version` is `ds-<sha256[:12]>` over sorted `md5 + path` pairs. | Ties every metric and artifact to the exact bytes analysed; any re-download changes the version. Current: `ds-cc74ed659044`. |
+| E-15 | Near-duplicate screening uses dHash-16 + HSV histogram + SSIM + ORB/RANSAC over **all** 7,140 pairs, then manual visual adjudication. | Coarse average-hash produced 298 false positives; ORB is required because several same-leaf pairs are differently framed and have low SSIM. |
+| E-16 | 13 confirmed duplicate groups (27 images) are **retained**, not deleted; splits are group-aware. | Deleting images would break the approved 120-image dataset; grouping prevents leakage while preserving all data. |
+| E-17 | Split protocol v1: seed 42; held-out test = 24 images (8/class) from **singleton images only**; remaining 96 = stratified 5-fold `StratifiedGroupKFold`. | Test metrics are not inflated by near-identical twins; no duplicate group is split across train/validation/test. |
+| E-18 | EXIF orientation is applied before any analysis (10 dataset images carry orientation 3). | Without it those leaves are analysed upside-down; PRD §8 requires EXIF correction. |
+| E-19 | Image-quality checks (over-exposure, brightness) are computed **inside the leaf mask**, not the whole frame. | White paper backgrounds dominate global exposure statistics (p95 = 64% "over-exposed" pixels), which would create false warnings. |
 
-## 3. Planned decisions to confirm during later phases
+## 3. Decisions resolved in Phase 1
 
-These are *provisional*; each is settled by evidence, not preference, and must be recorded here
-when decided.
+| ID | Decision | Evidence |
+|---|---|---|
+| P-01 | Full-frame leaf fallback threshold starts at **0.65** leaf-green fraction. | 15 images exceed 0.65; 11 exceed 0.70. Calibrate and freeze in Phase 2. |
+| P-02 | Size gate: hard reject **< 64 px** short side, soft warning **< 224 px**. | 9 images are below 128 px (smallest 301×71); a 256 px gate would reject 25 images. |
+| P-03 | Near-duplicate method: dHash-16 + HSV histogram + SSIM + ORB/RANSAC + visual adjudication. | 17 candidates → 15 confirmed pair relationships in 13 groups, 2 rejected. 0 cross-class duplicates. |
+
+## 4. Decisions resolved in Phase 2
+
+| ID | Decision | Evidence |
+|---|---|---|
+| P-07 | Frozen the processing geometry: 768 px aspect-preserving working image, 512 px letterboxed canvas, 8 % crop margin. | 120-image audit: mean 130.6 ms/image on CPU (p95 138.3 ms); lesions remain visible at 512 px. `segmentation.yaml` `preprocessing`. |
+| P-09 | `seg-v2` replaces `seg-v1` after the visual audit, with three corrections: `leaf.lab.min_chroma` 10→20 (warm paper shadow was merged into the leaf mask on 40 BLB images and then reported as lesion), a lesion healthy-reference guard (`lesion.min_healthy_reference_fraction = 0.01`, result marked `reliable=False`), and `lesion.border_exclusion_px` 2→6 (leaf-edge shading counted as lesion along the whole outline). | Before/after numbers and panels: `docs/SEGMENTATION_NOTES.md` §4. `seg-v1` preserved at `backend/configs/archive/segmentation.seg-v1.yaml`. |
+| P-10 | Calibration is split-aware: only the 96 development images may justify a threshold change; the 24 held-out test images are reported separately and never inspected for tuning. | `scripts/run_segmentation_audit.py` writes `development` and `held_out_test` blocks separately; no seg-v2 change references a test image. |
+| P-11 | A lesion estimate that cannot be calibrated is reported as unreliable, never as a confident number. | A fully brown leaf used to return "0 % lesions" because it was its own colour reference; `LESION_REFERENCE_UNAVAILABLE` + `reliable=False` now force the Phase 4 `uncertain` path. (`tests/test_lesion_segmentation.py`) |
+| P-12 | Visual evidence policy: the full 120-image render set stays in git-ignored `data/processed/segmentation_audit/`, while a fixed, reproducible 12-panel curated set is committed under `docs/segmentation_audit/`. | Keeps the repository light while giving the mentor inspectable proof; `curated_manifest.json` records source path and reason per panel. |
+
+## 5. Open questions for later phases
 
 | ID | Open question | Planned resolution |
 |---|---|---|
-| P-01 | Full-frame leaf fallback threshold (start 0.65 green ratio) | Calibrate on the 13 close-up images in Phase 2 |
-| P-02 | Hard/soft image-size thresholds (start 64 px / 224 px) | Justify against the 9 small dataset images in Phase 2 |
-| P-03 | Near-duplicate detection method | dHash-16 + HSV histogram + SSIM, manual adjudication in Phase 1 |
 | P-04 | Feature budget (target ~40–80 features) | Prune by variance/correlation in Phase 3; freeze schema v1 |
 | P-05 | Uncertainty probability threshold | Tune on out-of-fold CV probabilities in Phase 3 |
 | P-06 | Selected classifier | Whichever wins by macro F1 in Phase 3 |
-| P-07 | Canvas size (start 512 px long side) | Balance CPU latency vs lesion visibility in Phase 2 |
 | P-08 | History expiry default (start 60 min) | Confirm with mentor; keep configurable |
 
-## 4. Change procedure
+## 6. Change procedure
 
 1. Propose the change with evidence (test result, measurement, mentor instruction).
 2. If it touches a D-xx decision, it requires mentor approval and a PRD update first.

@@ -1,0 +1,52 @@
+{
+  "counts": {
+    "cv": 96,
+    "per_class_cv": {
+      "bacterial_leaf_blight": 32,
+      "brown_spot": 32,
+      "leaf_smut": 32
+    },
+    "per_class_test": {
+      "bacterial_leaf_blight": 8,
+      "brown_spot": 8,
+      "leaf_smut": 8
+    },
+    "per_class_total": {
+      "bacterial_leaf_blight": 40,
+      "brown_spot": 40,
+      "leaf_smut": 40
+    },
+    "test": 24,
+    "total": 120
+  },
+  "dataset_checksum_sha256": "cc74ed659044a56034d02e96a9da47679a1164dfdc1ac7a3a980ff16964c7f79",
+  "dataset_manifest_sha256": "41335b8128a5ca656f5ac7da51ec06b072ce7a1d375041118843e90055f5df1d",
+  "dataset_version": "ds-cc74ed659044",
+  "duplicate_groups_applied": 13,
+  "duplicate_groups_sha256": "61081e774319bd2c95f95a3d02f5576b669279e7514c339125a30e200f692422",
+  "files": {
+    "cv_folds": "cv_folds.json",
+    "cv_folds_sha256": "718885a5d69f2c1e4fd94aa5d986e6992cfaed81cf3af000550345d1e166c4a2",
+    "test": "test.json",
+    "test_sha256": "4a2c544bdd9cdf9638c4a3a8fef5014dda40d324ec52984a79548acb0fa4d00d"
+  },
+  "generated_by": "scripts/make_splits.py",
+  "generated_on": "2026-11-07",
+  "images_in_duplicate_groups": 27,
+  "invariants": {
+    "every_fold_has_all_classes": true,
+    "folds_cover_all_non_test_images": true,
+    "folds_disjoint": true,
+    "no_duplicate_group_split_across_folds": true,
+    "no_test_overlap": true,
+    "test_has_no_duplicate_twin": true,
+    "test_per_class_ok": true,
+    "test_unique": true,
+    "total_accounted_for": true
+  },
+  "n_splits": 5,
+  "note": "Counts and hashes are deterministic. generated_on is informational only; re-running with the same inputs produces identical test/cv files.",
+  "seed": 42,
+  "split_version": "v1",
+  "test_per_class": 8
+}
