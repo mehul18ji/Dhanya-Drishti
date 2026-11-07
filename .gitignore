@@ -1,0 +1,56 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Node / frontend ---
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
+# --- Environment & secrets ---
+.env
+.env.*
+!.env.example
+!frontend/.env.example
+
+# --- Runtime storage (temporary, never committed) ---
+backend/.runtime/
+backend/app/runtime/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# --- Dataset: raw images are never committed (PRD §18) ---
+data/raw/
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/README.md
+
+# Split manifests are small and must be reproducible/committed
+!data/splits/
+
+# --- Generated / temporary files ---
+*.log
+tmp/
+temp/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# --- Editor / OS ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/

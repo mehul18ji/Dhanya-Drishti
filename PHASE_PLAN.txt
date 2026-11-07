@@ -1,0 +1,781 @@
+# DhanyaDrishti — Phase-wise Implementation Plan
+
+> **STATUS:** Living document. Created 2026-11-07 after a full read of `PRD.txt` (1,207 lines)
+> and a direct audit of this repository and the bundled `rice_leaf_diseases/` dataset.
+>
+> **PURPOSE OF THIS FILE:** Persistent, self-contained execution plan for DhanyaDrishti V1.
+> It exists so that any human or AI-agent session can pick up the project without prior
+> chat history. Read this file together with `PRD.txt`, `docs/PRD.md`, `docs/DECISIONS.md`
+> and `PROJECT_STATUS.md` at the start of every session.
+>
+> **AUTHORITY ORDER (highest first):**
+> 1. `PRD.txt` (the approved product requirements — cannot be overridden)
+> 2. `docs/DECISIONS.md` (locked decisions and their rationale)
+> 3. This file (how the work is sequenced)
+> 4. `PROJECT_STATUS.md` (what is actually done right now)
+>
+> If this file and the PRD disagree, **the PRD wins** — update this file instead.
+>
+> **HOW TO USE THIS FILE**
+> - Do not skip phases; each phase has a Definition of Done gate.
+> - Update `PROJECT_STATUS.md` at the end of every session (see PRD §24).
+> - Never re-open a phase marked complete; only fix defects or extend it explicitly.
+> - All numbers in §6 are *starting points for calibration*, not validated constants.
+> - Section 12 lists the first five concrete actions to take from a clean state.
+
+### Context summary (what this project is, in one paragraph)
+
+DhanyaDrishti is a **mentor/evaluator-facing academic web dashboard**, not a deep-learning
+app and not a farmer product. A user uploads **one photograph of a diseased rice leaf**; a
+deterministic *classical* pipeline (EXIF-corrected, aspect-preserving preprocessing → HSV/Lab
+colour + K-Means + morphology → leaf segmentation → lesion segmentation → versioned
+colour/GLCM/shape/lesion features) feeds the **best of SVM / Random Forest / KNN**, chosen by
+macro-F1 on a stratified protocol (96 train / 24 held-out test / 5-fold CV). The app returns
+disease label + confidence + lesion-area % + *experimental* severity (Mild/Moderate/Severe)
++ warnings, or an honest `uncertain` / `rejected` state, and keeps **temporary** prediction
+history. Only the approved 120-image, 3-class Kaggle dataset is used; there is no healthy
+class and no validated severity ground truth. The graded value is **methodological honesty
+and reproducibility**, not raw accuracy.
+
+### Repository state at the time this plan was written
+
+| Item | Finding |
+|---|---|
+| Tracked files | Only git housekeeping; the original README was deleted in history |
+| Untracked | `PRD.txt`, `rice_leaf_diseases/` (120 images) |
+| Code | None — no frontend, backend, docs, configs or tests |
+| Branch / remote | `main` → `github.com/mehul18ji/Dhanya-Drishti` |
+| Toolchain | Python 3.11.9, Node v25.9.0, npm 11.12.1, git 2.53.0, OpenCV 4.11.0, Pillow 12.3.0 |
+| Verdict | Greenfield build — Phase 0 starts from zero |
+
+### Dataset findings that shaped the plan (measured)
+
+| Finding | Consequence for implementation |
+|---|---|
+| 40 / 40 / 40 = 120 images, all JPG/RGB, no exact duplicates | PRD baseline verified |
+| 13 images are >70 % leaf-green (pure close-ups, no background) | Leaf segmentation **must** fall back to a full-frame mask at ≥0.65 green ratio |
+| 9 images have short side < 128 px (smallest 301×71) | Hard size gate ≈64 px; soft warning ≈224 px (a 256 px gate would reject 25 images) |
+| All Bacterial Leaf Blight images are exactly 3081×897 | Never put raw resolution in the feature vector (leakage risk) |
+| Leaves are long strips (aspect up to 5.3:1) on bright paper | Score candidates by area + centrality, not "squareness"; erode the leaf border before lesion scoring |
+| Coarse 8×8 average-hash yields 298 false near-duplicate pairs | Use dHash-16 + HSV histogram + SSIM for the duplicate review |
+
+---
+
+# DhanyaDrishti — Phase-wise Implementation Plan (detail)
+
+> Prepared from the PRD (`PRD.txt`, 1207 lines) plus a direct audit of the current repository
+> and the bundled `rice_leaf_diseases/` dataset.
+> Target: Version 1 (academic prototype, classical CV + classical ML, CPU-only).
+
+---
+
+## 0. Executive summary — what this project actually is
+
+DhanyaDrishti is **not** a deep-learning app and **not** a farmer product. It is a
+**mentor/evaluator-facing academic web dashboard** that demonstrates a *complete classical
+computer-vision + classical machine-learning pipeline* end to end.
+
+A user uploads **one photograph of a diseased rice leaf**. The system:
+
+1. Validates and safely decodes the file (EXIF-corrected, no stretching).
+2. Runs deterministic classical CV: HSV/Lab colour analysis, K-Means clustering,
+   morphological cleanup, connected components.
+3. Segments the **leaf**, then segments the **lesion regions inside that leaf**.
+4. Extracts a **versioned numeric feature vector** (colour, GLCM texture, shape,
+   lesion-area, spatial distribution).
+5. Feeds it to the **best of SVM / Random Forest / KNN**, chosen by macro-F1 on a
+   stratified protocol (96 train / 24 held-out test, 5-fold CV).
+6. Returns **disease label + confidence + lesion-area % + experimental severity
+   (Mild/Moderate/Severe) + warnings**, or an honest `uncertain` / `rejected` state.
+7. Keeps **temporary, in-memory-runtime** prediction history (SQLite + temp files,
+   wiped on restart).
+
+The intellectual value being graded is **methodological honesty**:
+- only 3 labels from a 120-image dataset; no healthy class;
+- no augmentation-inflated scores;
+- no "accuracy = real-world reliability" claims;
+- severity is explicitly an experimental lesion-area estimate;
+- features, splits, seeds and thresholds are versioned and reproducible.
+
+**What it stands for when finished:** a small, honest, fully documented, reproducible
+reference implementation of the professor's required workflow — a working local app that
+can also be deployed to Vercel + Render, with a model card that states its own limits.
+
+---
+
+## 1. Repository audit — current state (measured, not assumed)
+
+| Item | Finding |
+|---|---|
+| Tracked files | Only git housekeeping; README was deleted in history (`6880e50 Delete README.md`) |
+| Untracked | `PRD.txt` (in repo root), `rice_leaf_diseases/` (dataset, 120 files) |
+| Code | **None** — no frontend, no backend, no docs, no configs, no tests |
+| Branches | `main` tracking `origin/main` → `github.com/mehul18ji/Dhanya-Drishti` |
+| Last commit | `14602fb Merge branch 'main' of ...Dhanya-Drishti` |
+| Toolchain available | Python 3.11.9, Node v25.9.0, npm 11.12.1, git 2.53.0, OpenCV 4.11.0, Pillow 12.3.0 |
+| Missing | `.gitignore`, `.env.example`, `docs/`, `data/`, `frontend/`, `backend/`, `notebooks/`, `scripts/` |
+
+**Conclusion:** this is a greenfield build. Phase 0 is genuinely from zero. There is no
+existing work to preserve or refactor — only the PRD and the dataset.
+
+### Repo-normalization items to settle in Phase 0
+
+1. Move/link dataset `rice_leaf_diseases/` → `data/raw/rice_leaf_diseases/`
+   (keep folder names or rename to slugs; if renamed, record the mapping table).
+2. Keep `PRD.txt` at root **and** add the canonical copy at `docs/PRD.md` (PRD §24 requires
+   `docs/PRD.md` to be the agent-continuity entry point).
+3. Add `.gitignore` covering `data/raw/`, `data/processed/`, `*.sqlite`, `.env`, `node_modules/`,
+   `.venv/`, `__pycache__/`, `dist/`, runtime temp dirs.
+4. Confirm the raw dataset must **not** be committed (PRD §18) — it is currently untracked,
+   which is the correct end state.
+
+---
+
+## 2. Dataset audit — measured facts that shape the design
+
+Class counts verified: **40 / 40 / 40 = 120**.
+
+| Class (folder) | Images | Resolution range | Notes |
+|---|---:|---|---|
+| Bacterial leaf blight | 40 | every image exactly **3081×897**, aspect 3.43 | Uniform scan/crop batch → beware of "resolution as a shortcut feature" |
+| Brown spot | 40 | **286×88 → 3081×900**, aspect 1.33–5.30 | Mix of tiny close-ups and full leaf strips |
+| Leaf smut | 40 | **250×71 → 4160×2340**, aspect 1.25–5.03 | Includes one 2.2 MB / 4160×2340 outlier |
+
+All files are RGB JPEG/JPG. No exact duplicate files (MD5) found.
+
+### Critical findings that change implementation decisions
+
+1. **Some images have no background at all.** 13 images are >70% leaf-green pixels
+   (median green fraction is ~37.5%). Example: `Leaf smut/DSC_0508.jpg` and
+   `DSC_0515.jpg` are pure leaf close-ups.
+   → Leaf segmentation **must** have a documented fallback: *"if green/leaf-like
+   fraction ≥ ~65% of the frame, treat the whole frame as the leaf mask"*. Without this,
+   these images return `NO_CLEAR_LEAF_FOUND` and the model loses real training/demo data.
+
+2. **Nine images are tiny** (short side < 128 px; smallest 301×71).
+   → A naive "image too small" gate (e.g. min 256 px) would reject 25/120 dataset images
+   and 9/120 at a 128 px gate. Set **hard reject ≈ 64 px short side**, **soft warning ≈ 224 px**,
+   and document the boundary cases.
+
+3. **Leaf is a long thin strip on a bright paper background** in most images.
+   → Contour scoring must not prefer "most square" candidates; prefer *largest area*
+   with a mild centrality bonus, and compute aspect-ratio features up to ~5:1.
+   Closed contour + convex-hull fill is needed so the lesion mask is not clipped.
+
+4. **Lesions are brown/tan/grey relative to green tissue.** On close-ups, brown spot
+   and smut lesions are small (a few dozen pixels).
+   → Lesion segmentation needs **relative** thresholds (compare against the leaf's own
+   green statistics) rather than only absolute HSV ranges, plus a *minimum lesion size*
+   that can scale with image resolution (area-relative, not fixed pixels).
+
+5. **Near-duplicate detection cannot rely on a coarse 8×8 average hash.** It flagged
+   298 "pairs" across classes, which is clearly false positives on visually similar
+   leaf-on-white-background scans.
+   → Use a stronger combination: dHash 16×16 + HSV histogram distance + SSIM on a
+   normalized 256 px canvas, and report candidates for *manual* review. If a cross-class
+   near-duplicate pair is confirmed, exclude per PRD §10.
+
+6. **Resolution is a leakage risk.** All BLB images share 3081×897. Never include raw
+   resolution in the feature vector; normalize all geometry to the processing canvas
+   (e.g. 512 px long side / letterboxed) and use scale-invariant ratios.
+
+### Split plan (from PRD §10, made concrete)
+
+- Held-out test: **24 images = 8 per class**, fixed and saved to `data/splits/test.json`.
+- Remaining **96 = 32 per class**, stratified 5-fold CV in `data/splits/cv_folds.json`.
+- One global seed (e.g. `SEED=42`) used by: split generation, K-Means, RF, and any
+  resampling. Stored in the split manifest and config.
+- Split selection happens **after** near-duplicate review.
+- No augmentation for baseline scores; if augmentation is used at all, it is a separate
+  clearly-labelled experiment, never in the headline metrics.
+
+---
+
+## 3. Target architecture (as it will be built)
+
+```text
+Browser (React/Vite/TS/Tailwind, port 5173)
+   │  multipart POST /api/v1/predict
+   ▼
+FastAPI (port 8000)
+   routes_predict → upload_validation → preprocessing → leaf_segmentation
+                  → lesion_segmentation → feature_extraction
+                  → inference (model loaded once at startup)
+                  → severity → history_service (SQLite + temp artifacts)
+   ▼
+JSON response (predicted | uncertain | rejected)
+```
+
+Offline (never at request time):
+
+```text
+scripts/audit_dataset.py → data/splits/*.json
+notebooks/01..05         → parameter discovery (throwaway)
+scripts/train_model.py    → artifacts/production/{model.joblib, preprocessing.joblib,
+                            feature_schema.json, segmentation_config.json,
+                            model_manifest.json, evaluation_report.json}
+```
+
+Non-negotiable invariants:
+
+- **Single feature extractor module** used by both `training.py` and `inference.py`.
+- `feature_schema.json` holds the ordered feature-name list + `feature_set_version`.
+  The API refuses to serve if the loaded schema version ≠ manifest version.
+- **All thresholds live in YAML** (`configs/segmentation.yaml`, `severity.yaml`,
+  `quality_thresholds.yaml`) and are hashed into the manifest.
+- No model training inside a request handler.
+- No image persisted beyond the configured expiry / runtime.
+
+---
+
+## 4. Phase overview
+
+| Phase | Name | Duration (focused effort) | Gate to pass |
+|---|---|---:|---|
+| P0 | Repository foundation | 2–3 days | Frontend launches, `/health` returns OK, docs exist |
+| P1 | Dataset audit + reproducible splits | 2–3 days | 120 images verified, splits + manifests frozen |
+| P2 | Classical CV pipeline | 5–7 days | Aspect-ratio safe, leaf + lesion masks visually correct, safe rejection |
+| P3 | Features + SVM/RF/KNN comparison | 5–7 days | Best model by macro-F1 exported, artifacts load in clean process |
+| P4 | FastAPI inference service | 4–5 days | Upload → structured result, uncertain/rejected states, history API |
+| P5 | React dashboard | 5–7 days | Full upload→result UX with disclaimers, history, About Model |
+| P6 | Integration + QA + model card | 3–4 days | E2E stable, error analysis, manual photo trials documented |
+| P7 | Deployment (Vercel + Render) | 2–3 days | Public URL works, cold-start UX, model artifacts load |
+| P8 | Documentation, handoff, viva pack | 2–3 days | PROJECT_STATUS + demo script + reproducible from clean clone |
+
+Total ≈ **30–42 focused days**. In a 3rd-semester mentor-project rhythm that maps to
+roughly **10–12 weeks** part-time (see §11).
+
+---
+
+## 5. Phase-by-phase plan
+
+### Phase 0 — Repository foundation
+
+**Goal:** a runnable skeleton with no ML, plus the documentation contract the PRD relies on.
+
+**Tasks**
+1. Create the directory tree from PRD §17 (frontend, backend, docs, data, notebooks, scripts, tests).
+2. Move dataset to `data/raw/rice_leaf_diseases/`; add `data/README.md`; keep originals untouched.
+3. `.gitignore`: raw data, processed data, artifacts temp, `*.db`, `.env`, `node_modules`, `.venv`,
+   `__pycache__`, `.pytest_cache`, `dist/`, `coverage/`.
+4. `.env.example`:
+   `VITE_API_BASE_URL`, `MAX_UPLOAD_MB=10`, `HISTORY_EXPIRY_MINUTES=60`,
+   `CORS_ORIGINS`, `RUNTIME_DIR`, `MODEL_DIR`, `LOG_LEVEL`.
+5. Backend scaffold: FastAPI app factory, typed settings via Pydantic, structured logging,
+   exception handlers, `/api/v1/health` returning the PRD §15 shape with `model_loaded=false`.
+6. Frontend scaffold: Vite + React + TS + Tailwind, `DashboardLayout`, `Header`, `Navigation`,
+   `Footer`, three empty pages with routing.
+7. Write `docs/PRD.md` (copy of PRD.txt), `docs/DECISIONS.md`, `docs/ARCHITECTURE.md`,
+   `docs/AGENT_HANDOFF.md`, `PROJECT_STATUS.md` in the exact PRD §24 format, `README.md`
+   with local run instructions.
+8. Git: first meaningful commit per logical unit (not one giant commit).
+
+**Deliverables:** runnable FE + BE, docs set, env templates, gitignore, README quickstart.
+
+**Definition of done**
+- `uvicorn app.main:app --reload` → `http://localhost:8000/docs` shows OpenAPI.
+- `curl /api/v1/health` → `{"status":"ok","model_loaded":false,...}`.
+- `npm run dev` → dashboard shell at `http://localhost:5173` with nav + disclaimers placeholder.
+- `PROJECT_STATUS.md` exists and is accurate (it is the agent-continuity anchor).
+
+**Risks:** environment drift on Windows (OpenCV wheels, Node 25). Pin versions in
+`requirements.txt` / `package.json` and record them in docs.
+
+---
+
+### Phase 1 — Dataset audit and reproducible splits
+
+**Goal:** prove the dataset facts yourself and freeze a leak-free split.
+
+**Tasks**
+1. `scripts/audit_dataset.py` → writes `data/processed/dataset_manifest.csv`:
+   path, class, width, height, aspect, bytes, md5, decode-OK, EXIF-orientation tag.
+2. `notebooks/01_dataset_audit.ipynb`: class-count table (must be 40/40/40), dimension
+   histograms, the 9 tiny images, the 13 full-frame close-ups, sample grids per class.
+3. Duplicate review: exact MD5 (done: none) + near-duplicate candidates via
+   dHash-16 + HSV-histogram + SSIM; dump `data/processed/near_duplicates.csv` for manual
+   adjudication; record decisions in `docs/DECISIONS.md`.
+4. `scripts/make_splits.py`: stratified 8/class test (24) + 5-fold CV over the other 96;
+   write `data/splits/{test.json,cv_folds.json,split_manifest.json}` incl. seed, file hashes,
+   dataset checksum, split version.
+5. Write `data/README.md`: provenance, licence note, "do not commit raw data", how to
+   regenerate splits, known limitations (no healthy class, no severity labels).
+
+**Deliverables:** manifest CSV, audit notebook outputs, near-duplicate report, frozen splits, dataset README.
+
+**Definition of done**
+- Audit reproduces 40/40/40 and flags the known 9 tiny / 13 close-up images.
+- Split files contain exactly 24 test (8/class) and 96 CV images, no overlap.
+- Running the split script twice with the same seed reproduces identical files.
+
+**Risks:** forgetting that a *confirmed* near-duplicate pair across train/test invalidates
+results. Do the review before any model training, not after.
+
+---
+
+### Phase 2 — Classical CV pipeline (the heart of the grade)
+
+**Goal:** deterministic, config-driven, visually verifiable leaf + lesion segmentation.
+
+**Tasks**
+1. `vision/preprocessing.py`:
+   - EXIF orientation (`PIL.ImageOps.exif_transpose` or OpenCV EXIF flag),
+   - `resize_preserving_aspect()` + `letterbox_pad(canvas=512)` returning the scale/pad
+     transform (needed to map masks back to original preview),
+   - denoise (bilateral or fastNlMeans, kernel from config).
+2. `vision/quality.py`: brightness (mean V), contrast (std V), over-exposure (% pixels V>245),
+   blur (variance of Laplacian), min dimensions, decode failure, leaf-fraction checks.
+   Emit **warnings** vs **hard rejects** as separate lists.
+3. `vision/leaf_segmentation.py`:
+   - HSV + Lab candidate masks for green/yellow/brown,
+   - K-Means (k=3–4, `random_state=SEED`) on downsampled pixels, merge clusters whose
+     centroids are leaf-like,
+   - morphology open/close, small-region removal, connected components,
+   - candidate scoring: area, fill ratio vs convex hull, centrality, border-touch penalty,
+   - **background-free fallback** (leaf fraction ≥ 0.65 → full-frame mask),
+   - multi-leaf detection → pick primary + warning string from PRD §7,
+   - **failure** → `NO_CLEAR_LEAF_FOUND` rejection.
+4. `vision/lesion_segmentation.py`:
+   - restrict to leaf mask, convert to HSV/Lab,
+   - lesion conditions **relative** to leaf statistics (hue distance from leaf median hue,
+     LAB a*/b* deviation, value drop) + absolute guard rails from YAML,
+   - K-Means separation of visually distinct clusters,
+   - morphology to remove specks / fill pin-holes, min lesion area scaled by image area,
+   - final lesion mask ∩ leaf mask.
+5. Artifacts: original preview, leaf mask overlay, lesion mask overlay, side-by-side
+   diagnostic PNG for review (`image_artifact_service.py`).
+6. `notebooks/02_segmentation_experiments.ipynb`: tune on ~15 images (5/class across the
+   size spectrum), then run all 120 and record pass/fail counts.
+7. Everything probabilistic fixes a seed; every threshold goes to `configs/segmentation.yaml`
+   with a `segmentation_config_version`.
+
+**Deliverables:** preprocessing, quality, leaf segmentation, lesion segmentation modules,
+config YAML, mask visualizations, `docs/SEGMENTATION_NOTES.md` (with before/after grids).
+
+**Definition of done**
+- Portrait, landscape, square, 5:1 strip, and pure-close-up images all process **without
+  distortion** (verify: aspect ratio of the leaf bbox is preserved to < 1%).
+- ≥ 110/120 dataset images produce a plausible leaf mask; the rest are either rejected
+  with a reason or produce the documented full-frame fallback.
+- Multi-leaf synthetic test (two leaves pasted side by side) yields the warning + primary leaf.
+- A non-leaf image (e.g. text photo) returns `rejected`, not a disease.
+- Deterministic: two runs on the same file give identical masks.
+
+**Risks (highest in the project)**
+- Over-tuned HSV ranges that only work on this dataset's white background → document the
+  limitation and keep ranges in YAML so they are adjustable.
+- Lesion mask swallowing shadow/leaf edges → use leaf-mask erosion before scoring and a
+  "distance from leaf border" exclusion band (config).
+- Total segmentation failure on close-ups → the 0.65 full-frame fallback is mandatory.
+
+---
+
+### Phase 3 — Feature extraction and SVM / Random Forest / KNN comparison
+
+**Goal:** one documented feature schema, three trained models, one honest winner.
+
+**Tasks**
+1. `vision/feature_extraction.py` — single source of truth:
+   - **Colour:** per-channel mean/std + selected histogram stats for RGB, HSV, Lab
+     (skip channels that are constant/near-constant; keep the order fixed).
+   - **Texture:** GLCM on the leaf-region greyscale (`scikit-image`): contrast,
+     homogeneity, energy, correlation, dissimilarity (entropy only if stable).
+   - **Shape:** leaf area (normalized by canvas), perimeter, aspect ratio, compactness,
+     circularity, solidity.
+   - **Lesion:** lesion count, lesion/leaf ratio, largest-lesion ratio, mean lesion size,
+     lesion perimeter/area stats.
+   - **Spatial:** centroid distance from leaf centroid, spread (std of lesion pixel
+     coordinates normalized by leaf bbox), quadrant distribution, border-distance stats.
+   - Output: `np.ndarray` float32 in the exact schema order + `feature_schema.json`
+     (`version: "1.0.0"`, names, order, extractor version, config hashes).
+2. `scripts/build_feature_matrix.py` → cached `data/processed/features_v1.csv` (+ `.npy`)
+   for all 120 images, with per-image failures recorded (never silently filled).
+3. `ml/training.py`:
+   - Pipelines: `StandardScaler+SVM(RBF, probability=True)`, `RandomForest`,
+     `StandardScaler+KNN`; small `GridSearchCV` **inside** each CV fold (no leakage).
+   - Stratified 5-fold CV on the 96; report mean ± std for accuracy, balanced accuracy,
+     macro P/R/F1.
+   - Select by **macro F1**; then evaluate once on the 24 held-out images.
+4. `ml/evaluation.py` → `evaluation_report.json` + confusion matrices + per-class table,
+   auto-written as Markdown too.
+   Include baseline sanity: majority-class and random baselines so the report is honest.
+5. `ml/outlier_detection.py`: fit on training features — e.g. `IsolationForest` +
+   Mahalanobis/`NearestNeighbors` distance; export thresholds for the `uncertain` gate.
+6. `notebooks/04_model_comparison.ipynb`: the human-readable comparison narrative.
+7. `scripts/export_artifacts.py` → `backend/app/artifacts/production/`:
+   `model.joblib`, `preprocessing.joblib`, `feature_schema.json`,
+   `segmentation_config.json`, `model_manifest.json` (model name, feature-set version,
+   CV + test metrics, training timestamp, dataset version/checksum, segmentation config
+   version, known failure cases), `evaluation_report.json`.
+8. `notebooks/05_error_analysis.ipynb`: list every misclassified test image with its masks;
+   this feeds `docs/MODEL_CARD.md` in P6.
+
+**Deliverables:** feature extractor, feature matrix, trained+compared models, evaluation
+report, production artifacts, model-comparison notebook.
+
+**Definition of done**
+- The three models are compared on the *same* frozen features and split; the winner is
+  justified only by macro F1 (CV mean, then confirmed on held-out test).
+- `feature_schema.json` order == the array order produced by the extractor for a fresh image
+  (asserted by a unit test).
+- A clean Python process can `joblib.load()` the artifacts and predict a hand-crafted
+  feature row without importing training code — PRD §25 Phase 3 DoD.
+- No augmentation; no scaling fitted outside folds; no resolution leakage.
+- Report states explicitly that scores are optimistic/inflated by dataset size and
+  visual similarity — not real-world accuracy.
+
+**Risks**
+- 96 training samples with ~60–120 features → overfitting. Mitigate: feature-count budget,
+  variance/correlation pruning (`VarianceThreshold`, drop |r|>0.95 pairs), simple models,
+  and reporting CV variance, not just the best number.
+- Perfect/near-perfect accuracy is a red flag, not a success → investigate leakage before
+  celebrating; document the investigation.
+
+---
+
+### Phase 4 — FastAPI inference service
+
+**Goal:** a typed, tested API that never retrains and never leaks files.
+
+**Tasks**
+1. `core/config.py` (Pydantic Settings) reading env + YAML; `core/exceptions.py` mapping
+   domain errors → HTTP codes; `core/logging.py` structured request logs with `prediction_id`.
+2. `services/upload_validation.py`: extension allowlist (jpg/jpeg/png/webp), real-format
+   sniffing via Pillow (`verify()`), size limit from env, dimension checks, EXIF handling.
+3. `services/preprocessing_service.py` → orchestrates vision modules; returns a typed
+   `PipelineResult` (leaf mask, lesion mask, features, quality flags, warnings, artifacts).
+4. `services/inference_service.py`: load artifacts **once** at startup (lifespan);
+   validate schema version; produce probabilities; apply the `uncertain` rules from PRD §11.
+5. `vision/severity.py`: thresholds from `configs/severity.yaml` (<10 Mild, 10–<25 Moderate,
+   ≥25 Severe), boundary-safe, always attaches the disclaimer string.
+6. `db/` + `services/history_service.py`: SQLite in `RUNTIME_DIR`, table schema,
+   expiry sweep, startup wipe, graceful-shutdown cleanup, `DELETE /api/v1/history`
+   removing rows **and** artifact files.
+7. `services/image_artifact_service.py`: serve `original`, `leaf-mask`, `lesion-mask`
+   per prediction id; 404 on unknown/expired; no path traversal (ids must be validated UUIDs).
+8. Routes: `health`, `model-info`, `predict`, `history` (GET/DELETE), artifact GETs.
+   Response models exactly per PRD §15; add `warnings[]`, `reason_code`, `recommended_action`.
+9. CORS for `http://localhost:5173` from env; request size/time limits; 413/415/422/500 mapping.
+10. Tests (`backend/tests/`): valid upload, bad extension, corrupt bytes, oversize, model
+    not loaded, predicted, uncertain, rejected, history get/delete/expiry, artifact 404,
+    UUID validation, no-temp-file-left-behind.
+
+**Deliverables:** full API with OpenAPI docs, temp storage + history, API test suite, `docs/API.md`.
+
+**Definition of done**
+- `POST /api/v1/predict` with a dataset image returns a schema-valid `predicted` response
+  with artifacts that actually render.
+- A healthy-leaf photo returns `uncertain` (never "healthy").
+- A text screenshot returns `rejected` with `NO_CLEAR_LEAF_FOUND`.
+- Restarting the backend clears history; `DELETE /api/v1/history` removes rows + files.
+- Response time on CPU is acceptable (target < 3 s/image at 512 px) and measured in the log.
+- Tests green: `pytest -q`.
+
+---
+
+### Phase 5 — React dashboard
+
+**Goal:** the academic dashboard from PRD §6, with every required disclaimer visible.
+
+**Tasks**
+1. Design tokens in Tailwind: navy/charcoal nav, white/light-grey canvas, teal accent,
+   amber warning, red failure/severe. Typography scale, card, table, badge primitives.
+2. `DashboardLayout` + `Header` (product + `Model: Classical ML` + health badge) +
+   `Navigation` (Analyze / History / About) + `Footer` (disclaimer).
+3. `ImageUploader`: drag-and-drop + file picker, client-side type/size pre-check,
+   keyboard accessible, visible pre-upload guidance list (PRD §7).
+4. `ImagePreview` with aspect-ratio-preserving `<img>` (`object-contain`), file meta.
+5. `AnalysisProgress`: staged indicator (uploading → validating → segmenting → extracting →
+   classifying) — optimistic labels, honest about unknown timing.
+6. `PredictionResultCard`: disease, confidence %, severity badge, lesion-area %, model version,
+   timestamp, and the severity disclaimer on **every** render.
+7. `QualityWarningCard` / `UncertainResultCard` / `RejectedResultCard` / `ErrorState`
+   with distinct visual language (amber vs grey vs red) — never styled like a prediction.
+8. `SegmentationPreviewPanel`: leaf-mask and lesion-mask thumbnails (click to enlarge),
+   with a caption explaining these are diagnostic artifacts.
+9. `HistoryPage`: table (thumbnail, time, disease, confidence, severity, status),
+   clear-history confirm dialog, expiry notice, empty state, backend-waking state.
+10. `AboutModelPage`: supported diseases, dataset size/classes/limitations, workflow
+    diagram (SVG/HTML), model version + selected classifier + metrics from `/model-info`,
+    severity disclaimer, healthy-leaf caveat.
+11. `services/api.ts` typed client: `VITE_API_BASE_URL`, timeouts, abort on unmount,
+    friendly mapping for 413/415/5xx/network, cold-start retry message
+    ("Starting analysis service…").
+12. Tests (Vitest + Testing Library): file selection, preview, loading, predicted/uncertain/
+    error cards, history render, disclaimer visibility, oversize rejection.
+
+**Deliverables:** complete dashboard UI + typed API client + component tests.
+
+**Definition of done**
+- A user completes upload → result without reading docs; errors are human-readable.
+- Every required disclaimer (PRD §3, §7, §12, §28) is visible in the UI.
+- Statuses are visually distinguishable without relying on colour alone (icon + label).
+- Layout usable at 1280 px and degrades sanely at 768 px (mobile optimisation not required).
+- `npm run build` clean; `npm test` green.
+
+---
+
+### Phase 6 — Integration, QA, model card
+
+**Goal:** prove it is stable, honest and reproducible.
+
+**Tasks**
+1. `tests/end_to_end/` (Playwright or pytest+requests): launch BE (test instance) and FE,
+   upload a fixture image, assert result card + history row + clear history.
+2. Manual test matrix (PRD §20) recorded in `docs/QA_REPORT.md`: horizontal, portrait,
+   square, one leaf, several leaves, blurry, dark, glare, healthy leaf, non-leaf,
+   corrupt file, oversize file, WEBP/PNG inputs — each with observed outcome.
+3. Smartphone-photo trials (5–10 real photos): record behaviour and failure modes honestly.
+4. Error analysis (`notebooks/05`): every test-set error with masks; summarise systematic
+   weaknesses (e.g. smut vs brown spot confusion, close-up failures).
+5. `docs/MODEL_CARD.md`: intended use, out-of-scope use, dataset, features, chosen model +
+   why, CV/test metrics with confidence, per-class performance, known failure cases,
+   ethical/agronomic caveats, version identifiers.
+6. Performance pass: measure CPU latency per stage; make canvas size/kernel settings config-tunable.
+7. Freeze `PROJECT_STATUS.md` and `docs/DECISIONS.md` for the current version.
+
+**Deliverables:** E2E suite, QA report, model card, error analysis, perf numbers.
+
+**Definition of done**
+- E2E test green from a clean checkout + documented setup.
+- QA matrix has no unexplained crash.
+- Model card contains the exact metrics from `evaluation_report.json` (no hand-waving).
+- A reviewer can reproduce the numbers by running two documented commands.
+
+---
+
+### Phase 7 — Deployment (Vercel + Render)
+
+**Goal:** public, honest, cold-start-aware deployment.
+
+**Tasks**
+1. Backend container/start command for Render: build with pinned requirements, download/
+   include artifacts in the image, `uvicorn` with correct port binding.
+2. `RUNTIME_DIR` under Render's temp filesystem; startup wipe; expiry; document non-persistence.
+3. Frontend Vercel project: `VITE_API_BASE_URL` env, SPA rewrite config, build output `dist`.
+4. Production CORS allowlist (exact Vercel origin, no `*` with credentials).
+5. Cold-start UX: health polling with "Starting analysis service…" for up to ~60 s,
+   then a clear retry message.
+6. Smoke test script: health → model-info → predict with a bundled demo image → history →
+   delete history; record results in `docs/DEPLOYMENT.md`.
+7. Confirm bundles/cold start are acceptable on the free tier (model < a few MB).
+
+**Deliverables:** live frontend + backend, deployment docs, smoke-test evidence.
+
+**Definition of done**
+- Public URL performs a full analysis on a cold service.
+- `/health` reports `model_loaded: true`; `runtime_storage: "temporary"`.
+- Docs state plainly: history disappears on restart/sleep; no permanent storage.
+- No secrets in the repo; `.env.example` lists every variable.
+
+---
+
+### Phase 8 — Documentation, handoff and viva readiness
+
+**Goal:** the repository explains itself (PRD §24) and the demo is rehearsable.
+
+**Tasks**
+1. `README.md`: what it is, one-command setup, screenshots, architecture diagram,
+   limitations, disclaimers, licence/provenance note.
+2. `PROJECT_STATUS.md` in the exact required format, updated at every session end.
+3. `docs/AGENT_HANDOFF.md`: current phase, exact next task, commands to run, known blockers,
+   files that must not be changed.
+4. `docs/DECISIONS.md`: every locked decision with rationale (including the ones this plan
+   adds: full-frame fallback, tiny-image thresholds, near-dup method, feature budget).
+5. Demo pack: 4–6 curated images (one per outcome: predicted/severe, moderate, uncertain,
+   rejected/multi-leaf), 3-slide narrative, and the exact workflow diagram from PRD §2.
+6. Reproducibility check from a clean clone in a fresh venv: install → test → train →
+   serve → build. Record total runtime.
+7. Final read-through against PRD §26 success criteria (checklist in §12 below).
+
+**Deliverables:** complete documentation set, demo pack, reproducibility evidence.
+
+**Definition of done**
+- A new agent/human can continue work using only repo documents.
+- Every PRD §26 criterion has an evidence pointer (test name, file, screenshot, metric).
+
+---
+
+## 6. Suggested starting configuration (calibrate in P2/P3, then freeze)
+
+> Values are **starting points for calibration**, not validated constants. They must end up
+> in YAML with a version string.
+
+```yaml
+# configs/segmentation.yaml
+canvas_long_side: 512          # letterbox, never stretch
+kmeans:
+  seed: 42
+  k_leaf: 4
+  k_lesion: 3
+  sample_max_pixels: 20000
+leaf:
+  hsv_ranges:                  # green / yellow-green / brown leaf tissue
+    green:  {h: [25, 95],  s: [35, 255], v: [25, 255]}
+    yellow: {h: [15, 35],  s: [40, 255], v: [40, 255]}
+    brown:  {h: [5, 22],   s: [30, 255], v: [20, 200]}
+  morph_open: 5
+  morph_close: 7
+  min_component_ratio: 0.01     # of image area
+  full_frame_fallback_green_ratio: 0.65
+  border_touch_penalty: 0.15
+  multi_leaf_min_area_ratio: 0.15
+lesion:
+  border_exclusion_px: 6        # scaled to canvas
+  min_lesion_area_ratio: 0.0005 # of leaf area (scaled, not fixed px)
+  morph_open: 3
+  morph_close: 5
+  relative_hue_delta: 12        # degrees from leaf median hue
+  lab_ab_delta: 8
+```
+
+```yaml
+# configs/quality_thresholds.yaml
+min_short_side_reject: 64
+min_short_side_warn: 224
+max_upload_mb: 10
+brightness:
+  warn_mean_v_low: 55
+  warn_mean_v_high: 215
+  overexposed_pixel_ratio: 0.08
+blur:
+  warn_laplacian_var: 60        # computed on the resized canvas
+segmentation:
+  leaf_area_min_ratio: 0.03
+  lesion_mask_sanity_min_ratio: 0.0
+```
+
+```yaml
+# configs/severity.yaml
+mild_max: 10        # < 10 %
+moderate_max: 25    # 10 – < 25 %
+severe_min: 25      # >= 25 %
+disclaimer: "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade."
+```
+
+Uncertainty gate (calibrated in P3, not hand-picked):
+
+```text
+uncertain  if  max_probability < calibrated_threshold      (e.g. tuned on CV out-of-fold probs)
+        or  any soft quality warning is active
+        or  feature vector flagged as outlier (IsolationForest / kNN distance)
+        or  leaf-segmentation confidence score < threshold
+        or  multiple leaf candidates are ambiguous
+```
+
+---
+
+## 7. Cross-cutting engineering rules (do not violate)
+
+1. **One extractor.** Training and inference call the same `feature_extraction` code path.
+2. **Version everything.** `feature_set_version`, `segmentation_config_version`,
+   `dataset_version` (checksum), `model_version` — all surfaced in `model_manifest.json`
+   and `/model-info`.
+3. **No silent fallbacks.** If a stage fails, return a typed reason code; never substitute
+   zeros for features.
+4. **No training in requests.** Startup load only.
+5. **No permanent storage.** Temp dir + SQLite, wiped on start, expiry sweep, shutdown cleanup.
+6. **No stretching, no blind centre crop.** Resize → crop-to-leaf-bbox-with-margin → resize
+   preserving aspect → letterbox.
+7. **Determinism.** Fixed seeds for splits, K-Means, RF; tests assert reproducibility.
+8. **Honesty over scores.** Every report includes baselines, CV variance, dataset size, and
+   a plain statement that this is not field-validated.
+9. **Disclaimer parity.** The exact texts from PRD §3, §7, §11, §12 appear in both API and UI.
+10. **Config over constants.** Any numeric threshold lives in YAML/env, not in a route handler.
+
+---
+
+## 8. Test strategy matrix
+
+| Layer | Tool | Must cover |
+|---|---|---|
+| Vision unit | pytest + numpy fixtures | EXIF rotate, aspect-preserving resize, letterbox, denoise, HSV/Lab conversion, leaf choose, multi-leaf warning, no-leaf reject, lesion mask, lesion-area math, feature order/shape |
+| ML unit | pytest | split integrity (no overlap), scaler inside fold, schema version match, determinism with seed, artifact round-trip |
+| API | pytest + httpx/TestClient | valid upload, bad ext, corrupt, oversize, no model, predicted, uncertain, rejected, history get/delete/expiry, artifact 404, UUID traversal attempt |
+| Frontend | Vitest + RTL | file select, preview, loading, three result cards, error, history, disclaimer visible, oversize pre-check |
+| E2E | Playwright | upload → result → history → clear, cold-start message |
+| Manual | documented matrix | orientation/aspect cases, multi-leaf, blur, dark, glare, healthy, non-leaf, WEBP/PNG, phone photos |
+
+Coverage target: vision + ml + api ≥ 80% line coverage on modules with logic;
+UI critical flows covered by tests rather than a percentage target.
+
+---
+
+## 9. Risk register
+
+| # | Risk | Impact | Mitigation |
+|---|---|---|---|
+| R1 | Lesion segmentation unreliable on close-ups / shadows | Wrong lesion area → wrong severity | Leaf-border exclusion band, relative thresholds, visual review of all 120, fallback to "lesion estimate unreliable" warning |
+| R2 | Tiny dataset → unstable CV, misleadingly high accuracy | Academic credibility | Report CV mean ± std, per-class F1, baselines, confusion matrix, explicit caveat; no augmentation in headline numbers |
+| R3 | Resolution leakage (BLB all 3081×897) | Fake accuracy | Exclude raw dimensions from features; use normalized ratios only |
+| R4 | Near-duplicate leakage across train/test | Invalid results | Strong near-dup review (dHash16 + hist + SSIM) before splitting |
+| R5 | 13 full-frame images rejected by leaf detector | Data loss / demo failure | Full-frame fallback at ≥65% leaf-green ratio |
+| R6 | 9 tiny images rejected by size gate | Data loss | Reject <64 px, warn <224 px |
+| R7 | Feature schema drift between train/serve | Silent wrong predictions | Schema JSON + version check at startup + unit test |
+| R8 | Render cold start / temp FS loss | Confusing UX | Health polling + "Starting analysis service…"; docs state non-persistence |
+| R9 | Windows/OpenCV wheel issues | Setup friction | Pin versions, document venv steps, provide `requirements-dev.txt` |
+| R10 | Scope creep (MobileNetV2, healthy class, auth, mobile) | Missed deadline | Locked in `docs/DECISIONS.md`; defer to "Future work" |
+| R11 | Over-tuned HSV ranges that only work on this dataset | Misleading demo | Document limitation in model card; expose config; test on 5–10 real photos |
+
+---
+
+## 10. What "completed" looks like (PRD §26 mapped to evidence)
+
+| Success criterion | Evidence artefact |
+|---|---|
+| Only the approved 120-image 3-class dataset | `dataset_manifest.csv`, `data/splits/*.json` |
+| Required classical workflow followed | `docs/ARCHITECTURE.md` + `vision/*` + demo of stage outputs |
+| SVM/RF/KNN compared | `evaluation_report.json`, `04_model_comparison.ipynb` |
+| Best model selected by evaluation, not assumption | `model_manifest.json` (selection rationale + macro F1) |
+| Aspect ratio preserved | unit tests + before/after mask overlays |
+| Portrait/landscape/square/multi-leaf/poor/invalid handled | `QA_REPORT.md` matrix + API tests |
+| Prediction vs uncertainty vs rejection distinguished | API schema + three UI cards + tests |
+| Temporary history | SQLite repo + history API + UI + expiry tests |
+| Healthy-leaf warning | Upload notice (UI) + `uncertain` path + model card |
+| Severity labelled experimental | Every severity render + `severity.yaml` disclaimer |
+| Runs locally on CPU | README + measured latency log |
+| Deployable to Vercel + Render | live URLs + `docs/DEPLOYMENT.md` smoke test |
+| Next agent can continue from repo docs | `PROJECT_STATUS.md`, `AGENT_HANDOFF.md`, `DECISIONS.md` |
+
+---
+
+## 11. Indicative 12-week schedule (part-time, mentor-project rhythm)
+
+| Week | Work | Milestone |
+|---|---|---|
+| 1 | P0 foundation | FE shell + `/health` + docs |
+| 2 | P1 audit + splits | Frozen `test.json` / `cv_folds.json` |
+| 3–4 | P2 preprocessing + leaf segmentation | Leaf masks on all 120 reviewed |
+| 5 | P2 lesion segmentation + QA gate | Lesion masks + fallback working |
+| 6–7 | P3 features + 3-model comparison | Winner chosen, artifacts exported |
+| 8–9 | P4 FastAPI + history + API tests | End-to-end API result |
+| 9–10 | P5 dashboard | Full UX complete |
+| 11 | P6 integration/QA/model card | E2E green, model card written |
+| 12 | P7 deploy + P8 demo pack | Public demo + viva-ready docs |
+
+If time is short, the non-negotiable core is **P0 → P1 → P2 → P3 → P4 → P5**;
+P7 deployment can be replaced by a fully local demo without invalidating the grade
+(but PRD §26 expects deployability, so at least keep configs + docs ready).
+
+---
+
+## 12. Immediate next actions (first 5 concrete steps)
+
+1. Create `.gitignore` and `data/` layout; move the dataset to `data/raw/rice_leaf_diseases/`
+   (leave originals byte-identical).
+2. Copy `PRD.txt` → `docs/PRD.md`; write `docs/DECISIONS.md`, `docs/ARCHITECTURE.md`,
+   `docs/AGENT_HANDOFF.md`, `PROJECT_STATUS.md`, `README.md`.
+3. Scaffold FastAPI with typed settings + `/api/v1/health` (`model_loaded: false`) and
+   scaffold Vite+React+TS+Tailwind with the three routed pages.
+4. Write `scripts/audit_dataset.py` and produce `dataset_manifest.csv`; confirm 40/40/40
+   and log the 9 tiny + 13 close-up images.
+5. Implement `scripts/make_splits.py` (seed 42), freeze the 24-image test set and 5-fold CV,
+   then stop and commit Phase 1.
+
+---
+
+## 13. Explicit non-goals (repeat them in the viva)
+
+Healthy-leaf classification · other diseases · plant-level diagnosis · multi-leaf reports ·
+treatment/pesticide advice · accounts/login · permanent image storage · mobile app ·
+MobileNetV2 as the production model · any claim of expert-grade agronomic diagnosis.
