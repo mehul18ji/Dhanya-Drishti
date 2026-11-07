@@ -1,7 +1,8 @@
 # DhanyaDrishti — Architecture
 
 > System diagram and component boundaries for Version 1. Reflects the Phase 0 foundation
-> and the planned structure from `PRD.txt` §13, §14 and §17.
+> plus the Phases 1–4 implementation so far, and the planned structure from
+> `PRD.txt` §13, §14 and §17.
 
 ---
 
@@ -43,7 +44,7 @@ Disease segmentation service   vision/lesion_segmentation.py
     ↓
 Feature extraction service     vision/feature_extraction.py
     ↓
-Model inference service        services/inference_service.py → ml/inference.py
+Model inference service        services/inference_service.py → artifacts/production/*
     ↓
 Severity service               vision/severity.py
     ↓
@@ -59,15 +60,17 @@ Implementation status:
 | Config / logging / errors | `app/core/*` | 0 | Done |
 | Health API | `app/api/routes_health.py` | 0 | Done |
 | Dataset audit + frozen splits | `scripts/*`, `data/splits/*` | 1 | Done |
-| Predict / history / model-info routes | `app/api/*` | 4 | Not started |
-| Upload validation | `app/services/upload_validation.py` | 4 | Not started |
+| Health + model-info routes | `app/api/routes_health.py`, `routes_model_info.py` | 4 | Done (M2) |
+| Predict / history routes | `app/api/*` | 4 | Not started |
+| Upload validation | `app/services/upload_validation.py` | 4 | Done (M3) |
+| Upload-to-features orchestration | `app/services/preprocessing_service.py` | 4 | Done (M4) |
 | Preprocessing + quality | `app/vision/preprocessing.py`, `quality.py` | 2 | Done |
 | Leaf + lesion segmentation | `app/vision/leaf_segmentation.py`, `lesion_segmentation.py` | 2 | Done |
 | Pipeline composition + diagnostics | `app/vision/pipeline.py`, `diagnostics.py` | 2 | Done |
 | Segmentation audit | `scripts/run_segmentation_audit.py`, `docs/segmentation_audit/` | 2 | Done |
-| Feature extraction | `app/vision/feature_extraction.py` | 3 | Not started |
-| Training / evaluation / artifacts | `app/ml/*`, `scripts/*` | 3 | Not started |
-| Inference + artifacts | `app/ml/inference.py`, `model_loader.py` | 3-4 | Not started |
+| Feature extraction | `app/vision/feature_extraction.py` | 3 | Done |
+| Training / evaluation / artifacts | `app/ml/*`, `scripts/*` | 3 | Done |
+| Inference + artifacts | `app/services/inference_service.py`, `app/artifacts/production/` | 3-4 | Done |
 | Severity | `app/vision/severity.py` | 4 | Not started |
 | SQLite history | `app/db/*`, `app/services/history_service.py` | 4 | Not started |
 | Dashboard | `frontend/src/*` | 0 / 5 | Shell only |
@@ -105,10 +108,10 @@ data/raw/rice_leaf_diseases/        (git-ignored originals, never edited)
         │
         ├── scripts/audit_dataset.py      → data/processed/dataset_manifest.csv
         ├── scripts/make_splits.py        → data/splits/{test,cv_folds,split_manifest}.json
-        ├── scripts/build_feature_matrix.py → data/processed/features_v1.*
-        └── scripts/train_model.py        → backend/app/artifacts/production/*
-                                             model.joblib
-                                             preprocessing.joblib
+        ├── scripts/build_feature_matrix.py → data/processed/features/feature_set_v1.0.0/*
+        └── scripts/export_artifacts.py    → backend/app/artifacts/production/*
+                                             model_pipeline.joblib
+                                             preprocessing.json
                                              feature_schema.json
                                              segmentation_config.json
                                              model_manifest.json

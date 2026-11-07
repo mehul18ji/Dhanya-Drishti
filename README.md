@@ -19,7 +19,7 @@ Upload one photograph of a diseased rice leaf and receive:
 
 ## Status
 
-**Current phase: Phase 2 — Classical CV pipeline (complete).**
+**Current phase: Phase 4 — FastAPI inference service (in progress). Phase 3 is complete; Phase 4 milestones M1–M4 are complete.**
 
 | Area | State |
 |---|---|
@@ -28,8 +28,9 @@ Upload one photograph of a diseased rice leaf and receive:
 | Backend health API + typed config | Done |
 | Dataset audit and reproducible splits | Done (Phase 1) |
 | Classical CV pipeline (preprocessing, quality, leaf + lesion segmentation, audit) | Done (Phase 2) |
-| Features + SVM/RF/KNN comparison | Not started (Phase 3) |
-| Prediction API + temporary history | Not started (Phase 4) |
+| Features + SVM/RF/KNN comparison, production model bundle | Done (Phase 3) |
+| Inference service, lifespan load, `/health`, `/model-info`, upload validation, preprocessing orchestration | Done (Phase 4 M1–M4) |
+| `POST /predict`, severity, temporary history, artifact serving | Not started (Phase 4 M5+) |
 | Upload / result / history UI | Not started (Phase 5) |
 | QA, model card, deployment | Not started (Phases 6-7) |
 

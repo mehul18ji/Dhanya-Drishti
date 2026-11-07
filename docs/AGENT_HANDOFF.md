@@ -92,9 +92,11 @@ Environment:
 - Root `.env` (copy of `.env.example`) → backend settings.
 - `frontend/.env` (copy of `frontend/.env.example`) → `VITE_API_BASE_URL`.
 
-## 5. Current state (Phase 2 complete)
+## 5. Current state (Phase 3 complete; Phase 4 M1–M4 complete)
 
-- Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint.
+- Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint,
+  `GET /api/v1/model-info`, upload validation, the artifact-backed inference service and the
+  upload-to-features preprocessing orchestration.
 - Frontend: dashboard shell (header/nav/footer), three routed pages, health badge, API client stub.
 - Data: raw dataset in `data/raw/rice_leaf_diseases/` (40/40/40), git-ignored.
 - Audit: manifest + summary generated; dataset version `ds-cc74ed659044`.
@@ -102,13 +104,25 @@ Environment:
 - Splits: frozen v1 — 24-image singleton-only test (8/class) + group-aware stratified
   5-fold CV over 96 images; seed 42; reproducible via `scripts/make_splits.py --verify`.
 - Vision pipeline (`backend/app/vision/`): config (`seg-v2`, `quality-v1`), preprocessing,
-  quality, leaf segmentation, lesion segmentation, `pipeline.py` orchestration and
+  quality, leaf segmentation, lesion segmentation, `pipeline.py` orchestration,
+  `feature_extraction.py` (feature set `1.0.0`, 50 ordered features) and
   `diagnostics.py` panels. All thresholds live in `backend/configs/*.yaml`.
 - Phase 2 audit: 120/120 plausible leaf masks (dev 96/96, held-out test 24/24),
   0 rejected, 33 uncertain, 8 full-frame fallbacks, 130.6 ms mean per image on CPU.
   Evidence: `docs/SEGMENTATION_NOTES.md`, `docs/segmentation_audit/` (12 curated panels).
-- Tests: 70 backend (`backend/`) + 6 split invariants (root `tests/`).
-- No feature extractor, model, prediction API or dashboard wiring exists yet — Phase 3 onward.
+- Phase 3: split-aware 120-row feature matrix (`scripts/build_feature_matrix.py`), local CPU
+  SVM/RF/KNN comparison with fold-local imputation (`backend/app/ml/training.py`), the
+  evaluation report with honest baselines (`backend/app/ml/evaluation.py`) and the committed
+  production bundle (`backend/app/artifacts/production/`, `scripts/export_artifacts.py`,
+  model `svm-v1.0.0`). Selection used development CV only; the held-out test was scored once
+  (macro F1 0.7855 vs CV 0.8412).
+- Phase 4 so far: M1 inference service (hash/schema/config-verified bundle, decision-margin
+  scores that are never described as probabilities), M2 lifespan wiring + truthful `/health`
+  + `model-info`, M3 upload validation, M4 `services/preprocessing_service.py` (validated upload
+  -> decode -> segmentation -> 50-feature vector, with `predicted` / `uncertain` / `rejected`
+  mapping, a model-first 503 gate and schema/config provenance refusal). `/predict`, severity,
+  temporary history, artifact serving and the dashboard wiring do not exist yet.
+- Tests: 152 backend (`backend/`) + 6 split invariants (root `tests/`).
 
 ## 6. Rules that prevent damage
 

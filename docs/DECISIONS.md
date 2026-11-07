@@ -73,6 +73,13 @@
 |---|---|---|
 | P-13 | **Locked missing-value rule.** Raw feature matrices preserve `NaN` values for unreliable lesion/spatial features. During later classifier training, missing-value imputation and missingness indicators must be fitted only on each training fold inside the scikit-learn pipeline. Uncertain lesion values must never be replaced with `0.0`, and images must not be silently dropped. | `backend/app/vision/feature_extraction.py` writes `NaN` + `missing_features` for an uncalibrated lesion; `backend/tests/test_feature_extraction.py` pins "uncertain is missing, not 0.0" against "a measured 0 % stays 0 %". Related: P-11. |
 
+## 4c. Decisions resolved in Phase 4 (so far)
+
+| ID | Decision | Evidence |
+|---|---|---|
+| P-14 | The API exposes exactly three statuses — `predicted`, `uncertain`, `rejected` — and **no** `healthy`. `services/preprocessing_service.py` maps a pipeline rejection to `rejected`, any warning/missing feature/uncalibrated lesion to `uncertain`, and only a complete warning-free vector to `predicted`; `lesion_area_percentage` is forced to `None` when `lesion_reliable` is false. | `backend/tests/test_preprocessing_service.py` pins the mapping, the absence of a healthy state and the `NaN`-not-`0 %` lesion rule. Related: P-11, P-13. |
+| P-15 | The winning RBF SVM is served uncalibrated: scores are `decision_function` margins, never percentages. Candidates were `SVC(probability=True)` (deprecated in scikit-learn 1.9, removal 1.11) or a margin-based score; the bundle records `calibrated_probabilities: false` and `/model-info` repeats `score_kind: "decision_margin"` with a plain-language note. | `backend/app/services/inference_service.py`, `backend/app/artifacts/production/model_manifest.json`, `backend/tests/test_inference_service.py`. |
+
 ## 5. Open questions for later phases
 
 | ID | Open question | Planned resolution |
@@ -81,6 +88,8 @@
 | P-05 | Uncertainty probability threshold | Tune on out-of-fold CV probabilities in Phase 3 |
 | P-06 | Selected classifier | Whichever wins by macro F1 in Phase 3 |
 | P-08 | History expiry default (start 60 min) | Confirm with mentor; keep configurable |
+
+Resolved since (2026-11-08): **P-04** — feature budget frozen at the 50-feature schema `1.0.0` (no pruning was justified on 120 rows; see `backend/app/vision/feature_extraction.py`). **P-06** — the RBF SVM won development-only macro F1 (0.8412 ± 0.0604, held-out 0.7855 scored once). **P-05** remains open: no calibrated probability source exists, so the `uncertain`-on-score policy is a Phase 4 decision (see P-15).
 
 ## 6. Change procedure
 

@@ -23,10 +23,12 @@
 > - All numbers in §6 are *starting points for calibration*, not validated constants.
 > - Section 12 lists the first five concrete actions to take from a clean state.
 
-**Execution status (updated 2026-11-07):** Phase 0, Phase 1 and Phase 2 are complete.
-Phase 3 is next. The seven Phase 2 milestones defined in §5 (Phase 2 → "Phase 2 milestones")
-are kept as the audit trail of how the phase was closed; `PROJECT_STATUS.md` names the next
-exact task and does not redefine them.
+**Execution status (updated 2026-11-08):** Phase 0, Phase 1, Phase 2 and Phase 3 are complete.
+Phase 4 (FastAPI inference service) is in progress: milestones M1–M4 — inference service, lifespan
++ `/health` + `/model-info`, upload validation, preprocessing orchestration — are complete, and the
+next exact task is recorded in `PROJECT_STATUS.md`. The seven Phase 2 milestones defined in §5
+(Phase 2 → "Phase 2 milestones") are kept as the audit trail of how that phase was closed;
+`PROJECT_STATUS.md` names the next exact task and does not redefine them.
 
 ### Context summary (what this project is, in one paragraph)
 
@@ -216,7 +218,7 @@ Offline (never at request time):
 ```text
 scripts/audit_dataset.py → data/splits/*.json
 notebooks/01..05         → parameter discovery (throwaway)
-scripts/train_model.py    → artifacts/production/{model.joblib, preprocessing.joblib,
+scripts/export_artifacts.py → backend/app/artifacts/production/{model_pipeline.joblib, preprocessing.json,
                             feature_schema.json, segmentation_config.json,
                             model_manifest.json, evaluation_report.json}
 ```
@@ -472,11 +474,14 @@ is in the repository and the tests pass — never merely because a module file e
      coordinates normalized by leaf bbox), quadrant distribution, border-distance stats.
    - Output: `np.ndarray` float32 in the exact schema order + `feature_schema.json`
      (`version: "1.0.0"`, names, order, extractor version, config hashes).
-2. `scripts/build_feature_matrix.py` → cached `data/processed/features_v1.csv` (+ `.npy`)
+2. `scripts/build_feature_matrix.py` → versioned, git-ignored
+   `data/processed/features/feature_set_v1.0.0/` (matrix CSV + report JSON + summary MD)
    for all 120 images, with per-image failures recorded (never silently filled).
 3. `ml/training.py`:
-   - Pipelines: `StandardScaler+SVM(RBF, probability=True)`, `RandomForest`,
-     `StandardScaler+KNN`; small `GridSearchCV` **inside** each CV fold (no leakage).
+   - Pipelines: `StandardScaler+SVM(RBF)`, `RandomForest`, `StandardScaler+KNN`; small
+     `GridSearchCV` **inside** each CV fold (no leakage). Delivered without
+     `SVC(probability=True)` — deprecated in scikit-learn 1.9 — so scores are
+     decision-function margins, never probabilities (see decision P-14).
    - Stratified 5-fold CV on the 96; report mean ± std for accuracy, balanced accuracy,
      macro P/R/F1.
    - Select by **macro F1**; then evaluate once on the 24 held-out images.
