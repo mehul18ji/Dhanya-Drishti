@@ -56,6 +56,22 @@ class ModelNotLoadedError(AppError):
     message = "The prediction model is not available yet."
 
 
+class PredictionNotFoundError(AppError):
+    """Unknown or expired prediction id in the temporary runtime history."""
+
+    status_code = 404
+    reason_code = "PREDICTION_NOT_FOUND"
+    message = "No temporary prediction with that id exists in this runtime."
+
+
+class ArtifactNotFoundError(AppError):
+    """A prediction's artifact file is missing (expired, deleted or never written)."""
+
+    status_code = 404
+    reason_code = "ARTIFACT_NOT_FOUND"
+    message = "That artifact is not available for this prediction."
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """Register JSON handlers for ``AppError`` subclasses."""
 

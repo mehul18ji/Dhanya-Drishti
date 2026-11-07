@@ -35,7 +35,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from app.services.inference_service import (
     SCORE_KIND,
@@ -54,6 +54,9 @@ from app.services.preprocessing_service import (
 from app.services.upload_validation import UploadValidationResult
 from app.vision.config import QualityConfig, SegmentationConfig, SeverityConfig
 from app.vision.severity import SeverityResult, severity_for
+
+if TYPE_CHECKING:  # avoids a runtime import cycle with history_service
+    from app.services.history_service import HistoryService
 
 #: Statuses a composed prediction may carry (``rejected`` has no label).
 NO_LABEL_STATUSES: Final[tuple[str, ...]] = (STATUS_REJECTED,)
@@ -138,6 +141,7 @@ def predict_upload(
     quality_config: QualityConfig | None = None,
     severity_config: SeverityConfig | None = None,
     prediction_id: str | None = None,
+    history: "HistoryService | None" = None,
 ) -> PredictionResult:
     """Compose preprocessing, inference and severity for one validated upload.
 
@@ -179,7 +183,7 @@ def predict_upload(
         if severity.severity is None:
             status = STATUS_UNCERTAIN
 
-    return PredictionResult(
+    result = PredictionResult(
         prediction_id=prediction_id or str(uuid.uuid4()),
         status=status,
         disease=disease,
@@ -200,3 +204,11 @@ def predict_upload(
         stage_ms=outcome.stage_ms,
         outcome=outcome,
     )
+
+    if history is not None and result.has_label:
+        # Only a labelled result enters history; a rejected upload is never stored
+        # (API contract M8). Temporary storage only: the row and its artifacts are
+        # removed at startup, on expiry, on delete or on shutdown (PRD §16).
+        history.record(result)
+
+    return result

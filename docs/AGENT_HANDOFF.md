@@ -43,6 +43,7 @@ If `PROJECT_STATUS.md` and reality disagree, trust reality, then fix the status 
 | Product requirements | `PRD.txt`, `docs/PRD.md` |
 | Execution plan | `PHASE_PLAN.txt` |
 | Current state | `PROJECT_STATUS.md` |
+| API reference (endpoints, errors, storage) | `docs/API.md` |
 | Locked decisions | `docs/DECISIONS.md` |
 | System design | `docs/ARCHITECTURE.md` |
 | Dataset audit, duplicates, splits | `docs/DATASET_AUDIT.md`, `data/splits/` |
@@ -92,7 +93,7 @@ Environment:
 - Root `.env` (copy of `.env.example`) → backend settings.
 - `frontend/.env` (copy of `frontend/.env.example`) → `VITE_API_BASE_URL`.
 
-## 5. Current state (Phase 3 complete; Phase 4 M1–M6 complete)
+## 5. Current state (Phases 1–3 and Phase 4 complete; Phase 5 next)
 
 - Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint,
   `GET /api/v1/model-info`, upload validation, the artifact-backed inference service and the
@@ -126,9 +127,16 @@ Environment:
   verbatim, config version + SHA-256 on every result), M6 `services/prediction_service.py`
   (validated upload -> preprocessing -> inference -> severity in one `PredictionResult` with a
   `prediction_id`, decision-margin scores that are never confidence, rejected = no label/score/
-  severity, and no persistence). `/predict`, temporary history, artifact serving and the
-  dashboard wiring do not exist yet.
-- Tests: 188 backend (`backend/`) + 6 split invariants (root `tests/`).
+  severity, and no persistence), M7 `db/history_repository.py` + `services/image_artifact_service.py`
+  + `services/history_service.py` (UUID-keyed SQLite rows and temporary PNG artifacts under
+  `RUNTIME_DIR`, expiry sweep, startup wipe, shutdown cleanup, delete removes rows **and** files),
+  M8 `POST /api/v1/predict` (`api/routes_predict.py`, `schemas/prediction.py`: worker-thread
+  composition, JSON-safe predicted/uncertain body, 200 `rejected` body with no id, typed
+  413/415/422/503, logged timings) and M9 history/artifact routes + `DELETE /api/v1/history`
+  (`api/routes_history.py`, `schemas/history.py`, `docs/API.md`).
+- The backend API is feature-complete for V1. The dashboard (Phase 5) is the only thing that
+  still does not call it.
+- Tests: 217 backend (`backend/`) + 6 split invariants (root `tests/`).
 
 ## 6. Rules that prevent damage
 

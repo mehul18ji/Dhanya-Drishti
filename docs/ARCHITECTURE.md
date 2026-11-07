@@ -61,7 +61,8 @@ Implementation status:
 | Health API | `app/api/routes_health.py` | 0 | Done |
 | Dataset audit + frozen splits | `scripts/*`, `data/splits/*` | 1 | Done |
 | Health + model-info routes | `app/api/routes_health.py`, `routes_model_info.py` | 4 | Done (M2) |
-| Predict / history routes | `app/api/*` | 4 | Not started |
+| Predict route | `app/api/routes_predict.py`, `schemas/prediction.py` | 4 | Done (M8) |
+| History + artifact routes | `app/api/routes_history.py`, `schemas/history.py` | 4 | Done (M9) |
 | Upload validation | `app/services/upload_validation.py` | 4 | Done (M3) |
 | Upload-to-features orchestration | `app/services/preprocessing_service.py` | 4 | Done (M4) |
 | Preprocessing + quality | `app/vision/preprocessing.py`, `quality.py` | 2 | Done |
@@ -73,7 +74,7 @@ Implementation status:
 | Inference + artifacts | `app/services/inference_service.py`, `app/artifacts/production/` | 3-4 | Done |
 | Severity | `app/vision/severity.py`, `configs/severity.yaml` | 4 | Done (M5) |
 | Prediction composition | `app/services/prediction_service.py` | 4 | Done (M6) |
-| SQLite history | `app/db/*`, `app/services/history_service.py` | 4 | Not started |
+| Temporary history + artifacts | `app/db/*`, `app/services/history_service.py`, `app/services/image_artifact_service.py` | 4 | Done (M7/M9) |
 | Dashboard | `frontend/src/*` | 0 / 5 | Shell only |
 
 ## 3. Frontend structure (PRD §14)

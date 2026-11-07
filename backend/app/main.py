@@ -1,8 +1,10 @@
 """FastAPI application entry point.
 
-Phase 4 M2: the verified production bundle is loaded **once** during the application
-lifespan and reported truthfully by ``/api/v1/health`` and ``/api/v1/model-info``.
-No prediction route exists yet; nothing is trained, and no request loads artifacts.
+Phase 4: the verified production bundle is loaded **once** during the application
+lifespan, temporary runtime storage is wiped at startup, and the API exposes
+``/api/v1/health``, ``/api/v1/model-info``, ``/api/v1/predict``, ``/api/v1/history``
+and the temporary artifact routes. Nothing is trained at request time, no request
+loads a model from disk, and nothing is stored permanently.
 """
 
 from __future__ import annotations
@@ -16,11 +18,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
 from app.api.routes_health import router as health_router
+from app.api.routes_history import router as history_router
 from app.api.routes_model_info import router as model_info_router
+from app.api.routes_predict import router as predict_router
 from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
 from app.core.logging import setup_logging
-from app.services import inference_service
+from app.services import history_service, inference_service
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +45,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.inference = None
     app.state.model_loaded = False
     app.state.model_version = None
+
+    # PRD §16: temporary prediction history never survives a restart. Wiping here
+    # also removes anything a killed previous process left behind.
+    history = history_service.get_history_service()
+    history.start_fresh()
+    history.sweep_expired()
+    app.state.history = history
 
     try:
         service = inference_service.get_inference_service()
@@ -70,6 +81,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     app.state.inference = None
     app.state.model_loaded = False
+    # Remove temporary rows + artifact files on graceful shutdown where possible.
+    try:
+        history.close()
+    except OSError as exc:  # pragma: no cover - filesystem race on shutdown
+        logger.warning("runtime storage cleanup failed: %s", exc)
     logger.info("%s shutting down", settings.app_name)
 
 
@@ -104,6 +120,8 @@ def create_app() -> FastAPI:
 
     app.include_router(health_router, prefix=settings.api_v1_prefix)
     app.include_router(model_info_router, prefix=settings.api_v1_prefix)
+    app.include_router(predict_router, prefix=settings.api_v1_prefix)
+    app.include_router(history_router, prefix=settings.api_v1_prefix)
 
     @app.get("/", include_in_schema=False)
     async def root() -> dict[str, str]:
@@ -113,6 +131,8 @@ def create_app() -> FastAPI:
             "docs": "/docs",
             "health": f"{settings.api_v1_prefix}/health",
             "model_info": f"{settings.api_v1_prefix}/model-info",
+            "predict": f"{settings.api_v1_prefix}/predict",
+            "history": f"{settings.api_v1_prefix}/history",
         }
 
     return app

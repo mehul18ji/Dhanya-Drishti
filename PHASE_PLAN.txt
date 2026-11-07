@@ -23,11 +23,12 @@
 > - All numbers in §6 are *starting points for calibration*, not validated constants.
 > - Section 12 lists the first five concrete actions to take from a clean state.
 
-**Execution status (updated 2026-11-08):** Phase 0, Phase 1, Phase 2 and Phase 3 are complete.
-Phase 4 (FastAPI inference service) is in progress: milestones M1–M4 — inference service, lifespan
-+ `/health` + `/model-info`, upload validation, preprocessing orchestration — are complete, and the
-next exact task is recorded in `PROJECT_STATUS.md`. The seven Phase 2 milestones defined in §5
-(Phase 2 → "Phase 2 milestones") are kept as the audit trail of how that phase was closed;
+**Execution status (updated 2026-11-08):** Phases 0–3 and **Phase 4 are complete** (milestones
+M1–M9: inference service, lifespan + `/health` + `/model-info`, upload validation, preprocessing
+orchestration, experimental severity, prediction composition, temporary history + artifacts,
+`POST /api/v1/predict`, history/artifact routes and `docs/API.md`). Phase 5 (React dashboard) is
+next; the next exact task is recorded in `PROJECT_STATUS.md`. The seven Phase 2 milestones defined
+in §5 (Phase 2 → "Phase 2 milestones") are kept as the audit trail of how that phase was closed;
 `PROJECT_STATUS.md` names the next exact task and does not redefine them.
 
 ### Context summary (what this project is, in one paragraph)
