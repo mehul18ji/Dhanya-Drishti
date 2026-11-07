@@ -8,7 +8,7 @@ Last completed task: Phase 0 scaffold — docs set, backend health API with type
 Tests last run: 2026-11-07 — `python -m pytest -q` in `backend/` (3 tests) and `npm run build` in `frontend/`.
 Test result: Backend 3 passed. Frontend type-check + production build passed.
 Current branch: main
-Latest commit: 14602fb (merge commit; Phase 0 work is uncommitted at the time of writing)
+Latest commit: 574ab66 — feat: phase 0 repository foundation
 What works:
 - Backend starts with `uvicorn app.main:app --reload --port 8000`; `/docs` and `/openapi.json` are served.
 - `GET /api/v1/health` returns `{status: ok, model_loaded: false, model_version: null, runtime_storage: temporary}`.
