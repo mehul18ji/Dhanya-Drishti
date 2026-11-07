@@ -1,0 +1,1207 @@
+# DhanyaDrishti — Product Requirements Document
+
+## 1. Project identity
+
+**Project name:** DhanyaDrishti  
+**Product type:** Academic web dashboard for rice-leaf disease analysis  
+**Primary users:** Project evaluator, mentor, student/developer  
+**Initial interface language:** English  
+**Initial platform:** Desktop-first responsive web application  
+**Visual direction:** Modern academic/professional dashboard  
+**Mobile application:** Out of scope for Version 1
+
+## 2. Locked decisions
+
+DhanyaDrishti Version 1 will:
+
+- Use only the approved 120-image rice-leaf dataset at [Kaggle: Rice Leaf Diseases](https://www.kaggle.com/datasets/vbookshelf/rice-leaf-diseases/data).
+- Support exactly three disease labels:
+  - Bacterial Leaf Blight (BLB)
+  - Brown Spot
+  - Leaf Smut
+- Follow the professor’s required classical workflow exactly:
+
+```text
+Image input
+→ preprocessing
+→ resizing without distortion
+→ noise removal
+→ RGB-to-HSV and/or Lab conversion
+→ leaf segmentation
+→ disease-region segmentation
+→ colour, texture, shape, and lesion-area feature extraction
+→ SVM / Random Forest / KNN comparison
+→ disease prediction
+→ Mild / Moderate / Severe intensity estimate
+```
+
+- Use React + Vite + Tailwind CSS for the frontend.
+- Use Python + FastAPI for the backend.
+- Use OpenCV for image processing.
+- Use scikit-learn for SVM, Random Forest, and KNN.
+- Use SQLite only as temporary runtime storage for prediction history.
+- Use VS Code for development.
+- Use Jupyter notebooks and/or Google Colab for dataset exploration and model-training experiments.
+- Run locally on CPU first.
+- Deploy later with Vercel for the frontend and Render for the backend.
+- Treat MobileNetV2 as a future optional experiment only. It must never replace the mandatory classical machine-learning workflow.
+
+## 3. Dataset facts and limitations
+
+The approved dataset contains:
+
+| Disease | Images |
+|---|---:|
+| Bacterial Leaf Blight | 40 |
+| Brown Spot | 40 |
+| Leaf Smut | 40 |
+| Total | 120 |
+
+Important limitations:
+
+- There is no healthy-leaf class.
+- There are no Mild/Moderate/Severe labels.
+- The dataset is small, so high validation accuracy must not be described as real-world agricultural reliability.
+- The model may behave differently on smartphone photographs, different lighting, backgrounds, camera quality, leaf orientation, or multiple leaves.
+
+The dashboard must visibly show this notice before upload:
+
+> This prototype supports only three diseased rice-leaf categories: Bacterial Leaf Blight, Brown Spot, and Leaf Smut. Do not upload healthy leaves. Results are academic estimates and should not be used as professional agricultural advice.
+
+## 4. Product goal
+
+Allow a user to upload a photograph of a rice leaf and receive:
+
+- A predicted disease label.
+- A confidence score.
+- A lesion-area estimate.
+- An experimental severity estimate: Mild, Moderate, or Severe.
+- Image-quality or uncertainty warnings when the result is unreliable.
+- A temporary history of predictions while the backend server is running.
+
+## 5. Scope
+
+### In scope for Version 1
+
+- Single-image upload.
+- JPG, JPEG, PNG, and WEBP support.
+- Desktop-first dashboard.
+- Image preview.
+- Image-quality checks.
+- One-leaf-focused analysis.
+- Safe handling of images containing multiple leaves.
+- Classical segmentation using colour thresholding, K-Means, and morphology.
+- Feature extraction using colour, GLCM texture, shape, and lesion-area measurements.
+- SVM, Random Forest, and KNN training/comparison.
+- Temporary prediction history.
+- Local CPU execution.
+- Future-ready deployment configuration.
+
+### Explicitly out of scope for Version 1
+
+- Healthy-leaf classification.
+- Detection of diseases other than the three approved labels.
+- Plant-level diagnosis.
+- Multiple-leaf disease reports.
+- Treatment or pesticide recommendations.
+- User accounts and login.
+- Permanent image storage.
+- Mobile application.
+- MobileNetV2 as the production classifier.
+- Claims of medical, agricultural, or expert-grade diagnosis.
+
+## 6. User experience and dashboard design
+
+### Main dashboard layout
+
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│ DhanyaDrishti                                  Model: Classical ML│
+├─────────────────────────────────────────────────────────────────┤
+│ Analyze Leaf     Prediction History     About Model              │
+├───────────────────────────────┬─────────────────────────────────┤
+│ Upload and Preview            │ Prediction Result               │
+│                               │                                 │
+│ [Drag-and-drop upload area]   │ Disease: Brown Spot             │
+│                               │ Confidence: 82%                 │
+│ [Selected image preview]      │ Severity: Moderate*             │
+│                               │ Lesion area: 12.4%              │
+│ [Analyze Leaf]                │                                 │
+│                               │ Quality warnings, if applicable │
+├───────────────────────────────┴─────────────────────────────────┤
+│ *Severity is an experimental lesion-area estimate.               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Visual style
+
+- Academic and professional, not agricultural-marketplace styling.
+- Clean white or light-grey background.
+- Deep navy or charcoal navigation.
+- Teal/green accent for successful processing.
+- Amber for warnings.
+- Red only for failures or severe estimated intensity.
+- Clear typography, restrained cards, ample whitespace.
+- No cartoon illustrations or informal farmer-focused language.
+- Desktop layouts should remain usable on smaller screens, but mobile optimization is not a Version 1 requirement.
+
+### Required screens
+
+1. **Analyze Leaf**
+   - Upload area.
+   - Image preview.
+   - Instructions.
+   - Prediction result.
+   - Processing-stage indicator.
+
+2. **Prediction History**
+   - Temporary records from the current backend session.
+   - Thumbnail, timestamp, disease, confidence, severity, and status.
+   - Clear-history button.
+   - Notice that history is deleted after server restart or expiry.
+
+3. **About Model**
+   - Supported diseases.
+   - Dataset size and classes.
+   - Required workflow summary.
+   - Known limitations.
+   - Model version.
+   - Severity disclaimer.
+
+## 7. Upload rules and image handling
+
+### Supported input
+
+- File types: JPG, JPEG, PNG, WEBP.
+- Default maximum upload size: 10 MB, configurable by environment setting.
+- One clear rice leaf is recommended.
+- Background may be present, but simple backgrounds produce better results.
+
+### Required upload guidance
+
+Show this before upload:
+
+- Upload one clear rice leaf where possible.
+- Keep the leaf well lit.
+- Avoid heavy blur, shadows, glare, and extreme distance.
+- Ensure the diseased region is visible.
+- Do not upload healthy leaves.
+- If several leaves are visible, the system analyzes only the most suitable detected leaf.
+
+### Multiple-leaf handling
+
+Multiple-leaf images must not crash the application.
+
+The system will:
+
+1. Detect possible leaf regions.
+2. Score each candidate by visible area, segmentation quality, and centrality.
+3. Select the best candidate, normally the largest clear leaf.
+4. Show this warning:
+
+> Multiple leaf regions were detected. Analysis is based on the primary detected leaf. For best accuracy, upload a photograph containing one clear leaf.
+
+If no suitable primary leaf can be selected, return a rejection message rather than a disease prediction.
+
+## 8. Smart preprocessing and aspect-ratio preservation
+
+The system must never distort a leaf by stretching a portrait or landscape image into a square.
+
+### Required preprocessing sequence
+
+```text
+Original upload
+→ validate file and decode image
+→ correct camera orientation using EXIF metadata
+→ create aspect-ratio-preserving working preview
+→ assess image quality
+→ leaf candidate segmentation
+→ select primary leaf
+→ crop around selected leaf with safety margin
+→ resize while preserving aspect ratio
+→ add neutral padding if a fixed canvas is required
+→ denoise
+→ convert colour spaces
+→ disease segmentation
+→ feature extraction
+```
+
+### Aspect-ratio policy
+
+For 16:9, 9:16, square, or any other aspect ratio:
+
+- Do not stretch the image.
+- Do not perform a blind centre crop.
+- Do not discard edge regions until leaf detection has occurred.
+- Detect the leaf on an aspect-ratio-preserving working image.
+- Crop the selected leaf’s bounding box with a configurable safety margin.
+- Resize that crop proportionally.
+- Use padding/letterboxing to create a standard processing canvas if needed.
+
+This preserves the visible shape of the leaf and minimizes the chance of cutting off lesions at the leaf edge.
+
+### Quality checks
+
+The backend should flag or reject:
+
+- Unsupported or corrupt file.
+- Image too small.
+- Image too dark or overexposed.
+- Excessive blur.
+- No leaf candidate found.
+- Leaf region too small.
+- Segmentation failure.
+- Multiple ambiguous leaf candidates.
+- Feature-extraction failure.
+
+Quality warnings must not be confused with disease predictions.
+
+## 9. Required computer-vision pipeline
+
+### Stage A: Input validation
+
+- Verify file extension and actual image type.
+- Apply safe file-size limit.
+- Read image dimensions.
+- Correct EXIF orientation.
+- Convert input to a standard RGB/BGR representation.
+- Create a unique temporary prediction ID.
+
+### Stage B: Leaf segmentation
+
+Use the required classical techniques:
+
+1. Convert the image to HSV and/or Lab.
+2. Generate colour-based candidate masks for green/yellow/brown leaf areas.
+3. Run K-Means colour clustering on suitable pixels.
+4. Combine thresholding and clustering outputs.
+5. Remove small noisy regions.
+6. Apply morphological opening and closing.
+7. Find connected components and contours.
+8. Score candidates and select the primary leaf region.
+
+K-Means must use a fixed random seed so results are repeatable.
+
+### Stage C: Disease-region segmentation
+
+Within the selected leaf mask:
+
+1. Convert the leaf region to HSV and Lab.
+2. Identify likely lesion pixels using calibrated colour conditions.
+3. Use K-Means clusters to separate visually distinct regions.
+4. Apply morphology to remove isolated specks and fill small gaps.
+5. Retain disease candidates only inside the leaf mask.
+6. Produce a final lesion mask.
+
+All segmentation thresholds, morphology kernel sizes, and K-Means settings must live in configuration files, not hard-coded across unrelated files.
+
+### Stage D: Feature extraction
+
+The feature extractor must create a stable, documented numerical feature vector.
+
+Required feature groups:
+
+| Group | Examples |
+|---|---|
+| Colour | Mean, standard deviation, histogram statistics for RGB, HSV, and/or Lab channels |
+| Texture | GLCM contrast, homogeneity, energy, correlation, dissimilarity, entropy where stable |
+| Shape | Leaf area, lesion area, perimeter, aspect ratio, compactness, circularity |
+| Disease region | Lesion count, lesion-to-leaf ratio, largest lesion ratio, average lesion size |
+| Spatial distribution | Lesion location and spread within the detected leaf |
+
+Feature names and order must be versioned. Training and inference must use the exact same feature schema.
+
+### Stage E: Lesion-area calculation
+
+```text
+lesion_area_percentage =
+(lesion_pixels / leaf_pixels) × 100
+```
+
+The result must be rounded for display but preserved at full precision internally.
+
+## 10. Disease classification
+
+### Candidate models
+
+Train and compare:
+
+- Support Vector Machine
+- Random Forest
+- K-Nearest Neighbours
+
+### Training rules
+
+- Use stratified sampling so every disease class is represented fairly.
+- Reserve a final test set of 24 images: 8 from each class.
+- Use the remaining 96 images for model selection and stratified five-fold cross-validation.
+- Check for duplicate or near-duplicate images before splitting.
+- Never allow an original image and an altered copy of it to appear across both training and testing.
+- Do not use augmentation to inflate baseline classifier scores.
+- Fit scaling only on training data inside each fold.
+- Standardize features for SVM and KNN.
+- Preserve an unscaled path for Random Forest where appropriate.
+- Use the same segmentation and feature-extraction code in training and inference.
+
+### Evaluation metrics
+
+Report:
+
+- Accuracy.
+- Balanced accuracy.
+- Macro precision.
+- Macro recall.
+- Macro F1-score.
+- Per-class precision, recall, and F1-score.
+- Confusion matrix.
+- Cross-validation mean and variation.
+- Final held-out test results.
+
+The primary selection metric should be **macro F1-score**, because each disease class is equally important.
+
+### Model selection
+
+The selected production model must be the best model according to validation results, not a preselected algorithm.
+
+The training report must include:
+
+```text
+Model name
+Feature-set version
+Cross-validation metrics
+Held-out test metrics
+Training timestamp
+Dataset version
+Segmentation configuration version
+Known failure cases
+```
+
+## 11. Healthy leaves and uncertain results
+
+Because the dataset contains no healthy images, DhanyaDrishti cannot truthfully claim to identify healthy leaves.
+
+The system must therefore use the status model below:
+
+| Status | Meaning |
+|---|---|
+| `predicted` | A supported disease was predicted with acceptable confidence and quality. |
+| `uncertain` | The image is low confidence, unusual, or unlike the training data. |
+| `rejected` | The image is unsuitable for analysis. |
+
+### Required uncertain-result logic
+
+Return `uncertain` when one or more conditions apply:
+
+- Maximum disease probability is below a model-calibrated threshold.
+- Input fails a soft quality warning.
+- The extracted feature vector is far from the training-data distribution.
+- Segmentation is weak or inconsistent.
+- Multiple leaf candidates are too ambiguous.
+
+Show this text:
+
+> This image does not closely match the disease patterns represented in the current training dataset. It may be healthy, unsupported, or unsuitable for analysis. Please upload one clear diseased rice leaf.
+
+This is a safeguard, not a healthy-leaf classifier.
+
+## 12. Severity estimation
+
+The dataset provides no Mild/Moderate/Severe labels and no mentor-approved thresholds. Therefore Version 1 severity is explicitly an experimental lesion-area estimate, not a trained diagnosis.
+
+### Version 1 severity policy
+
+Use lesion-area percentage from the final lesion mask:
+
+| Lesion area | Displayed severity |
+|---:|---|
+| Less than 10% | Mild |
+| 10% to less than 25% | Moderate |
+| 25% or greater | Severe |
+
+These values must be stored in a configuration file and displayed in the model documentation.
+
+### Required disclaimer
+
+Every severity result must include:
+
+> Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.
+
+### Future replacement path
+
+Later, the severity module can be replaced with:
+
+- Professor-provided thresholds.
+- Expert-labelled Mild/Moderate/Severe examples.
+- Disease-specific thresholds.
+- A separately trained severity classifier.
+
+No frontend or API redesign should be required for this future change.
+
+## 13. Backend architecture
+
+### Technology
+
+- Python 3.11 or a compatible current stable Python version.
+- FastAPI.
+- Uvicorn.
+- OpenCV.
+- NumPy.
+- scikit-learn.
+- scikit-image for GLCM features.
+- Pillow.
+- Joblib.
+- SQLite.
+- Pytest.
+
+### Component boundaries
+
+```text
+FastAPI route
+    ↓
+Upload validation service
+    ↓
+Image preprocessing service
+    ↓
+Leaf segmentation service
+    ↓
+Disease segmentation service
+    ↓
+Feature extraction service
+    ↓
+Model inference service
+    ↓
+Severity service
+    ↓
+Temporary history repository
+    ↓
+JSON response
+```
+
+### Backend responsibilities
+
+- Accept and validate uploads.
+- Create and clean temporary files.
+- Execute inference.
+- Return typed JSON responses.
+- Maintain temporary prediction history.
+- Load model artifacts once at application startup.
+- Expose health and model-information endpoints.
+- Never train a model during a user prediction request.
+
+## 14. Frontend architecture
+
+### Technology
+
+- React.
+- Vite.
+- Tailwind CSS.
+- TypeScript.
+- A lightweight HTTP client such as native `fetch` or Axios.
+
+### Frontend responsibilities
+
+- Select or drag-and-drop an image.
+- Preview the selected image.
+- Show constraints before analysis.
+- Submit the file to the backend.
+- Render loading stages.
+- Render prediction, uncertainty, rejection, warnings, and errors.
+- Display temporary history.
+- Display model limitations and disclaimers.
+- Never run the full machine-learning pipeline in the browser.
+
+### Main React components
+
+```text
+App
+├── DashboardLayout
+│   ├── Header
+│   ├── Navigation
+│   └── Footer
+├── AnalyzePage
+│   ├── UploadInstructions
+│   ├── ImageUploader
+│   ├── ImagePreview
+│   ├── AnalysisProgress
+│   ├── PredictionResultCard
+│   ├── QualityWarningCard
+│   └── SegmentationPreviewPanel
+├── HistoryPage
+│   ├── PredictionHistoryTable
+│   └── HistoryItem
+└── AboutModelPage
+    ├── DatasetSummary
+    ├── WorkflowDiagram
+    └── LimitationsNotice
+```
+
+## 15. API contract
+
+### `GET /api/v1/health`
+
+Purpose: verify backend and model availability.
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "model_loaded": true,
+  "model_version": "v1.0.0",
+  "runtime_storage": "temporary"
+}
+```
+
+### `GET /api/v1/model-info`
+
+Purpose: provide transparent model information.
+
+Example response:
+
+```json
+{
+  "project": "DhanyaDrishti",
+  "supported_diseases": [
+    "Bacterial Leaf Blight",
+    "Brown Spot",
+    "Leaf Smut"
+  ],
+  "dataset_size": 120,
+  "healthy_class_supported": false,
+  "classifier": "selected_after_evaluation",
+  "severity_method": "experimental_lesion_area_thresholds",
+  "model_version": "v1.0.0"
+}
+```
+
+### `POST /api/v1/predict`
+
+Request:
+
+```text
+Content-Type: multipart/form-data
+file: uploaded_leaf_image
+```
+
+Successful response:
+
+```json
+{
+  "prediction_id": "uuid",
+  "status": "predicted",
+  "disease": "Brown Spot",
+  "confidence": 0.82,
+  "severity": "Moderate",
+  "severity_note": "Experimental lesion-area estimate.",
+  "lesion_area_percentage": 12.4,
+  "warnings": [
+    "Multiple leaf regions were detected. Analysis is based on the primary leaf."
+  ],
+  "artifacts": {
+    "original_preview_url": "/api/v1/history/uuid/original",
+    "leaf_mask_url": "/api/v1/history/uuid/leaf-mask",
+    "lesion_mask_url": "/api/v1/history/uuid/lesion-mask"
+  },
+  "model_version": "v1.0.0",
+  "created_at": "ISO-8601 timestamp"
+}
+```
+
+Uncertain response:
+
+```json
+{
+  "prediction_id": "uuid",
+  "status": "uncertain",
+  "disease": null,
+  "confidence": 0.41,
+  "severity": null,
+  "lesion_area_percentage": null,
+  "warnings": [
+    "The image does not closely match the disease patterns represented in the training dataset."
+  ],
+  "recommended_action": "Upload one clear diseased rice leaf with good lighting."
+}
+```
+
+Rejected response:
+
+```json
+{
+  "status": "rejected",
+  "reason_code": "NO_CLEAR_LEAF_FOUND",
+  "message": "No suitable rice leaf region could be detected. Upload one clear, well-lit leaf."
+}
+```
+
+### `GET /api/v1/history`
+
+Purpose: return temporary prediction history from the current backend runtime.
+
+### `DELETE /api/v1/history`
+
+Purpose: remove all temporary prediction records and files immediately.
+
+## 16. Temporary storage and history
+
+SQLite is used only as a temporary session database.
+
+### Required behavior
+
+- Store prediction metadata in SQLite under the backend temporary runtime directory.
+- Store uploaded images and generated masks in a temporary directory.
+- Do not permanently store images.
+- Delete records and files after a configurable expiry period.
+- Clear all temporary storage at backend startup.
+- Remove storage on graceful shutdown where possible.
+- Treat Render’s temporary filesystem as non-persistent.
+- Do not use cloud object storage or a permanent database in Version 1.
+
+History remains available during the active backend runtime, but it must not be promised after restart, redeployment, server sleep, or expiry.
+
+## 17. Repository structure
+
+```text
+dhanyadrishti/
+├── README.md
+├── PROJECT_STATUS.md
+├── .gitignore
+├── .env.example
+│
+├── docs/
+│   ├── PRD.md
+│   ├── ARCHITECTURE.md
+│   ├── DECISIONS.md
+│   ├── AGENT_HANDOFF.md
+│   ├── API.md
+│   ├── MODEL_CARD.md
+│   └── DEPLOYMENT.md
+│
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.ts
+│   ├── src/
+│   │   ├── app/
+│   │   ├── components/
+│   │   │   ├── upload/
+│   │   │   ├── prediction/
+│   │   │   ├── history/
+│   │   │   └── layout/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── hooks/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   └── styles/
+│   └── tests/
+│
+├── backend/
+│   ├── requirements.txt
+│   ├── requirements-dev.txt
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── api/
+│   │   │   ├── routes_health.py
+│   │   │   ├── routes_predict.py
+│   │   │   ├── routes_history.py
+│   │   │   └── routes_model_info.py
+│   │   ├── core/
+│   │   │   ├── config.py
+│   │   │   ├── logging.py
+│   │   │   └── exceptions.py
+│   │   ├── schemas/
+│   │   │   ├── prediction.py
+│   │   │   ├── history.py
+│   │   │   └── model_info.py
+│   │   ├── services/
+│   │   │   ├── upload_validation.py
+│   │   │   ├── preprocessing_service.py
+│   │   │   ├── inference_service.py
+│   │   │   ├── history_service.py
+│   │   │   └── image_artifact_service.py
+│   │   ├── vision/
+│   │   │   ├── quality.py
+│   │   │   ├── preprocessing.py
+│   │   │   ├── leaf_segmentation.py
+│   │   │   ├── lesion_segmentation.py
+│   │   │   ├── feature_extraction.py
+│   │   │   └── severity.py
+│   │   ├── ml/
+│   │   │   ├── model_loader.py
+│   │   │   ├── inference.py
+│   │   │   ├── training.py
+│   │   │   ├── evaluation.py
+│   │   │   └── outlier_detection.py
+│   │   ├── db/
+│   │   │   ├── session.py
+│   │   │   ├── models.py
+│   │   │   └── repositories.py
+│   │   └── artifacts/
+│   │       └── production/
+│   │           ├── model.joblib
+│   │           ├── preprocessing.joblib
+│   │           ├── feature_schema.json
+│   │           ├── segmentation_config.json
+│   │           ├── model_manifest.json
+│   │           └── evaluation_report.json
+│   ├── configs/
+│   │   ├── segmentation.yaml
+│   │   ├── severity.yaml
+│   │   └── quality_thresholds.yaml
+│   └── tests/
+│
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   ├── splits/
+│   └── README.md
+│
+├── notebooks/
+│   ├── 01_dataset_audit.ipynb
+│   ├── 02_segmentation_experiments.ipynb
+│   ├── 03_feature_extraction.ipynb
+│   ├── 04_model_comparison.ipynb
+│   └── 05_error_analysis.ipynb
+│
+├── scripts/
+│   ├── audit_dataset.py
+│   ├── train_model.py
+│   ├── evaluate_model.py
+│   └── export_artifacts.py
+│
+└── tests/
+    └── end_to_end/
+```
+
+## 18. Dataset handling rules
+
+- Keep raw Kaggle images in `data/raw/`.
+- Never edit original images.
+- Do not commit the raw dataset to a public Git repository.
+- Add `data/raw/`, temporary files, SQLite files, environment files, and generated caches to `.gitignore`.
+- Store split manifests in `data/splits/` so train/test partitions are reproducible.
+- Record a dataset checksum or file manifest.
+- Preserve the fixed random seed used for splits and K-Means.
+
+## 19. Development workflow
+
+### VS Code
+
+Use VS Code for:
+
+- Project folders and source code.
+- Terminal commands.
+- Local frontend and backend execution.
+- Running tests.
+- Git history and commits.
+- Reviewing generated artifacts.
+
+### Jupyter or Google Colab
+
+Use Jupyter or Google Colab for:
+
+- Dataset audit.
+- Viewing image sizes and examples.
+- Testing segmentation parameters.
+- Visualizing masks.
+- Feature experimentation.
+- Training-model comparisons.
+- Evaluation charts.
+
+Notebook experiments must be migrated into reusable Python modules before they become part of the production pipeline. The deployed backend must not depend on notebook-only code.
+
+### CPU-first policy
+
+Version 1 runs on CPU:
+
+- OpenCV preprocessing: CPU.
+- K-Means: CPU.
+- GLCM calculation: CPU.
+- SVM, Random Forest, KNN training: CPU.
+- Inference: CPU.
+- FastAPI backend: CPU.
+
+No GPU, CUDA, or TensorFlow setup is required for the mandatory project.
+
+## 20. Testing requirements
+
+### Unit tests
+
+Test:
+
+- EXIF orientation correction.
+- Aspect-ratio-preserving resize.
+- Letterboxing/padding.
+- Primary-leaf selection.
+- Multi-leaf warning logic.
+- No-leaf rejection.
+- Noise removal.
+- HSV/Lab conversion.
+- Segmentation masks.
+- Lesion-area calculation.
+- Feature-vector shape and feature order.
+- Severity boundary values.
+- File validation.
+
+### Backend/API tests
+
+Test:
+
+- Valid image upload.
+- Invalid extension.
+- Corrupt image.
+- Over-size file.
+- No model loaded.
+- Successful prediction.
+- Uncertain prediction.
+- Rejected image.
+- History retrieval.
+- History deletion.
+
+### Frontend tests
+
+Test:
+
+- File selection.
+- Preview rendering.
+- Loading state.
+- Successful result card.
+- Uncertain-result card.
+- Error state.
+- History rendering.
+- Disclaimer visibility.
+
+### Manual tests
+
+Test with:
+
+- Dataset images.
+- Horizontal images.
+- Portrait images.
+- Square images.
+- One leaf.
+- Several leaves.
+- Blurry leaf.
+- Dark leaf.
+- Bright/glare-heavy leaf.
+- Healthy leaf, expected to be uncertain or unsupported—not diagnosed as healthy.
+
+## 21. Local execution contract
+
+The local development environment should use:
+
+```text
+Frontend: http://localhost:5173
+Backend:  http://localhost:8000
+API docs: http://localhost:8000/docs
+```
+
+The frontend backend URL must come from an environment variable:
+
+```text
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+The backend must allow the local frontend origin through CORS during development.
+
+## 22. Deployment architecture
+
+```text
+User browser
+    ↓
+Vercel-hosted React frontend
+    ↓ HTTPS API request
+Render-hosted FastAPI backend
+    ↓
+Bundled model artifacts + temporary runtime storage
+```
+
+### Vercel responsibilities
+
+- Host the static React/Vite build.
+- Store the backend URL in a Vercel environment variable.
+- No model training.
+- No image processing.
+
+### Render responsibilities
+
+- Run FastAPI.
+- Load the trained model at startup.
+- Process upload requests.
+- Maintain only temporary runtime history.
+- Expose `/api/v1/health`.
+- Use CPU-only execution.
+
+### Deployment constraints
+
+- Render free-tier services may sleep when inactive.
+- Temporary files and SQLite history may disappear when the service restarts.
+- The frontend must show a friendly “Starting analysis service” message if the backend is waking up.
+- Never rely on temporary SQLite data as permanent storage.
+- The deployed model must be versioned and available with the backend release.
+
+## 23. Dependencies to download or install
+
+### You must obtain manually
+
+- The approved Kaggle dataset.
+- VS Code.
+- Python.
+- Node.js LTS.
+- Git.
+- A GitHub account/repository when ready to deploy.
+- Vercel and Render accounts later, when deployment begins.
+
+### No manual download needed
+
+The AI coding agent can create and install:
+
+- React.
+- Vite.
+- Tailwind CSS.
+- FastAPI.
+- OpenCV.
+- scikit-learn.
+- scikit-image.
+- NumPy.
+- Pillow.
+- Joblib.
+- Pytest.
+- Frontend testing libraries.
+- Python virtual environment files.
+- Configuration files.
+- Database schema.
+- Documentation.
+- Deployment configuration.
+
+Do not download CUDA, TensorFlow, or MobileNetV2 dependencies for Version 1.
+
+## 24. AI-agent continuity protocol
+
+Because an AI coding-agent session may stop or reset, this repository must remain self-explanatory.
+
+### Required project documents
+
+- `docs/PRD.md`: this complete product specification.
+- `docs/DECISIONS.md`: all locked decisions and non-negotiable constraints.
+- `docs/ARCHITECTURE.md`: system diagram and component boundaries.
+- `docs/AGENT_HANDOFF.md`: instructions for the next AI-agent session.
+- `PROJECT_STATUS.md`: current implementation status.
+
+### Required `PROJECT_STATUS.md` format
+
+```text
+Current phase:
+Last completed task:
+Tests last run:
+Test result:
+Current branch:
+Latest commit:
+What works:
+What does not work:
+Next exact task:
+Known blockers:
+Decisions that must not be changed:
+```
+
+### Mandatory beginning-of-session procedure
+
+Every new AI-agent session must:
+
+1. Read `docs/PRD.md`.
+2. Read `docs/DECISIONS.md`.
+3. Read `PROJECT_STATUS.md`.
+4. Inspect the Git status and recent commits.
+5. Run the relevant existing tests before changing code.
+6. Continue only from the “Next exact task.”
+7. Avoid replacing completed work or changing locked requirements.
+
+### Mandatory end-of-session procedure
+
+Before an agent session ends, it must:
+
+1. Run relevant tests.
+2. Update `PROJECT_STATUS.md`.
+3. Update documentation if architecture changed.
+4. Record known limitations or blockers.
+5. Create a focused Git commit only after tests pass.
+6. Leave one clearly stated next task.
+
+## 25. Implementation phases
+
+### Phase 0 — Repository foundation
+
+Deliverables:
+
+- Repository initialized.
+- Documentation added.
+- Frontend and backend scaffolds created.
+- Environment templates created.
+- `.gitignore` configured.
+- Local run instructions written.
+
+Definition of done:
+
+- Frontend launches.
+- Backend health endpoint responds.
+- No disease model is required yet.
+
+### Phase 1 — Dataset audit
+
+Deliverables:
+
+- Dataset inventory.
+- Class-count verification.
+- Image-dimension report.
+- Duplicate/near-duplicate review.
+- Reproducible data splits.
+- Dataset limitations documented.
+
+Definition of done:
+
+- Dataset confirmed as 120 images and 40 per disease class.
+- Split manifests saved.
+- Raw data remains untouched.
+
+### Phase 2 — Image-processing pipeline
+
+Deliverables:
+
+- Orientation correction.
+- Aspect-ratio-safe resize and padding.
+- Quality checks.
+- Leaf segmentation.
+- Multiple-leaf selection.
+- Disease-region segmentation.
+- Visual mask outputs.
+
+Definition of done:
+
+- Pipeline runs on representative images.
+- It does not stretch images.
+- It rejects invalid/ambiguous images safely.
+- Outputs can be visually reviewed.
+
+### Phase 3 — Features and classical ML
+
+Deliverables:
+
+- Feature extractor.
+- SVM training.
+- Random Forest training.
+- KNN training.
+- Cross-validation and test evaluation.
+- Model-comparison report.
+- Production artifact export.
+
+Definition of done:
+
+- One best model selected using macro F1-score.
+- Artifacts load successfully in a clean backend process.
+- Training/inference features match exactly.
+
+### Phase 4 — FastAPI inference API
+
+Deliverables:
+
+- Upload endpoint.
+- Prediction endpoint.
+- Uncertain and rejected states.
+- Temporary history.
+- API tests.
+- OpenAPI documentation.
+
+Definition of done:
+
+- A local API receives an image and returns a structured result.
+- No retraining occurs during requests.
+- Temporary files are cleaned up correctly.
+
+### Phase 5 — React dashboard
+
+Deliverables:
+
+- Academic dashboard design.
+- Upload interaction.
+- Preview.
+- Result cards.
+- Warning handling.
+- History page.
+- About Model page.
+
+Definition of done:
+
+- A user can complete upload-to-result locally.
+- All disclaimers are visible.
+- Errors are understandable.
+
+### Phase 6 — Integration and quality assurance
+
+Deliverables:
+
+- End-to-end tests.
+- Cross-browser check.
+- Manual smartphone-photo trials.
+- Error analysis.
+- Model card.
+- Final academic demonstration flow.
+
+Definition of done:
+
+- Local system is stable.
+- Known limitations are documented.
+- Results are reproducible.
+
+### Phase 7 — Deployment
+
+Deliverables:
+
+- Vercel frontend configuration.
+- Render backend configuration.
+- CORS production setup.
+- Environment-variable documentation.
+- Deployment smoke test.
+
+Definition of done:
+
+- Public frontend connects safely to public backend.
+- Health check passes.
+- Model artifacts load.
+- Temporary-storage limitations are documented.
+
+## 26. Success criteria
+
+DhanyaDrishti Version 1 is complete when:
+
+- It uses the approved 120-image, three-class dataset only.
+- It follows the required classical workflow.
+- It compares SVM, Random Forest, and KNN.
+- It selects the best evaluated model rather than assuming one.
+- It preserves image aspect ratio and avoids blind stretching.
+- It handles portrait, landscape, square, multi-leaf, poor-quality, and invalid images safely.
+- It clearly distinguishes prediction, uncertainty, and rejection.
+- It includes temporary prediction history.
+- It warns that healthy leaves are not supported.
+- It labels severity as experimental.
+- It runs locally on CPU.
+- It can later deploy through Vercel and Render.
+- A new AI-agent session can continue work by reading the repository documents without needing prior chat context.
+
+## 27. Optional future work
+
+After Version 1 is complete and evaluated:
+
+- Add healthy-leaf examples and a Healthy class.
+- Add expert-labelled severity data.
+- Add disease-specific severity rules.
+- Add more rice diseases.
+- Collect smartphone-field images.
+- Add multilingual support.
+- Build a farmer-friendly mobile interface.
+- Compare MobileNetV2 against the classical pipeline as a separate research experiment.
+- Add authentication and permanent history only if required.
+
+## 28. Final product disclaimer
+
+DhanyaDrishti is an academic prototype trained on a small dataset of 120 diseased rice-leaf images. It supports only Bacterial Leaf Blight, Brown Spot, and Leaf Smut. Its severity output is an experimental visible-lesion-area estimate. It must not be presented as a replacement for agricultural experts, field inspection, or plant-pathology diagnosis.
