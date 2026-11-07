@@ -1,1 +1,1 @@
-# rice--disease-analyser
+# rice-disease-analyser
