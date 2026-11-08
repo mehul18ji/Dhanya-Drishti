@@ -1,0 +1,13 @@
+{
+  "name": "dhanyadrishti-qa",
+  "private": true,
+  "description": "Cross-stack QA harness for DhanyaDrishti (Phase 6).",
+  "scripts": {
+    "test:e2e": "playwright test -c tests/end_to_end/playwright.config.ts",
+    "test:e2e:headed": "playwright test -c tests/end_to_end/playwright.config.ts --headed",
+    "test:e2e:preview": "playwright test -c tests/end_to_end/playwright.preview.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0"
+  }
+}

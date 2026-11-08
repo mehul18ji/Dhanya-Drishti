@@ -49,6 +49,12 @@ Thumbs.db
 desktop.ini
 .DS_Store
 
+# --- Playwright E2E test artifacts (never committed) ---
+tests/end_to_end/test-results/
+tests/end_to_end/test-results-preview/
+tests/end_to_end/playwright-report/
+tests/end_to_end/playwright-preview-report/
+
 # --- Editor / OS ---
 .vscode/*
 !.vscode/settings.json

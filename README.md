@@ -20,7 +20,7 @@ Upload one photograph of a diseased rice leaf and receive:
 
 ## Status
 
-**Current phase: Phase 5 — React dashboard: COMPLETE. Phase 6 (integration/QA/model card) is next and has not started.**
+**Current phase: Phase 6 — Integration, QA, model card: COMPLETE. Phase 7 (deployment) is next and has not started.**
 
 | Area | State |
 |---|---|
@@ -33,7 +33,8 @@ Upload one photograph of a diseased rice leaf and receive:
 | Inference service, lifespan load, `/health`, `/model-info`, upload validation, preprocessing orchestration, experimental severity, prediction composition | Done (Phase 4 M1–M6) |
 | `POST /predict`, temporary history, artifact serving, API docs | Done (Phase 4 M7–M9) |
 | Typed frontend API client, upload/preview/analyze flow, result states, history, About Model, component tests | Done (Phase 5 M1–M7) |
-| QA, real-browser E2E, model card, deployment | Not started (Phases 6–7) |
+| QA, real-browser E2E, model card | Complete (Phase 6) |
+| Deployment | Not started (Phase 7) |
 
 The full phase-by-phase plan lives in [`PHASE_PLAN.txt`](./PHASE_PLAN.txt).
 Living status lives in [`PROJECT_STATUS.md`](./PROJECT_STATUS.md).
@@ -97,6 +98,9 @@ npm run dev
 - Build check: `npm run build`
 - Type check: `npm run typecheck`
 - Component/API tests: `npm test` (Vitest + jsdom + Testing Library)
+- Real-browser E2E: `cd tests/end_to_end && npx playwright test` (dev server, Chrome + Edge)
+- Production-preview E2E: `cd tests/end_to_end && npx playwright test --config=playwright.preview.config.ts` (built bundle)
+- E2E headed: `cd tests/end_to_end && npx playwright test --headed`
 
 The backend URL comes from `VITE_API_BASE_URL` (copy `frontend/.env.example` to `frontend/.env`).
 If `localhost` resolves to IPv6 while the backend binds IPv4, use `http://127.0.0.1:8000`.
@@ -147,6 +151,7 @@ byte-identically.
 | `docs/ARCHITECTURE.md` | System diagram and component boundaries |
 | `docs/FRONTEND.md` | Phase 5 dashboard contract, state matrix, honesty rules and tests |
 | `docs/AGENT_HANDOFF.md` | Procedure for the next AI-agent session |
+| `docs/QA_REPORT.md` | Phase 6 real-browser E2E results, contract checks, known limitations |
 | `docs/DATASET_AUDIT.md` | Phase 1 audit, duplicate review and split protocol |
 | `docs/SEGMENTATION_NOTES.md` | Phase 2 segmentation audit, `seg-v1`→`seg-v2` calibration, limitations |
 | `docs/segmentation_audit/` | Curated 12-panel visual evidence + audit summary |
