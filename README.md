@@ -6,7 +6,8 @@ computer-vision and machine-learning pipeline (no deep learning in Version 1).
 Upload one photograph of a diseased rice leaf and receive:
 
 - a predicted disease label — **Bacterial Leaf Blight**, **Brown Spot** or **Leaf Smut**;
-- a confidence score;
+- per-class **decision-function margins** and a best-vs-second margin (**not** a confidence or
+  probability percentage);
 - a lesion-area estimate;
 - an *experimental* severity estimate (Mild / Moderate / Severe);
 - quality and uncertainty warnings when the result is unreliable;
@@ -19,7 +20,7 @@ Upload one photograph of a diseased rice leaf and receive:
 
 ## Status
 
-**Current phase: Phase 5 — React dashboard (next). Phases 1–3 and Phase 4 are complete.**
+**Current phase: Phase 5 — React dashboard: COMPLETE. Phase 6 (integration/QA/model card) is next and has not started.**
 
 | Area | State |
 |---|---|
@@ -31,8 +32,8 @@ Upload one photograph of a diseased rice leaf and receive:
 | Features + SVM/RF/KNN comparison, production model bundle | Done (Phase 3) |
 | Inference service, lifespan load, `/health`, `/model-info`, upload validation, preprocessing orchestration, experimental severity, prediction composition | Done (Phase 4 M1–M6) |
 | `POST /predict`, temporary history, artifact serving, API docs | Done (Phase 4 M7–M9) |
-| Upload / result / history UI | Not started (Phase 5) |
-| QA, model card, deployment | Not started (Phases 6-7) |
+| Typed frontend API client, upload/preview/analyze flow, result states, history, About Model, component tests | Done (Phase 5 M1–M7) |
+| QA, real-browser E2E, model card, deployment | Not started (Phases 6–7) |
 
 The full phase-by-phase plan lives in [`PHASE_PLAN.txt`](./PHASE_PLAN.txt).
 Living status lives in [`PROJECT_STATUS.md`](./PROJECT_STATUS.md).
@@ -73,13 +74,13 @@ uvicorn app.main:app --reload --port 8000
 - Health: <http://localhost:8000/api/v1/health>
 - Tests: `python -m pytest`
 
-Expected health response in Phase 0:
+Expected health response when the production bundle is loaded:
 
 ```json
 {
   "status": "ok",
-  "model_loaded": false,
-  "model_version": null,
+  "model_loaded": true,
+  "model_version": "svm-v1.0.0",
   "runtime_storage": "temporary"
 }
 ```
@@ -95,8 +96,10 @@ npm run dev
 - Dashboard: <http://localhost:5173>
 - Build check: `npm run build`
 - Type check: `npm run typecheck`
+- Component/API tests: `npm test` (Vitest + jsdom + Testing Library)
 
 The backend URL comes from `VITE_API_BASE_URL` (copy `frontend/.env.example` to `frontend/.env`).
+If `localhost` resolves to IPv6 while the backend binds IPv4, use `http://127.0.0.1:8000`.
 
 ## Environment
 
@@ -142,6 +145,7 @@ byte-identically.
 | `PROJECT_STATUS.md` | What works, what does not, next exact task |
 | `docs/DECISIONS.md` | Locked decisions + rationale |
 | `docs/ARCHITECTURE.md` | System diagram and component boundaries |
+| `docs/FRONTEND.md` | Phase 5 dashboard contract, state matrix, honesty rules and tests |
 | `docs/AGENT_HANDOFF.md` | Procedure for the next AI-agent session |
 | `docs/DATASET_AUDIT.md` | Phase 1 audit, duplicate review and split protocol |
 | `docs/SEGMENTATION_NOTES.md` | Phase 2 segmentation audit, `seg-v1`→`seg-v2` calibration, limitations |

@@ -19,7 +19,7 @@
 6. Run the relevant existing tests **before** changing code:
    ```powershell
    cd backend; python -m pytest -q
-   cd ..\frontend; npm run build
+   cd ..\frontend; npm test; npm run build
    ```
 7. Continue only from the **"Next exact task"** in `PROJECT_STATUS.md`.
 8. Do not replace completed work or change a locked decision (see `docs/DECISIONS.md` §1).
@@ -72,6 +72,8 @@ uvicorn app.main:app --reload --port 8000
 cd frontend
 npm install
 npm run dev          # http://localhost:5173
+npm test             # Vitest + jsdom + Testing Library
+npm run typecheck
 npm run build        # type-check + production build
 
 # Dataset audit + frozen splits (from repository root)
@@ -93,7 +95,7 @@ Environment:
 - Root `.env` (copy of `.env.example`) → backend settings.
 - `frontend/.env` (copy of `frontend/.env.example`) → `VITE_API_BASE_URL`.
 
-## 5. Current state (Phases 1–3 and Phase 4 complete; Phase 5 next)
+## 5. Current state (Phases 1–5 complete; Phase 6 next, not started)
 
 - Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint,
   `GET /api/v1/model-info`, upload validation, the artifact-backed inference service and the
@@ -134,9 +136,21 @@ Environment:
   composition, JSON-safe predicted/uncertain body, 200 `rejected` body with no id, typed
   413/415/422/503, logged timings) and M9 history/artifact routes + `DELETE /api/v1/history`
   (`api/routes_history.py`, `schemas/history.py`, `docs/API.md`).
-- The backend API is feature-complete for V1. The dashboard (Phase 5) is the only thing that
-  still does not call it.
-- Tests: 217 backend (`backend/`) + 6 split invariants (root `tests/`).
+- Phase 5 complete: typed client (`services/api.ts`, `types/api.ts`, API-relative artifact
+  URLs, timeouts, typed 413/415/422/503/network errors), `useHealth` cold-start badge,
+  upload/preview/analyze flow with approximate staged progress, predicted/uncertain/
+  rejected/upload-error/model-unavailable cards, decision-margin score panel (never
+  confidence), severity disclaimer + lesion reliability gates, warnings/missing features,
+  temporary artifact thumbnails, history table with warning details + confirmation clear,
+  and the About Model card from `/api/v1/model-info`. Honesty rules and the state matrix are
+  documented in `docs/FRONTEND.md`.
+- Phase 5 tests: 13 frontend files / 64 Vitest tests green; `npm run typecheck` and
+  `npm run build` clean. Backend remains 217 tests + 6 split invariants, all green. A live
+  smoke test against a real backend verified prediction, artifacts, 200 rejection not stored,
+  413/415/422, history delete and artifact 404 after delete.
+- The backend API and dashboard are feature-complete for V1. Phase 6 (real-browser E2E,
+  QA matrix, smartphone trials, error analysis, model card) is next but has **not** started.
+- Tests: 64 frontend + 217 backend (`backend/`) + 6 split invariants (root `tests/`).
 
 ## 6. Rules that prevent damage
 
@@ -150,11 +164,20 @@ Environment:
 - Keep every numeric threshold in `backend/configs/*.yaml`.
 - Never claim healthy-leaf detection; return `uncertain` instead.
 - Keep the exact disclaimer wording from the PRD in API responses and UI.
+- The dashboard must never display a confidence/probability percentage: scores are
+  `decision_function` margins only (P-15/P-18/P-19).
+- Never turn an unreliable/missing lesion measurement into `0 %` or `Mild`; show
+  “Not available”/“Not reported” with the reason (P-22).
+- A 200 `rejected` result and every upload-level error stay out of history; do not style
+  them as predictions (P-16/P-20/P-24).
+- Do not add runtime frontend dependencies without a decision; the test toolchain is
+  dev-only (P-25).
 
 ## 7. Handoff checklist for the next session
 
 - [ ] Read the five documents listed in §1.
-- [ ] Confirm tests pass before edits.
+- [ ] Confirm tests pass before edits (`npm test`, `npm run build`, backend `pytest -q`).
 - [ ] Pick up the "Next exact task" from `PROJECT_STATUS.md`.
+- [ ] Do not start Phase 6 or Phase 7 without explicit user approval.
 - [ ] Stay inside the current phase; do not start the next phase early.
 - [ ] Update `PROJECT_STATUS.md` before finishing.

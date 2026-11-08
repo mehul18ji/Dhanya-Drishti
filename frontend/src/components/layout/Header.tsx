@@ -1,48 +1,42 @@
-import { useEffect, useState } from 'react'
+import { API_BASE_URL } from '../../services/api'
+import { useHealth } from '../../hooks/useHealth'
 
-import { API_BASE_URL, getHealth } from '../../services/api'
+type DisplayState = 'checking' | 'starting' | 'online' | 'offline'
 
-type BackendState = 'checking' | 'online' | 'offline'
-
-const badgeStyles: Record<BackendState, string> = {
+const badgeStyles: Record<DisplayState, string> = {
   checking: 'border-warn-300 bg-warn-50 text-warn-700',
+  starting: 'border-warn-300 bg-warn-50 text-warn-800',
   online: 'border-accent-200 bg-accent-50 text-accent-700',
   offline: 'border-red-200 bg-red-50 text-red-700',
 }
 
-const dotStyles: Record<BackendState, string> = {
+const dotStyles: Record<DisplayState, string> = {
   checking: 'bg-warn-500 animate-pulse',
+  starting: 'bg-warn-500 animate-pulse',
   online: 'bg-accent-500',
   offline: 'bg-red-500',
 }
 
-const labels: Record<BackendState, string> = {
-  checking: 'Checking backend',
-  online: 'Backend online',
-  offline: 'Backend offline',
-}
-
 export function Header() {
-  const [state, setState] = useState<BackendState>('checking')
-  const [modelLoaded, setModelLoaded] = useState(false)
+  const { state, modelLoaded, modelVersion, lastChecked, refresh } = useHealth()
 
-  useEffect(() => {
-    const controller = new AbortController()
-    const timer = window.setTimeout(() => controller.abort(), 6000)
+  const displayState: DisplayState =
+    state === 'online' && !modelLoaded ? 'starting' : state
 
-    getHealth(controller.signal)
-      .then((health) => {
-        setState('online')
-        setModelLoaded(health.model_loaded)
-      })
-      .catch(() => setState('offline'))
-      .finally(() => window.clearTimeout(timer))
+  const label =
+    displayState === 'checking'
+      ? 'Checking backend'
+      : displayState === 'starting'
+        ? 'Backend online · model starting'
+        : displayState === 'online'
+          ? 'Backend online'
+          : 'Backend offline'
 
-    return () => {
-      window.clearTimeout(timer)
-      controller.abort()
-    }
-  }, [])
+  const detail = [
+    `${API_BASE_URL}/api/v1/health`,
+    modelVersion ? `model ${modelVersion}` : 'no model version reported',
+    lastChecked ? `checked ${lastChecked.toLocaleTimeString()}` : 'not checked yet',
+  ].join(' · ')
 
   return (
     <header className="bg-ink-950 text-white">
@@ -81,18 +75,21 @@ export function Header() {
             </svg>
             Model: Classical ML
           </span>
-          <span
-            className={`badge ${badgeStyles[state]}`}
-            title={`${labels[state]} — ${API_BASE_URL}/api/v1/health`}
+          <button
+            type="button"
+            onClick={refresh}
+            className={`badge ${badgeStyles[displayState]} cursor-pointer hover:brightness-[0.98]`}
+            title={`${detail}. Click to refresh.`}
+            aria-label="Refresh backend and model status"
           >
-            <span aria-hidden="true" className={`h-2 w-2 rounded-full ${dotStyles[state]}`} />
-            {labels[state]}
-            {state === 'online' && (
+            <span aria-hidden="true" className={`h-2 w-2 rounded-full ${dotStyles[displayState]}`} />
+            <span aria-live="polite">{label}</span>
+            {displayState === 'online' && modelVersion ? (
               <span className="hidden text-[11px] font-normal opacity-80 sm:inline">
-                {modelLoaded ? '· model loaded' : '· no model yet'}
+                · {modelVersion}
               </span>
-            )}
-          </span>
+            ) : null}
+          </button>
         </div>
       </div>
     </header>

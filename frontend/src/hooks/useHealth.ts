@@ -1,0 +1,84 @@
+import { useCallback, useEffect, useState } from 'react'
+
+import { getHealth } from '../services/api'
+import { describeApiError, isAbortError } from '../utils/errors'
+import type { FriendlyError } from '../utils/errors'
+
+export type BackendState = 'checking' | 'online' | 'offline'
+
+export interface HealthState {
+  state: BackendState
+  modelLoaded: boolean
+  modelVersion: string | null
+  lastChecked: Date | null
+  error: FriendlyError | null
+  refresh: () => void
+}
+
+/**
+ * Live `/api/v1/health` state with cold-start retries.
+ *
+ * A healthy backend without a loaded model is reported as `online` with
+ * `modelLoaded: false`; the UI then says the model is starting rather than
+ * pretending a prediction is possible.
+ */
+export function useHealth({
+  pollIntervalMs = 30_000,
+  retryIntervalMs = 5_000,
+}: {
+  pollIntervalMs?: number
+  retryIntervalMs?: number
+} = {}): HealthState {
+  const [state, setState] = useState<BackendState>('checking')
+  const [modelLoaded, setModelLoaded] = useState(false)
+  const [modelVersion, setModelVersion] = useState<string | null>(null)
+  const [lastChecked, setLastChecked] = useState<Date | null>(null)
+  const [error, setError] = useState<FriendlyError | null>(null)
+  const [refreshToken, setRefreshToken] = useState(0)
+
+  const refresh = useCallback(() => setRefreshToken((token) => token + 1), [])
+
+  useEffect(() => {
+    let active = true
+    let timer: number | undefined
+    let controller: AbortController | null = null
+
+    const schedule = (delay: number) => {
+      if (!active) return
+      timer = window.setTimeout(() => void check(), delay)
+    }
+
+    const check = async () => {
+      controller?.abort()
+      controller = new AbortController()
+      try {
+        const health = await getHealth(controller.signal)
+        if (!active) return
+        setState('online')
+        setModelLoaded(health.model_loaded)
+        setModelVersion(health.model_version)
+        setError(null)
+        setLastChecked(new Date())
+        schedule(health.model_loaded ? pollIntervalMs : retryIntervalMs)
+      } catch (caught) {
+        if (!active || isAbortError(caught)) return
+        setState('offline')
+        setModelLoaded(false)
+        setModelVersion(null)
+        setError(describeApiError(caught, 'health'))
+        setLastChecked(new Date())
+        schedule(retryIntervalMs)
+      }
+    }
+
+    void check()
+
+    return () => {
+      active = false
+      controller?.abort()
+      if (timer !== undefined) window.clearTimeout(timer)
+    }
+  }, [pollIntervalMs, retryIntervalMs, refreshToken])
+
+  return { state, modelLoaded, modelVersion, lastChecked, error, refresh }
+}

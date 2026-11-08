@@ -1,4 +1,22 @@
-const guidance = [
+import { useEffect, useRef, useState } from 'react'
+
+import { AnalysisErrorCard } from '../components/analysis/AnalysisErrorCard'
+import { AnalysisProgress } from '../components/analysis/AnalysisProgress'
+import { PredictionResultCard } from '../components/analysis/PredictionResultCard'
+import { RejectedResultCard } from '../components/analysis/RejectedResultCard'
+import { Callout } from '../components/common/Callout'
+import { ErrorNotice } from '../components/common/ErrorNotice'
+import { PageHeader } from '../components/common/PageHeader'
+import { Spinner } from '../components/common/Spinner'
+import { ImagePreview } from '../components/upload/ImagePreview'
+import { ImageUploader } from '../components/upload/ImageUploader'
+import { useHealth } from '../hooks/useHealth'
+import { predict } from '../services/api'
+import type { PredictResponse } from '../types/api'
+import { describeApiError, isAbortError } from '../utils/errors'
+import type { FriendlyError } from '../utils/errors'
+
+const GUIDANCE = [
   'Upload one clear rice leaf where possible.',
   'Keep the leaf well lit and evenly exposed.',
   'Avoid heavy blur, shadows, glare and extreme distance.',
@@ -7,161 +25,243 @@ const guidance = [
   'If several leaves are visible, only the most suitable detected leaf is analysed.',
 ]
 
-const pipeline = [
-  'Validate file and decode image',
-  'Correct orientation · preserve aspect ratio',
-  'Check image quality',
-  'Segment leaf and primary candidate',
-  'Segment disease regions',
-  'Extract colour, texture, shape and lesion features',
-  'Classify with the best classical model',
-  'Estimate lesion area and severity',
-]
+function EmptyResultState() {
+  return (
+    <section className="card flex min-h-[280px] flex-col justify-center p-6" data-testid="empty-result">
+      <h2 className="text-lg font-semibold text-ink-900">Prediction result</h2>
+      <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-600">
+        Select one rice-leaf photograph and choose <strong>Analyze leaf</strong>. The result will
+        show a supported disease label, per-class decision margins, the measured lesion area, an
+        experimental severity estimate, and any quality warnings.
+      </p>
+      <ul className="mt-4 space-y-2 text-sm text-ink-600">
+        <li className="flex gap-2">
+          <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 rounded-full bg-ink-300" />
+          The result is one of three supported diseases, never “healthy”.
+        </li>
+        <li className="flex gap-2">
+          <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 rounded-full bg-ink-300" />
+          Unreliable lesion measurements are left unavailable, not reported as 0% or Mild.
+        </li>
+        <li className="flex gap-2">
+          <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 rounded-full bg-ink-300" />
+          Scores are model margins, not confidence percentages.
+        </li>
+      </ul>
+    </section>
+  )
+}
 
 export function AnalyzePage() {
+  const health = useHealth()
+  const [file, setFile] = useState<File | null>(null)
+  const [result, setResult] = useState<PredictResponse | null>(null)
+  const [error, setError] = useState<FriendlyError | null>(null)
+  const [pending, setPending] = useState(false)
+  const controllerRef = useRef<AbortController | null>(null)
+  const resultRef = useRef<HTMLDivElement>(null)
+
+  useEffect(
+    () => () => {
+      controllerRef.current?.abort()
+    },
+    [],
+  )
+
+  useEffect(() => {
+    if (!pending && (result || error) && resultRef.current?.scrollIntoView) {
+      resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [pending, result, error])
+
+  const chooseFile = (selected: File) => {
+    controllerRef.current?.abort()
+    setPending(false)
+    setFile(selected)
+    setResult(null)
+    setError(null)
+  }
+
+  const reset = () => {
+    controllerRef.current?.abort()
+    setPending(false)
+    setFile(null)
+    setResult(null)
+    setError(null)
+  }
+
+  const analyze = async () => {
+    if (!file || pending) return
+    controllerRef.current?.abort()
+    const controller = new AbortController()
+    controllerRef.current = controller
+
+    setPending(true)
+    setResult(null)
+    setError(null)
+
+    try {
+      const response = await predict(file, controller.signal)
+      if (!controller.signal.aborted) setResult(response)
+    } catch (caught) {
+      if (!isAbortError(caught)) setError(describeApiError(caught, 'predict'))
+    } finally {
+      if (controllerRef.current === controller) setPending(false)
+    }
+  }
+
+  const modelReady = health.state === 'online' && health.modelLoaded
+  const unavailable = health.state === 'offline' || (health.state === 'online' && !health.modelLoaded)
+  const analyzeDisabled = !file || pending || !modelReady
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-ink-900">Analyze Leaf</h1>
-          <p className="mt-1 max-w-2xl text-sm text-ink-600">
-            Upload a single photograph of a diseased rice leaf to receive a classical-ML prediction,
-            a lesion-area estimate and an experimental severity estimate.
-          </p>
-        </div>
-        <span className="badge w-fit border-ink-200 bg-white text-ink-600">
-          Phase 0 · foundation build
-        </span>
-      </div>
+      <PageHeader
+        eyebrow="Analyze"
+        title="Analyze Leaf"
+        description="Upload one rice-leaf photograph. The classical computer-vision and SVM pipeline runs locally on the backend and returns a supported disease label with honest quality and severity caveats."
+      />
 
-      <div
-        role="note"
-        className="flex gap-3 rounded-xl border border-warn-300 bg-warn-50 p-4 text-sm text-warn-700"
-      >
-        <span aria-hidden="true" className="mt-0.5 text-base leading-none">
-          ⚠
-        </span>
+      <Callout tone="warning" title="Academic prototype — three diseased classes only" className="block">
         <p>
-          This prototype supports only three diseased rice-leaf categories: Bacterial Leaf Blight,
-          Brown Spot, and Leaf Smut. Do not upload healthy leaves. Results are academic estimates and
-          should not be used as professional agricultural advice.
+          Supported labels are Bacterial Leaf Blight, Brown Spot and Leaf Smut. There is no healthy
+          class. Do not upload healthy leaves, and do not use the result as professional
+          agricultural advice.
         </p>
-      </div>
+      </Callout>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <section className="card p-5 lg:col-span-3" aria-labelledby="upload-heading">
-          <h2 id="upload-heading" className="text-sm font-semibold uppercase tracking-wide text-ink-500">
-            Upload and preview
-          </h2>
+      {health.state === 'checking' ? (
+        <Callout tone="neutral" title="Checking the analysis service…" className="items-center">
+          <p className="flex items-center gap-2">
+            <Spinner className="h-3.5 w-3.5 text-ink-500" />
+            Contacting the backend health endpoint. This usually takes less than a second.
+          </p>
+        </Callout>
+      ) : null}
 
-          <div className="mt-4 flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-ink-300 bg-ink-50/60 px-6 py-12 text-center">
-            <span
-              aria-hidden="true"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-white ring-1 ring-inset ring-ink-200"
-            >
-              <svg viewBox="0 0 24 24" className="h-6 w-6 text-ink-400" fill="none" strokeWidth="1.6">
-                <path
-                  d="M12 16V5m0 0L8 9m4-4 4 4"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            <div>
-              <p className="text-sm font-medium text-ink-800">Drag and drop a rice-leaf image</p>
-              <p className="mt-1 text-xs text-ink-500">
-                JPG, JPEG, PNG or WEBP · up to 10 MB · one leaf recommended
-              </p>
-            </div>
+      {health.state === 'offline' && health.error ? (
+        <div data-testid="backend-unavailable">
+          <ErrorNotice
+            error={health.error}
+            onRetry={health.refresh}
+            retryLabel="Retry connection"
+          />
+        </div>
+      ) : null}
+
+      {health.state === 'online' && !health.modelLoaded ? (
+        <div data-testid="model-unavailable">
+          <Callout tone="warning" title="Backend online — model still starting">
+            <p>
+              The API is reachable but the production model bundle is not loaded yet. Wait a few
+              seconds and retry. Uploading is available, but analysis stays disabled until the
+              model is ready.
+            </p>
             <button
               type="button"
-              disabled
-              className="mt-1 cursor-not-allowed rounded-lg bg-ink-200 px-4 py-2 text-sm font-medium text-ink-500"
-              title="File selection is implemented in Phase 5"
+              onClick={health.refresh}
+              className="mt-2 rounded-lg border border-warn-300 bg-white px-3 py-1.5 text-xs font-semibold text-warn-900 hover:bg-warn-100"
             >
-              Choose file
+              Check again
             </button>
-            <p className="text-xs text-ink-400">
-              Upload and analysis become available in Phase 5 (dashboard).
-            </p>
+          </Callout>
+        </div>
+      ) : null}
+
+      {modelReady ? (
+        <p className="text-xs text-ink-500" data-testid="model-ready">
+          Model ready
+          {health.modelVersion ? ` · ${health.modelVersion}` : ''} · images are processed in
+          temporary runtime storage only.
+        </p>
+      ) : null}
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="card p-5" aria-labelledby="upload-heading">
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 id="upload-heading" className="text-lg font-semibold text-ink-900">
+              1. Select an image
+            </h2>
+            <span className="text-xs text-ink-500">JPG · JPEG · PNG · WEBP</span>
           </div>
 
-          <div className="mt-5">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-ink-500">
+          <div className="mt-3 rounded-lg border border-ink-200 bg-ink-50/70 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">
               Before you upload
-            </h3>
-            <ul className="mt-2 grid gap-2 sm:grid-cols-2">
-              {guidance.map((item) => (
-                <li key={item} className="flex gap-2 text-sm text-ink-600">
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    className="mt-0.5 h-4 w-4 flex-none text-accent-600"
-                    fill="none"
-                    strokeWidth="2"
-                  >
-                    <path d="m5 13 4 4L19 7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  {item}
-                </li>
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-xs leading-relaxed text-ink-600">
+              {GUIDANCE.map((item) => (
+                <li key={item}>{item}</li>
               ))}
             </ul>
           </div>
-        </section>
 
-        <section className="card p-5 lg:col-span-2" aria-labelledby="result-heading">
-          <h2 id="result-heading" className="text-sm font-semibold uppercase tracking-wide text-ink-500">
-            Prediction result
-          </h2>
+          <div className="mt-4">
+            <ImageUploader
+              file={file}
+              onFileSelected={chooseFile}
+              disabled={pending}
+            />
+          </div>
 
-          <div className="mt-8 flex flex-col items-center gap-2 text-center">
-            <span
-              aria-hidden="true"
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-ink-100"
+          {file ? (
+            <div className="mt-4">
+              <ImagePreview file={file} onRemove={reset} disabled={pending} />
+            </div>
+          ) : null}
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void analyze()}
+              disabled={analyzeDisabled}
+              className="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-accent-700 disabled:cursor-not-allowed disabled:bg-ink-300"
             >
-              <svg viewBox="0 0 24 24" className="h-5 w-5 text-ink-400" fill="none" strokeWidth="1.6">
-                <path d="M4 19V5m0 14h16" stroke="currentColor" strokeLinecap="round" />
-                <path d="M8 15l3-4 3 2 4-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-            <p className="text-sm font-medium text-ink-700">No analysis yet</p>
-            <p className="max-w-xs text-xs text-ink-500">
-              A prediction card, confidence score, lesion-area estimate and severity estimate will
-              appear here after an image is analysed.
+              {pending ? <Spinner className="h-4 w-4 text-white" /> : null}
+              {pending ? 'Analysing…' : 'Analyze leaf'}
+            </button>
+            {file ? (
+              <button
+                type="button"
+                onClick={reset}
+                disabled={pending}
+                className="rounded-lg border border-ink-300 bg-white px-4 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Clear
+              </button>
+            ) : null}
+          </div>
+
+          {!file ? (
+            <p className="mt-2 text-xs text-ink-500">
+              Choose a file to enable analysis.
             </p>
-          </div>
-
-          <div className="mt-6 border-t border-ink-100 pt-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-ink-500">
-              Processing pipeline
-            </h3>
-            <ol className="mt-2 space-y-1.5">
-              {pipeline.map((stage, index) => (
-                <li key={stage} className="flex items-start gap-2 text-xs text-ink-500">
-                  <span
-                    aria-hidden="true"
-                    className="mt-px flex h-4 w-4 flex-none items-center justify-center rounded-full bg-ink-100 text-[10px] font-semibold text-ink-500"
-                  >
-                    {index + 1}
-                  </span>
-                  {stage}
-                </li>
-              ))}
-            </ol>
-          </div>
+          ) : unavailable ? (
+            <p className="mt-2 text-xs text-warn-800">
+              Analysis is disabled until the backend and model are ready. The retry button above
+              refreshes the health status.
+            </p>
+          ) : null}
         </section>
-      </div>
 
-      <p className="text-xs text-ink-500">
-        Severity is an experimental estimate based on the visible lesion area in this image. It is not
-        a validated agronomic severity grade.
-      </p>
+        <div ref={resultRef} className="scroll-mt-4" aria-live="polite">
+          {pending ? <AnalysisProgress fileName={file?.name} /> : null}
+          {!pending && error ? (
+            <AnalysisErrorCard
+              error={error}
+              onRetry={() => void analyze()}
+              retrying={pending}
+            />
+          ) : null}
+          {!pending && !error && result?.status === 'rejected' ? (
+            <RejectedResultCard rejection={result} onChooseAnother={reset} />
+          ) : null}
+          {!pending && !error && result && result.status !== 'rejected' ? (
+            <PredictionResultCard prediction={result} onAnalyzeAnother={reset} />
+          ) : null}
+          {!pending && !error && !result ? <EmptyResultState /> : null}
+        </div>
+      </div>
     </div>
   )
 }

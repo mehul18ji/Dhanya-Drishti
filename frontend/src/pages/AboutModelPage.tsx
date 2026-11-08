@@ -1,164 +1,346 @@
-const diseases = [
-  {
-    name: 'Bacterial Leaf Blight',
-    description: 'Water-soaked streaks that enlarge into pale, dry lesions along the leaf blade.',
-  },
-  {
-    name: 'Brown Spot',
-    description: 'Oval brown lesions, often with a lighter centre, scattered across the leaf.',
-  },
-  {
-    name: 'Leaf Smut',
-    description: 'Small dark, slightly raised spots distributed over the leaf surface.',
-  },
-]
+import { Callout } from '../components/common/Callout'
+import { ErrorNotice } from '../components/common/ErrorNotice'
+import { AlertTriangleIcon, LeafIcon, ShieldIcon } from '../components/common/Icons'
+import { Metric, MetricGrid } from '../components/common/Metric'
+import { PageHeader } from '../components/common/PageHeader'
+import { Spinner } from '../components/common/Spinner'
+import { useModelInfo } from '../hooks/useModelInfo'
+import { GENERAL_DISCLAIMER, HEALTHY_CAVEAT } from '../utils/disclaimers'
+import { SUPPORTED_DISEASES } from '../utils/diseases'
+import { formatDecimal } from '../utils/format'
 
-const workflow = [
-  'Image input and validation',
-  'Preprocessing',
-  'Resizing without distortion',
+const WORKFLOW = [
+  'Image input and upload validation',
+  'Preprocessing with EXIF orientation correction',
+  'Resizing without distortion (uniform scale) and letterbox padding',
   'Noise removal',
-  'RGB → HSV and/or Lab conversion',
-  'Leaf segmentation',
-  'Disease-region segmentation',
+  'RGB → HSV and Lab conversion',
+  'Leaf segmentation and primary-leaf selection',
+  'Disease-region segmentation inside the leaf mask',
   'Colour, texture, shape and lesion-area feature extraction',
-  'SVM / Random Forest / KNN comparison',
-  'Disease prediction',
-  'Mild / Moderate / Severe intensity estimate',
+  'SVM / Random Forest / KNN comparison during development',
+  'Disease prediction with decision-function margins',
+  'Experimental Mild / Moderate / Severe lesion-area estimate',
 ]
 
-const limitations = [
-  'No healthy-leaf class exists in the dataset; the system cannot diagnose a leaf as healthy.',
-  'Only Bacterial Leaf Blight, Brown Spot and Leaf Smut are supported.',
-  'The dataset has 120 images, so validation scores are not evidence of field reliability.',
-  'Severity is an experimental lesion-area estimate, not an agronomist grade.',
-  'Behaviour on smartphone photos, unusual lighting, background clutter or multiple leaves may differ from dataset images.',
+const SEVERITY_BUCKETS = [
+  { range: 'Less than 10%', label: 'Mild' },
+  { range: '10% to less than 25%', label: 'Moderate' },
+  { range: '25% or greater', label: 'Severe' },
 ]
+
+function modelDisplayName(name: string): string {
+  const normalised = name.toLowerCase()
+  if (normalised === 'svm') return 'Support Vector Machine (SVM)'
+  if (normalised === 'random_forest' || normalised === 'rf') return 'Random Forest'
+  if (normalised === 'knn') return 'K-Nearest Neighbours'
+  return name
+}
 
 export function AboutModelPage() {
+  const { state, info, error, reload } = useModelInfo()
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink-900">About Model</h1>
-        <p className="mt-1 max-w-2xl text-sm text-ink-600">
-          Transparent information about the dataset, the required classical workflow, the selected
-          classifier and the limits of this prototype.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Model card"
+        title="About Model"
+        description="The loaded production bundle, the dataset it was trained on, how scores should be read, and the limitations that must remain visible."
+      />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <section className="card p-5 lg:col-span-2" aria-labelledby="diseases-heading">
-          <h2 id="diseases-heading" className="text-sm font-semibold uppercase tracking-wide text-ink-500">
-            Supported diseases
-          </h2>
-          <ul className="mt-3 space-y-3">
-            {diseases.map((disease) => (
-              <li key={disease.name} className="rounded-lg border border-ink-100 bg-ink-50/50 p-3">
-                <p className="text-sm font-semibold text-ink-800">{disease.name}</p>
-                <p className="mt-0.5 text-xs text-ink-600">{disease.description}</p>
-              </li>
-            ))}
-          </ul>
+      {state === 'loading' ? (
+        <section
+          className="card flex items-center justify-center gap-3 px-6 py-14 text-sm text-ink-600"
+          data-testid="model-info-loading"
+        >
+          <Spinner className="h-4 w-4 text-accent-600" />
+          Loading model information from the backend…
         </section>
+      ) : null}
 
-        <section className="card p-5" aria-labelledby="dataset-heading">
-          <h2 id="dataset-heading" className="text-sm font-semibold uppercase tracking-wide text-ink-500">
-            Dataset
-          </h2>
-          <dl className="mt-3 space-y-2 text-sm">
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Total images</dt>
-              <dd className="font-semibold text-ink-900">120</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Images per class</dt>
-              <dd className="font-semibold text-ink-900">40</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Healthy class</dt>
-              <dd className="font-semibold text-ink-900">Not supported</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Severity labels</dt>
-              <dd className="font-semibold text-ink-900">None</dd>
-            </div>
-          </dl>
-          <p className="mt-3 border-t border-ink-100 pt-3 text-xs leading-relaxed text-ink-500">
-            Source: the approved Kaggle Rice Leaf Diseases dataset. Raw images are kept out of version
-            control and are never modified.
-          </p>
-        </section>
-      </div>
+      {state === 'error' && error ? (
+        <div data-testid="model-info-error">
+          <ErrorNotice error={error} onRetry={reload} />
+        </div>
+      ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="card p-5" aria-labelledby="workflow-heading">
-          <h2 id="workflow-heading" className="text-sm font-semibold uppercase tracking-wide text-ink-500">
-            Required classical workflow
-          </h2>
-          <ol className="mt-3 space-y-1.5">
-            {workflow.map((stage, index) => (
-              <li key={stage} className="flex items-start gap-2 text-sm text-ink-600">
-                <span
-                  aria-hidden="true"
-                  className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-ink-100 text-[10px] font-semibold text-ink-600"
+      {state === 'success' && info ? (
+        <div className="space-y-6" data-testid="model-info">
+          <section className="card p-5" aria-labelledby="model-identity-heading">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 id="model-identity-heading" className="text-lg font-semibold text-ink-900">
+                  {modelDisplayName(info.model_name)}
+                </h2>
+                <p className="mt-1 text-sm text-ink-600">
+                  Selected during development from SVM, Random Forest and KNN by macro F1 on the
+                  frozen cross-validation folds. The committed bundle is served unchanged.
+                </p>
+              </div>
+              <span className="badge border-accent-200 bg-accent-50 text-accent-800">
+                <ShieldIcon className="h-3.5 w-3.5" />
+                {info.model_version}
+              </span>
+            </div>
+
+            <MetricGrid>
+              <Metric
+                label="CV macro F1"
+                value={`${formatDecimal(info.cv_macro_f1_mean, 3)} ± ${formatDecimal(
+                  info.cv_macro_f1_std,
+                  3,
+                )}`}
+                hint="Mean ± standard deviation across the 5 frozen folds"
+              />
+              <Metric
+                label="Held-out macro F1"
+                value={formatDecimal(info.held_out_macro_f1, 3)}
+                hint={`${info.held_out_rows} images · evaluated once after selection`}
+              />
+              <Metric
+                label="Development rows"
+                value={info.training_rows}
+                hint="Held-out test rows were never used for training or selection"
+              />
+              <Metric
+                label="Feature vector"
+                value={`${info.feature_count} features`}
+                hint={`Version ${info.feature_set_version}`}
+              />
+            </MetricGrid>
+
+            <dl className="mt-4 grid gap-3 text-xs text-ink-600 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <dt className="font-semibold text-ink-800">Bundle version</dt>
+                <dd>{info.bundle_version}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-ink-800">Bundle exported</dt>
+                <dd>{info.bundle_exported_at}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-ink-800">Dataset version</dt>
+                <dd className="font-mono text-[11px]">{info.dataset_version}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-ink-800">Split protocol</dt>
+                <dd>{info.split_protocol}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-ink-800">Segmentation config</dt>
+                <dd>{info.segmentation_config_version}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-ink-800">Quality config</dt>
+                <dd>{info.quality_config_version}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-ink-800">CV accuracy</dt>
+                <dd>{formatDecimal(info.cv_accuracy_mean, 3)}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-ink-800">CV balanced accuracy</dt>
+                <dd>{formatDecimal(info.cv_balanced_accuracy_mean, 3)}</dd>
+              </div>
+            </dl>
+            <p className="mt-3 rounded-md bg-ink-50 px-3 py-2 text-[11px] text-ink-500">
+              Held-out status: {info.held_out_status}. The 24 held-out images are a single
+              evaluation, not a tuning set; differences of roughly ±0.05–0.08 macro F1 are within
+              sampling noise on a dataset this small.
+            </p>
+          </section>
+
+          <section className="card p-5" aria-labelledby="score-reading-heading">
+            <h2 id="score-reading-heading" className="text-lg font-semibold text-ink-900">
+              How to read model scores
+            </h2>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <Callout tone="info" title="Decision margins, not probabilities">
+                <p>{info.score_note}</p>
+                <p className="mt-2">
+                  The API exposes <code className="font-mono">{info.score_kind}</code> values. There
+                  is no <code className="font-mono">predict_proba</code>, no calibrated probability
+                  and no confidence percentage.
+                </p>
+              </Callout>
+              <Callout tone="neutral" title="What the UI shows">
+                <p>
+                  Per-class signed margins, the best-vs-second margin, and the class ranking. A
+                  larger margin means the model preferred that class more strongly; it is not a
+                  probability that the label is correct.
+                </p>
+                <p className="mt-2">
+                  Calibrated probabilities: {info.calibrated_probabilities ? 'yes' : 'no'}.
+                </p>
+              </Callout>
+            </div>
+          </section>
+
+          <section className="card p-5" aria-labelledby="supported-diseases-heading">
+            <h2 id="supported-diseases-heading" className="text-lg font-semibold text-ink-900">
+              Supported disease labels
+            </h2>
+            <p className="mt-1 text-sm text-ink-600">
+              Exactly three classes exist in the dataset and the model. There is no healthy class.
+            </p>
+            <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+              {SUPPORTED_DISEASES.map((disease) => (
+                <li key={disease.slug} className="rounded-lg border border-ink-200 bg-ink-50/60 p-4">
+                  <div className="flex items-center gap-2">
+                    <LeafIcon className="h-4 w-4 text-accent-600" />
+                    <h3 className="font-semibold text-ink-900">{disease.name}</h3>
+                  </div>
+                  <p className="mt-1 text-xs leading-relaxed text-ink-600">{disease.summary}</p>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-wide text-ink-400">
+                    {disease.slug}
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4">
+              <Callout tone="warning" title="No healthy-leaf result">
+                <p>{HEALTHY_CAVEAT}</p>
+              </Callout>
+            </div>
+          </section>
+
+          <section className="card p-5" aria-labelledby="workflow-heading">
+            <h2 id="workflow-heading" className="text-lg font-semibold text-ink-900">
+              Required classical workflow
+            </h2>
+            <p className="mt-1 text-sm text-ink-600">
+              The professor-mandated pipeline from image input to experimental severity. No deep
+              learning is used in Version 1.
+            </p>
+            <ol className="mt-3 grid gap-2 sm:grid-cols-2">
+              {WORKFLOW.map((step, index) => (
+                <li
+                  key={step}
+                  className="flex items-start gap-2 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-700"
                 >
-                  {index + 1}
-                </span>
-                {stage}
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink-900 text-[10px] font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section className="card p-5" aria-labelledby="dataset-heading">
+            <h2 id="dataset-heading" className="text-lg font-semibold text-ink-900">
+              Dataset and evaluation protocol
+            </h2>
+            <dl className="mt-3 grid gap-3 text-sm text-ink-600 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">
+                  Dataset
+                </dt>
+                <dd className="mt-1 font-semibold text-ink-900">120 rice-leaf images</dd>
+                <dd className="text-xs">40 per disease class</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">
+                  Cross-validation
+                </dt>
+                <dd className="mt-1 font-semibold text-ink-900">96 development images</dd>
+                <dd className="text-xs">5 group-aware folds</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">
+                  Held-out test
+                </dt>
+                <dd className="mt-1 font-semibold text-ink-900">24 images</dd>
+                <dd className="text-xs">8 per class · singleton-only</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">
+                  Split protocol
+                </dt>
+                <dd className="mt-1 font-semibold text-ink-900">{info.split_protocol}</dd>
+                <dd className="text-xs">Frozen before model selection</dd>
+              </div>
+            </dl>
+            <p className="mt-3 text-xs leading-relaxed text-ink-500">
+              The dataset is small and visually similar. Confirmed duplicate groups never cross
+              train/validation/test boundaries. The single held-out result carries substantial
+              sampling uncertainty and is not a claim of field performance.
+            </p>
+          </section>
+
+          <section className="card p-5" aria-labelledby="severity-heading">
+            <h2 id="severity-heading" className="text-lg font-semibold text-ink-900">
+              Experimental severity
+            </h2>
+            <p className="mt-1 text-sm text-ink-600">
+              Version 1 maps the measured visible-lesion area of the detected leaf onto three
+              buckets. There are no expert severity labels and no validated agronomic thresholds.
+            </p>
+            <div className="mt-3 overflow-hidden rounded-lg border border-ink-200">
+              <table className="w-full text-sm">
+                <caption className="sr-only">Experimental lesion-area severity buckets</caption>
+                <thead>
+                  <tr className="bg-ink-50 text-left text-[11px] uppercase tracking-wide text-ink-500">
+                    <th scope="col" className="px-4 py-2 font-semibold">
+                      Lesion area
+                    </th>
+                    <th scope="col" className="px-4 py-2 font-semibold">
+                      Displayed severity
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {SEVERITY_BUCKETS.map((bucket) => (
+                    <tr key={bucket.label} className="border-t border-ink-100">
+                      <td className="px-4 py-2 text-ink-700">{bucket.range}</td>
+                      <td className="px-4 py-2 font-semibold text-ink-900">{bucket.label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <Callout tone="warning" title="Required severity disclaimer" className="mt-3 block">
+              <p>{info.severity_disclaimer}</p>
+            </Callout>
+            <p className="mt-2 text-xs text-ink-500">
+              Unreliable, missing or invalid lesion measurements produce <strong>no severity</strong>{' '}
+              and <strong>no lesion percentage</strong>; they are never converted to 0% or Mild. A
+              measured zero on a calibrated leaf remains a valid Mild result.
+            </p>
+          </section>
+
+          <section className="card p-5" aria-labelledby="limitations-heading">
+            <h2
+              id="limitations-heading"
+              className="flex items-center gap-2 text-lg font-semibold text-ink-900"
+            >
+              <AlertTriangleIcon className="h-5 w-5 text-warn-600" />
+              Known limitations and failure cases
+            </h2>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-ink-600">
+              {info.known_failure_cases.map((failure) => (
+                <li key={failure}>{failure}</li>
+              ))}
+              <li>
+                Severity is experimental and is not a validated agronomic grade; it must never be
+                used for treatment decisions.
               </li>
-            ))}
-          </ol>
-        </section>
+              <li>
+                History and artifacts are temporary and disappear on restart, expiry or clear. No
+                uploaded image is stored permanently.
+              </li>
+            </ul>
+          </section>
 
-        <section className="card p-5" aria-labelledby="status-heading">
-          <h2 id="status-heading" className="text-sm font-semibold uppercase tracking-wide text-ink-500">
-            Model status
-          </h2>
-          <dl className="mt-3 space-y-2 text-sm">
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Model version</dt>
-              <dd className="font-semibold text-ink-900">Not trained yet</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Selected classifier</dt>
-              <dd className="font-semibold text-ink-900">Chosen after evaluation</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Selection metric</dt>
-              <dd className="font-semibold text-ink-900">Macro F1-score</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-600">Severity method</dt>
-              <dd className="font-semibold text-ink-900">Experimental lesion area</dd>
-            </div>
-          </dl>
-          <p className="mt-3 border-t border-ink-100 pt-3 text-xs leading-relaxed text-ink-500">
-            Training, comparison of SVM / Random Forest / KNN and artifact export happen in Phase 3.
-            Metrics will be published here from the evaluation report once available.
-          </p>
-        </section>
-      </div>
-
-      <section className="card p-5" aria-labelledby="limitations-heading">
-        <h2 id="limitations-heading" className="text-sm font-semibold uppercase tracking-wide text-ink-500">
-          Known limitations
-        </h2>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-          {limitations.map((limitation) => (
-            <li key={limitation} className="flex gap-2 text-sm text-ink-600">
-              <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-warn-500" />
-              {limitation}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <div className="rounded-xl border border-ink-200 bg-white p-4 text-xs leading-relaxed text-ink-500">
-        <span className="font-semibold text-ink-700">Disclaimer.</span> DhanyaDrishti is an academic
-        prototype. Its severity output is an experimental visible-lesion-area estimate. It must not be
-        presented as a replacement for agricultural experts, field inspection or plant-pathology
-        diagnosis.
-      </div>
+          <Callout tone="neutral" title="Academic use only" className="block">
+            <p>{GENERAL_DISCLAIMER}</p>
+            <p className="mt-2">
+              This model card is generated from the loaded bundle manifest; it does not retrain,
+              recalibrate or recompute held-out metrics.
+            </p>
+          </Callout>
+        </div>
+      ) : null}
     </div>
   )
 }

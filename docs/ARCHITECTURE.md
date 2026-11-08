@@ -1,7 +1,7 @@
 # DhanyaDrishti — Architecture
 
 > System diagram and component boundaries for Version 1. Reflects the Phase 0 foundation
-> plus the Phases 1–4 implementation so far, and the planned structure from
+> plus the Phases 1–5 implementation, and the planned structure from
 > `PRD.txt` §13, §14 and §17.
 
 ---
@@ -75,33 +75,61 @@ Implementation status:
 | Severity | `app/vision/severity.py`, `configs/severity.yaml` | 4 | Done (M5) |
 | Prediction composition | `app/services/prediction_service.py` | 4 | Done (M6) |
 | Temporary history + artifacts | `app/db/*`, `app/services/history_service.py`, `app/services/image_artifact_service.py` | 4 | Done (M7/M9) |
-| Dashboard | `frontend/src/*` | 0 / 5 | Shell only |
+| Typed API client + response types | `frontend/src/services/api.ts`, `types/api.ts` | 5 | Done (M1) |
+| Dashboard shell + health/model badge | `frontend/src/components/layout/*`, `hooks/useHealth.ts` | 5 | Done (M1–M2) |
+| Upload, preview, progress | `frontend/src/components/upload/*`, `components/analysis/AnalysisProgress.tsx` | 5 | Done (M2–M3) |
+| Prediction / uncertain / rejected / error cards | `frontend/src/components/analysis/*` | 5 | Done (M3–M4) |
+| Temporary history + artifacts UI | `frontend/src/pages/HistoryPage.tsx`, `components/history/*`, `hooks/useHistory.ts` | 5 | Done (M5) |
+| About Model page | `frontend/src/pages/AboutModelPage.tsx`, `hooks/useModelInfo.ts` | 5 | Done (M6) |
+| Frontend component/API tests | `frontend/src/**/*.test.tsx`, Vitest setup | 5 | Done (M7) |
 
 ## 3. Frontend structure (PRD §14)
 
 ```text
 App
 └── DashboardLayout            components/layout/DashboardLayout.tsx
-    ├── Header                 product identity + model badge + health badge
+    ├── Header                 product + Model: Classical ML + live health/model badge
     ├── Navigation             Analyze Leaf · Prediction History · About Model
     └── Footer                 prototype + severity disclaimers
 ├── AnalyzePage                pages/AnalyzePage.tsx
-│   ├── UploadInstructions
 │   ├── ImageUploader / ImagePreview
 │   ├── AnalysisProgress
-│   ├── PredictionResultCard
-│   ├── QualityWarningCard
-│   └── SegmentationPreviewPanel
+│   ├── PredictionResultCard (predicted | uncertain)
+│   │   ├── ScorePanel (decision margins, never confidence)
+│   │   ├── QualityWarningCard / MissingFeaturesCard
+│   │   └── SegmentationPreviewPanel
+│   ├── RejectedResultCard   (HTTP 200, no label/artifacts/history row)
+│   └── AnalysisErrorCard    (413 / 415 / 422 / 503 / network)
 ├── HistoryPage                pages/HistoryPage.tsx
-│   └── PredictionHistoryTable / HistoryItem
+│   └── HistoryTable + ConfirmDialog + expiry/disclaimer notices
 └── AboutModelPage             pages/AboutModelPage.tsx
-    ├── DatasetSummary
-    ├── WorkflowDiagram
-    └── LimitationsNotice
+    ├── bundle metrics/provenance from GET /model-info
+    ├── supported classes + no-healthy caveat
+    ├── workflow diagram
+    ├── experimental severity + exact disclaimer
+    └── known limitations
 ```
 
-Phase 0 delivers the layout plus static versions of the three pages. Upload, result cards,
-history rows and mask viewers arrive in Phase 5.
+Phase 5 delivers the complete dashboard and typed client. It uses only documented Phase 4
+JSON fields; no internal backend object is imported or reconstructed. Detailed state and
+honesty rules live in `docs/FRONTEND.md`.
+
+### 3.1 Frontend data flow
+
+```text
+useHealth ── GET /api/v1/health ──> header badge + Analyze gating
+    (5 s retry while offline/model starting, 30 s when ready)
+
+AnalyzePage ── POST /api/v1/predict (multipart "file") ──> PredictionResponse
+                                                        └─ RejectedResponse (HTTP 200)
+
+HistoryPage ── GET /api/v1/history ──> labelled rows only
+            └─ DELETE /api/v1/history ──> rows + PNG files removed together
+
+AboutModelPage ── GET /api/v1/model-info ──> loaded bundle provenance/metrics
+
+artifact_url ──> VITE_API_BASE_URL + relative path ──> new-tab PNG
+```
 
 ## 4. Data and artifact flow
 
@@ -138,12 +166,20 @@ backend/.runtime/
 6. **No image distortion.** Resize → crop to leaf bbox with margin → proportional resize → letterbox.
 7. **Deterministic seeds** for splits, K-Means and Random Forest, recorded in the manifest.
 8. **Truthful states only:** `predicted`, `uncertain`, `rejected` — never a fake "healthy" answer.
+9. **No confidence display:** the dashboard renders decision-function margins only and never
+   invents a probability or percentage from them.
+10. **Honest lesion/severity display:** missing or unreliable lesion data is “Not available”,
+    never `0 %` or `Mild`; severity always carries its experimental disclaimer.
+11. **Rejected uploads stay out of history:** a 200 `rejected` result has no id/artifacts and
+    creates no row; upload-level errors stay distinct typed failures.
 
 ## 6. Local execution contract (PRD §21)
 
 | Service | URL | Command |
 |---|---|---|
 | Frontend | http://localhost:5173 | `npm run dev` (in `frontend/`) |
+| Frontend tests | — | `npm test` (in `frontend/`) |
+| Frontend build | — | `npm run build` (in `frontend/`) |
 | Backend | http://localhost:8000 | `uvicorn app.main:app --reload --port 8000` (in `backend/`) |
 | API docs | http://localhost:8000/docs | — |
 | Health | http://localhost:8000/api/v1/health | — |

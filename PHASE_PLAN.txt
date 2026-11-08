@@ -23,13 +23,16 @@
 > - All numbers in §6 are *starting points for calibration*, not validated constants.
 > - Section 12 lists the first five concrete actions to take from a clean state.
 
-**Execution status (updated 2026-11-08):** Phases 0–3 and **Phase 4 are complete** (milestones
-M1–M9: inference service, lifespan + `/health` + `/model-info`, upload validation, preprocessing
-orchestration, experimental severity, prediction composition, temporary history + artifacts,
-`POST /api/v1/predict`, history/artifact routes and `docs/API.md`). Phase 5 (React dashboard) is
-next; the next exact task is recorded in `PROJECT_STATUS.md`. The seven Phase 2 milestones defined
-in §5 (Phase 2 → "Phase 2 milestones") are kept as the audit trail of how that phase was closed;
-`PROJECT_STATUS.md` names the next exact task and does not redefine them.
+**Execution status (updated 2026-11-08):** Phases 0–3, **Phase 4** and **Phase 5 are complete**
+(Phase 4 milestones M1–M9: inference service, lifespan + `/health` + `/model-info`, upload
+validation, preprocessing orchestration, experimental severity, prediction composition,
+temporary history + artifacts, `POST /api/v1/predict`, history/artifact routes and
+`docs/API.md`; Phase 5 milestones M1–M7: typed API client, dashboard shell + health badge,
+upload/preview/progress, result states, history/artifacts, About Model and the test suite).
+Phase 6 (integration/QA/model card) is next but has **not** started; it requires explicit user
+approval. The next exact task is recorded in `PROJECT_STATUS.md`. The seven Phase 2 milestones
+defined in §5 (Phase 2 → "Phase 2 milestones") are kept as the audit trail of how that phase was
+closed; `PROJECT_STATUS.md` names the next exact task and does not redefine them.
 
 ### Context summary (what this project is, in one paragraph)
 
@@ -39,7 +42,8 @@ deterministic *classical* pipeline (EXIF-corrected, aspect-preserving preprocess
 colour + K-Means + morphology → leaf segmentation → lesion segmentation → versioned
 colour/GLCM/shape/lesion features) feeds the **best of SVM / Random Forest / KNN**, chosen by
 macro-F1 on a stratified protocol (96 train / 24 held-out test / 5-fold CV). The app returns
-disease label + confidence + lesion-area % + *experimental* severity (Mild/Moderate/Severe)
+disease label + **decision-function margins** (never a confidence/probability percentage;
+P-15/P-18) + lesion-area % + *experimental* severity (Mild/Moderate/Severe)
 + warnings, or an honest `uncertain` / `rejected` state, and keeps **temporary** prediction
 history. Only the approved 120-image, 3-class Kaggle dataset is used; there is no healthy
 class and no validated severity ground truth. The graded value is **methodological honesty
@@ -93,8 +97,9 @@ A user uploads **one photograph of a diseased rice leaf**. The system:
    lesion-area, spatial distribution).
 5. Feeds it to the **best of SVM / Random Forest / KNN**, chosen by macro-F1 on a
    stratified protocol (96 train / 24 held-out test, 5-fold CV).
-6. Returns **disease label + confidence + lesion-area % + experimental severity
-   (Mild/Moderate/Severe) + warnings**, or an honest `uncertain` / `rejected` state.
+6. Returns **disease label + decision-function margins (never a confidence/probability
+   percentage; P-15/P-18) + lesion-area % + experimental severity (Mild/Moderate/Severe)
+   + warnings**, or an honest `uncertain` / `rejected` state.
 7. Keeps **temporary, in-memory-runtime** prediction history (SQLite + temp files,
    wiped on restart).
 
@@ -565,6 +570,8 @@ report, production artifacts, model-comparison notebook.
 
 ### Phase 5 — React dashboard
 
+**Status: COMPLETE (2026-11-08).** Implemented as `docs/FRONTEND.md` describes.
+
 **Goal:** the academic dashboard from PRD §6, with every required disclaimer visible.
 
 **Tasks**
@@ -577,14 +584,16 @@ report, production artifacts, model-comparison notebook.
 4. `ImagePreview` with aspect-ratio-preserving `<img>` (`object-contain`), file meta.
 5. `AnalysisProgress`: staged indicator (uploading → validating → segmenting → extracting →
    classifying) — optimistic labels, honest about unknown timing.
-6. `PredictionResultCard`: disease, confidence %, severity badge, lesion-area %, model version,
+6. `PredictionResultCard`: disease, **per-class decision-function margins + best-vs-second
+   margin** (P-15/P-18 supersede the PRD's older `confidence %` wording; displaying a
+   confidence percentage is forbidden), severity badge, lesion-area %, model version,
    timestamp, and the severity disclaimer on **every** render.
 7. `QualityWarningCard` / `UncertainResultCard` / `RejectedResultCard` / `ErrorState`
    with distinct visual language (amber vs grey vs red) — never styled like a prediction.
 8. `SegmentationPreviewPanel`: leaf-mask and lesion-mask thumbnails (click to enlarge),
    with a caption explaining these are diagnostic artifacts.
-9. `HistoryPage`: table (thumbnail, time, disease, confidence, severity, status),
-   clear-history confirm dialog, expiry notice, empty state, backend-waking state.
+9. `HistoryPage`: table (thumbnail, time, disease, **best-vs-second margin**, severity,
+   status), clear-history confirm dialog, expiry notice, empty state, backend-waking state.
 10. `AboutModelPage`: supported diseases, dataset size/classes/limitations, workflow
     diagram (SVG/HTML), model version + selected classifier + metrics from `/model-info`,
     severity disclaimer, healthy-leaf caveat.
