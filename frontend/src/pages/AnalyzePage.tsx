@@ -22,6 +22,7 @@ const GUIDANCE = [
   'Avoid heavy blur, shadows, glare and extreme distance.',
   'Make sure the diseased region is visible in the frame.',
   'Do not upload healthy leaves.',
+  'Phone-camera photographs are untested; use a clean, plain background where possible.',
   'If several leaves are visible, only the most suitable detected leaf is analysed.',
 ]
 
@@ -117,16 +118,22 @@ export function AnalyzePage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Analyze"
-        title="Analyze Leaf"
-        description="Upload one rice-leaf photograph. The classical computer-vision and SVM pipeline runs locally on the backend and returns a supported disease label with honest quality and severity caveats."
+        eyebrow="DhanyaDrishti · Diagnostic workspace"
+        title="Rice-leaf analysis, with the evidence"
+        description="Upload one rice-leaf photograph to receive a supported disease label, decision-function margins, an experimental lesion-area estimate, and the quality caveats behind the result."
       />
 
-      <Callout tone="warning" title="Academic prototype — three diseased classes only" className="block">
+      <Callout tone="warning" title="Academic prototype — read the limits first" className="block">
         <p>
-          Supported labels are Bacterial Leaf Blight, Brown Spot and Leaf Smut. There is no healthy
-          class. Do not upload healthy leaves, and do not use the result as professional
-          agricultural advice.
+          Supported labels are Bacterial Leaf Blight, Brown Spot and Leaf Smut. There is{' '}
+          <strong>no healthy class</strong>: never treat a result as a healthy-leaf diagnosis. The
+          model has <strong>not been validated on smartphone or field-camera photographs</strong>;
+          it was calibrated on white-paper studio images, so phone photos may be unreliable.
+        </p>
+        <p className="mt-2">
+          Scores are decision-function margins, <strong>not probabilities or confidence
+          percentages</strong>, and the severity estimate is experimental. Do not use any result as
+          professional agricultural advice.
         </p>
       </Callout>
 
@@ -145,6 +152,7 @@ export function AnalyzePage() {
             error={health.error}
             onRetry={health.refresh}
             retryLabel="Retry connection"
+            autoRetrying
           />
         </div>
       ) : null}
@@ -176,8 +184,8 @@ export function AnalyzePage() {
         </p>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="card p-5" aria-labelledby="upload-heading">
+      <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+        <section className="card p-4 sm:p-5" aria-labelledby="upload-heading">
           <div className="flex items-baseline justify-between gap-2">
             <h2 id="upload-heading" className="text-lg font-semibold text-ink-900">
               1. Select an image
@@ -210,12 +218,12 @@ export function AnalyzePage() {
             </div>
           ) : null}
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
             <button
               type="button"
               onClick={() => void analyze()}
               disabled={analyzeDisabled}
-              className="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-accent-700 disabled:cursor-not-allowed disabled:bg-ink-300"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-accent-700 disabled:cursor-not-allowed disabled:bg-ink-300 sm:w-auto"
             >
               {pending ? <Spinner className="h-4 w-4 text-white" /> : null}
               {pending ? 'Analysing…' : 'Analyze leaf'}
@@ -225,7 +233,7 @@ export function AnalyzePage() {
                 type="button"
                 onClick={reset}
                 disabled={pending}
-                className="rounded-lg border border-ink-300 bg-white px-4 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-lg border border-ink-300 bg-white px-4 py-2.5 text-sm font-semibold text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
                 Clear
               </button>
@@ -244,7 +252,7 @@ export function AnalyzePage() {
           ) : null}
         </section>
 
-        <div ref={resultRef} className="scroll-mt-4" aria-live="polite">
+        <div ref={resultRef} className="min-w-0 scroll-mt-4" aria-live="polite">
           {pending ? <AnalysisProgress fileName={file?.name} /> : null}
           {!pending && error ? (
             <AnalysisErrorCard

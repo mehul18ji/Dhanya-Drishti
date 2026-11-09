@@ -1,53 +1,52 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
+import { beforeEach, describe, expect, it } from 'vitest'
 
-import { jsonResponse, makeHealth } from '../../test/fixtures'
 import { Header } from './Header'
 
-describe('Header health handling', () => {
-  let fetchMock: ReturnType<typeof vi.fn>
+function renderHeader() {
+  return render(
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Header />
+    </MemoryRouter>,
+  )
+}
 
+describe('Header', () => {
   beforeEach(() => {
-    fetchMock = vi.fn()
-    vi.stubGlobal('fetch', fetchMock)
+    if (typeof window.localStorage?.clear === 'function') window.localStorage.clear()
+    document.documentElement.classList.remove('dark')
   })
 
-  it('reports a loaded model and allows a status refresh', async () => {
-    fetchMock.mockResolvedValue(jsonResponse(makeHealth()))
+  it('shows the rebranded name and hides backend/model status text', () => {
+    renderHeader()
+
+    expect(screen.getByText('DhanyaDrishti')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /dhanyadrishti home/i })).toHaveAttribute('href', '/')
+    expect(screen.queryByText(/backend online/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/backend offline/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/model: classical ml/i)).not.toBeInTheDocument()
+  })
+
+  it('keeps the theme toggle as the only header action', () => {
+    renderHeader()
+
+    expect(screen.getAllByRole('button')).toHaveLength(1)
+    expect(screen.getByRole('button', { name: /switch to dark mode/i })).toBeInTheDocument()
+  })
+
+  it('toggles between dark and light mode', async () => {
     const user = userEvent.setup()
+    renderHeader()
 
-    render(<Header />)
+    await user.click(screen.getByRole('button', { name: /switch to dark mode/i }))
 
-    const badge = await screen.findByRole('button', {
-      name: /refresh backend and model status/i,
-    })
-    expect(badge).toHaveTextContent(/backend online/i)
-    expect(badge).toHaveTextContent(/svm-v1.0.0/)
+    expect(screen.getByRole('button', { name: /switch to light mode/i })).toBeInTheDocument()
+    expect(document.documentElement).toHaveClass('dark')
 
-    await user.click(badge)
-    expect(fetchMock).toHaveBeenCalledTimes(2)
-  })
+    await user.click(screen.getByRole('button', { name: /switch to light mode/i }))
 
-  it('distinguishes backend-online from model-ready', async () => {
-    fetchMock.mockResolvedValue(
-      jsonResponse(makeHealth({ model_loaded: false, model_version: null })),
-    )
-
-    render(<Header />)
-
-    expect(
-      await screen.findByRole('button', { name: /refresh backend and model status/i }),
-    ).toHaveTextContent(/backend online · model starting/i)
-  })
-
-  it('reports an unreachable backend', async () => {
-    fetchMock.mockRejectedValue(new TypeError('Failed to fetch'))
-
-    render(<Header />)
-
-    expect(
-      await screen.findByRole('button', { name: /refresh backend and model status/i }),
-    ).toHaveTextContent(/backend offline/i)
+    expect(document.documentElement).not.toHaveClass('dark')
   })
 })

@@ -65,7 +65,7 @@ export function HistoryPage() {
               type="button"
               onClick={history.reload}
               disabled={history.refreshing || history.state === 'loading'}
-              className="inline-flex items-center gap-2 rounded-lg border border-ink-300 bg-white px-3 py-2 text-xs font-semibold text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-ink-300 bg-white px-3 py-2 text-xs font-semibold text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
             >
               {history.refreshing ? (
                 <Spinner className="h-3.5 w-3.5" />
@@ -78,7 +78,7 @@ export function HistoryPage() {
               type="button"
               onClick={() => setConfirmOpen(true)}
               disabled={!hasItems || history.clearing}
-              className="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               {history.clearing ? (
                 <Spinner className="h-3.5 w-3.5 text-red-700" />
@@ -155,7 +155,11 @@ export function HistoryPage() {
 
         {history.state === 'error' && history.error ? (
           <div className="p-5" data-testid="history-error">
-            <ErrorNotice error={history.error} onRetry={history.reload} />
+            <ErrorNotice
+              error={history.error}
+              onRetry={history.reload}
+              autoRetrying={history.autoRetrying}
+            />
           </div>
         ) : null}
 

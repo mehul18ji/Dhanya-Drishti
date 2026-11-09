@@ -17,3 +17,12 @@ export const SCORE_DISCLAIMER =
 
 export const TEMPORARY_STORAGE_NOTICE =
   'History, uploaded images and diagnostic masks are temporary. They are deleted at backend restart, after the configured expiry period, or when history is cleared.'
+
+/** Provenance of the approved 120-image dataset used for Version 1. */
+export const DATASET_SOURCE_URL =
+  'https://www.kaggle.com/datasets/vbookshelf/rice-leaf-diseases/data'
+
+export const DATASET_SOURCE_NAME = 'Rice Leaf Diseases — vbookshelf (Kaggle)'
+
+export const SMARTPHONE_CAVEAT =
+  'No smartphone or field-camera validation has been performed. Segmentation thresholds were tuned on plain white-background studio images, so cluttered phone backgrounds, outdoor lighting and field conditions are untested and may produce unreliable measurements.'

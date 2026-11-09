@@ -60,11 +60,21 @@ export function describeApiError(
     }
   }
 
+  if (error.kind === 'config') {
+    return {
+      title: 'Analysis service is not configured',
+      message: error.message,
+      tone: 'danger',
+      retryable: false,
+      code: error.reasonCode,
+    }
+  }
+
   if (error.kind === 'timeout') {
     return {
       title: 'Analysis service is slow to respond',
       message:
-        'The backend may still be starting, or CPU inference is taking longer than expected. Wait a few seconds and retry.',
+        'The backend may be waking from sleep or CPU inference is taking longer than expected. This page retries automatically; if it persists, press Retry or check the service log.',
       tone: 'warning',
       retryable: true,
       code: error.reasonCode,
@@ -74,7 +84,7 @@ export function describeApiError(
   if (error.kind === 'network') {
     return {
       title: 'Starting analysis service…',
-      message: `Could not reach the backend at ${API_BASE_URL}. If it is starting up, wait a few seconds and retry.`,
+      message: `Could not reach the analysis service at ${API_BASE_URL}. A free-hosted backend can take up to a minute to wake from sleep. This page retries automatically; if the problem persists, check that the Render URL and CORS origin match this deployment.`,
       tone: 'warning',
       retryable: true,
       code: error.reasonCode,
@@ -151,7 +161,7 @@ export function describeApiError(
     )
   }
 
-  if (status === 503 || error.reasonCode === 'MODEL_NOT_LOADED') {
+  if (status === 503 && error.reasonCode === 'MODEL_NOT_LOADED') {
     return withDetail(
       {
         title: 'Analysis service is starting…',
@@ -164,6 +174,30 @@ export function describeApiError(
       error,
       'Analysis service is starting…',
     )
+  }
+
+  // A sleeping/restarting free instance or proxy often answers 502/503/504 with
+  // an HTML page rather than the API's JSON error envelope.
+  if (status === 502 || status === 503 || status === 504) {
+    return {
+      title: 'Analysis service is waking up…',
+      message:
+        'The hosted backend is restarting or waking from sleep. This is normal on a free instance and usually clears within a minute. The page retries automatically; press Retry if you do not want to wait.',
+      tone: 'warning',
+      retryable: true,
+      code: error.reasonCode,
+    }
+  }
+
+  if (status === 429) {
+    return {
+      title: 'Too many requests',
+      message:
+        'The analysis service is temporarily rate-limited. Wait a few seconds and retry. No upload was analysed and nothing was saved to history.',
+      tone: 'warning',
+      retryable: true,
+      code: error.reasonCode,
+    }
   }
 
   if (status === 404) {
@@ -179,9 +213,10 @@ export function describeApiError(
     }
     return withDetail(
       {
-        title: 'Not found',
-        message: 'The requested resource is no longer available.',
-        tone: 'warning',
+        title: 'Backend endpoint not found',
+        message:
+          'The analysis service answered, but not at the expected API path. Check that VITE_API_BASE_URL points to the backend origin (not the Vercel frontend) and redeploy.',
+        tone: 'danger',
         retryable: false,
         code: error.reasonCode,
       },

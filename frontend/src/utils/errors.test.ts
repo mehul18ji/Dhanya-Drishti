@@ -73,4 +73,23 @@ describe('friendly error mapping', () => {
     expect(unknown.title).toBe('Unexpected error')
     expect(unknown.message).not.toContain('secret stack trace')
   })
+
+  it('explains a missing deployment configuration without offering a useless retry', () => {
+    const config = describeApiError(
+      new ApiError('Set VITE_API_BASE_URL and redeploy.', { kind: 'config' }),
+    )
+
+    expect(config.title).toMatch(/not configured/i)
+    expect(config.retryable).toBe(false)
+    expect(config.message).toMatch(/VITE_API_BASE_URL/)
+  })
+
+  it('treats gateway 502/503/504 as a waking free-tier backend', () => {
+    for (const status of [502, 503, 504]) {
+      const waking = describeApiError(new ApiError('gateway', { kind: 'http', status }))
+      expect(waking.title).toMatch(/waking up/i)
+      expect(waking.tone).toBe('warning')
+      expect(waking.retryable).toBe(true)
+    }
+  })
 })

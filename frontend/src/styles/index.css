@@ -6,23 +6,300 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {
     @apply bg-ink-50 font-sans text-ink-900 antialiased;
+    background-color: #f5f7f2;
+    background-image:
+      radial-gradient(circle at 6% -8%, rgba(16, 185, 129, 0.16), transparent 30rem),
+      radial-gradient(circle at 94% 0%, rgba(252, 211, 77, 0.12), transparent 26rem),
+      radial-gradient(circle at 50% 112%, rgba(4, 120, 87, 0.08), transparent 34rem);
+    background-attachment: fixed;
+    transition: background-color 280ms ease, color 280ms ease;
+  }
+
+  html.dark body {
+    @apply bg-ink-950 text-ink-50;
+    background-color: #070c12;
+    background-image:
+      radial-gradient(circle at 6% -10%, rgba(16, 185, 129, 0.2), transparent 32rem),
+      radial-gradient(circle at 94% 0%, rgba(252, 211, 77, 0.06), transparent 28rem),
+      radial-gradient(circle at 50% 115%, rgba(16, 185, 129, 0.1), transparent 38rem);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    overflow-wrap: break-word;
   }
 
   :focus-visible {
     @apply outline-none ring-2 ring-accent-500 ring-offset-2 ring-offset-white;
   }
+
+  html.dark :focus-visible {
+    --tw-ring-offset-color: #070c12;
+  }
+
+  ::selection {
+    background-color: rgba(16, 185, 129, 0.25);
+  }
 }
 
 @layer components {
   .card {
-    @apply rounded-xl border border-ink-200 bg-white shadow-card;
+    @apply rounded-2xl border border-white/70 bg-white/85 shadow-card backdrop-blur-xl;
   }
 
   .badge {
     @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium;
+  }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Dark theme: keep the existing utility markup, retint the palette.  */
+/* Surfaces are lighter than the page, borders are visible, and text  */
+/* is near-white so blocks separate clearly.                          */
+/* ------------------------------------------------------------------ */
+.dark .card {
+  border-color: rgba(148, 163, 184, 0.24);
+  background-color: rgba(20, 31, 27, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 40px -26px rgba(0, 0, 0, 0.95);
+}
+
+.dark .bg-white {
+  background-color: #182420;
+}
+
+.dark .bg-white\/95 {
+  background-color: rgba(24, 36, 32, 0.96);
+}
+
+.dark .bg-white\/80 {
+  background-color: rgba(9, 15, 13, 0.88);
+}
+
+.dark .bg-white\/70,
+.dark .bg-white\/60 {
+  background-color: rgba(18, 28, 24, 0.78);
+}
+
+.dark .bg-ink-50 {
+  background-color: #0d1512;
+}
+
+.dark .bg-ink-50\/60 {
+  background-color: rgba(28, 42, 36, 0.7);
+}
+
+.dark .bg-ink-50\/70 {
+  background-color: rgba(28, 42, 36, 0.8);
+}
+
+.dark .bg-ink-100 {
+  background-color: #22332c;
+}
+
+.dark .bg-ink-200,
+.dark .bg-ink-300 {
+  background-color: #31453c;
+}
+
+.dark .bg-ink-800 {
+  background-color: #22332c;
+}
+
+.dark .bg-ink-900 {
+  background-color: #182420;
+}
+
+.dark .bg-ink-950\/50 {
+  background-color: rgba(2, 6, 5, 0.6);
+}
+
+.dark .text-ink-900 {
+  color: #ffffff;
+}
+
+.dark .text-ink-800 {
+  color: #f8faf9;
+}
+
+.dark .text-ink-700 {
+  color: #eef3f0;
+}
+
+.dark .text-ink-600 {
+  color: #dbe5df;
+}
+
+.dark .text-ink-500 {
+  color: #b9c9c1;
+}
+
+.dark .text-ink-400 {
+  color: #90a59a;
+}
+
+.dark .border-ink-100 {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .border-ink-200 {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.dark .border-ink-300 {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.dark .border-ink-700 {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* tinted callouts, badges and severity pills */
+.dark .bg-sky-50 {
+  background-color: #0b2b45;
+}
+
+.dark .border-sky-200 {
+  border-color: #155e86;
+}
+
+.dark .text-sky-600 {
+  color: #7dd3fc;
+}
+
+.dark .text-sky-900 {
+  color: #e0f2fe;
+}
+
+.dark .bg-accent-50 {
+  background-color: #0c3a2e;
+}
+
+.dark .bg-accent-50\/60 {
+  background-color: rgba(12, 58, 46, 0.65);
+}
+
+.dark .bg-accent-500\/15 {
+  background-color: rgba(16, 185, 129, 0.22);
+}
+
+.dark .border-accent-200,
+.dark .border-accent-300 {
+  border-color: #138a6e;
+}
+
+.dark .text-accent-600 {
+  color: #6ee7b7;
+}
+
+.dark .text-accent-700,
+.dark .text-accent-800,
+.dark .text-accent-900 {
+  color: #a7f3d0;
+}
+
+.dark .bg-warn-50,
+.dark .bg-warn-50\/70 {
+  background-color: rgba(180, 83, 9, 0.28);
+}
+
+.dark .bg-warn-100 {
+  background-color: rgba(180, 83, 9, 0.4);
+}
+
+.dark .border-warn-200,
+.dark .border-warn-300 {
+  border-color: #b45309;
+}
+
+.dark .text-warn-600,
+.dark .text-warn-700,
+.dark .text-warn-800,
+.dark .text-warn-900 {
+  color: #fde68a;
+}
+
+.dark .bg-red-50 {
+  background-color: #3b0d0d;
+}
+
+.dark .border-red-200,
+.dark .border-red-300 {
+  border-color: #b91c1c;
+}
+
+.dark .text-red-600,
+.dark .text-red-700,
+.dark .text-red-800,
+.dark .text-red-900 {
+  color: #fecaca;
+}
+
+.dark .hover\:bg-ink-50:hover {
+  background-color: #182420;
+}
+
+.dark .hover\:bg-ink-800:hover {
+  background-color: #31453c;
+}
+
+.dark .hover\:bg-warn-100:hover {
+  background-color: rgba(180, 83, 9, 0.5);
+}
+
+.dark .hover\:bg-red-50:hover {
+  background-color: rgba(127, 29, 29, 0.55);
+}
+
+/* View Transitions: the new palette is revealed by a circular wipe that */
+/* starts at the theme toggle instead of the default cross-fade.         */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Subtle paper grain used behind the dashboard content. */
+.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -115,7 +115,7 @@ export function PredictionResultCard({
     >
       <div
         className={[
-          'flex flex-wrap items-start justify-between gap-3 border-b px-5 py-4',
+          'flex flex-wrap items-start justify-between gap-3 border-b px-4 py-4 sm:px-5',
           uncertain ? 'border-warn-200 bg-warn-50/70' : 'border-ink-200 bg-white',
         ].join(' ')}
       >
@@ -125,7 +125,7 @@ export function PredictionResultCard({
           </p>
           <h2
             id="prediction-result-heading"
-            className="mt-1 text-2xl font-semibold tracking-tight text-ink-900"
+            className="mt-1 font-display text-2xl font-medium tracking-tight text-ink-900 sm:text-3xl"
           >
             {diseaseLabel(prediction.disease)}
           </h2>
@@ -138,7 +138,7 @@ export function PredictionResultCard({
         <StatusBadge status={prediction.status} />
       </div>
 
-      <div className="space-y-5 p-5">
+      <div className="space-y-5 p-4 sm:p-5">
         {uncertain ? (
           <Callout tone="warning" title="Uncertain result — treat the label as unconfirmed">
             <p>{UNCERTAIN_NOTICE}</p>
@@ -282,11 +282,11 @@ export function PredictionResultCard({
         </div>
 
         {onAnalyzeAnother ? (
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <button
               type="button"
               onClick={onAnalyzeAnother}
-              className="rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white hover:bg-ink-800"
+              className="w-full rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-ink-800 sm:w-auto"
             >
               Analyze another image
             </button>

@@ -8,10 +8,95 @@ import type {
   PredictResponse,
 } from '../types/api'
 
+export const DEV_API_BASE_URL = 'http://localhost:8000'
+
+export interface ApiBaseUrlResolution {
+  baseUrl: string
+  /** Set when the deployment cannot possibly reach a backend; shown instead of crashing. */
+  configError: string | null
+}
+
+function isLoopbackHostname(hostname: string): boolean {
+  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase()
+  return host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.localhost')
+}
+
+/**
+ * Resolve the API origin once at build time.
+ *
+ * A missing variable is tolerated in development (localhost fallback) but is a
+ * configuration error in a deployed build. Invalid values never throw during
+ * module import — that would blank the whole dashboard — instead every request
+ * fails with a readable configuration message.
+ */
+export function resolveApiBaseUrl(
+  configured: string | undefined,
+  {
+    dev,
+    pageHostname = null,
+  }: { dev: boolean; pageHostname?: string | null },
+): ApiBaseUrlResolution {
+  const raw = configured?.trim()
+  if (!raw) {
+    return {
+      baseUrl: DEV_API_BASE_URL,
+      configError: dev
+        ? null
+        : 'This dashboard was built without VITE_API_BASE_URL, so it has no backend address. Set VITE_API_BASE_URL to the Render service origin (for example https://dhanyadrishti-api.onrender.com) and redeploy.',
+    }
+  }
+
+  const candidate = raw.replace(/\/+$/, '')
+  if (!/^https?:\/\/[^\s/]+$/i.test(candidate)) {
+    return {
+      baseUrl: DEV_API_BASE_URL,
+      configError: `VITE_API_BASE_URL must be a bare http(s) origin such as https://dhanyadrishti-api.onrender.com (received “${raw}”). Do not include /api/v1 or a trailing path.`,
+    }
+  }
+
+  try {
+    const parsed = new URL(candidate)
+    if (
+      (parsed.pathname && parsed.pathname !== '/') ||
+      parsed.search.length > 0 ||
+      parsed.hash.length > 0
+    ) {
+      return {
+        baseUrl: parsed.origin,
+        configError: `VITE_API_BASE_URL must be an origin only; remove the path, query or hash from “${raw}”.`,
+      }
+    }
+
+    if (
+      !dev &&
+      pageHostname &&
+      !isLoopbackHostname(pageHostname) &&
+      isLoopbackHostname(parsed.hostname)
+    ) {
+      return {
+        baseUrl: parsed.origin,
+        configError: `This deployment points VITE_API_BASE_URL at ${parsed.origin}, which is this visitor's own computer. Use the public Render service URL and redeploy.`,
+      }
+    }
+
+    return { baseUrl: parsed.origin, configError: null }
+  } catch {
+    return {
+      baseUrl: DEV_API_BASE_URL,
+      configError: `VITE_API_BASE_URL is not a valid URL (received “${raw}”).`,
+    }
+  }
+}
+
+const resolvedApiBaseUrl = resolveApiBaseUrl(import.meta.env.VITE_API_BASE_URL, {
+  dev: import.meta.env.DEV,
+  pageHostname: typeof window === 'undefined' ? null : window.location.hostname,
+})
+
 /** Backend base URL comes from VITE_API_BASE_URL (PRD §21). */
-export const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
-).replace(/\/+$/, '')
+export const API_BASE_URL = resolvedApiBaseUrl.baseUrl
+/** Non-null when the deployed frontend has no usable backend address. */
+export const API_CONFIG_ERROR = resolvedApiBaseUrl.configError
 
 export const DEFAULT_UPLOAD_LIMIT_MB = 10
 
@@ -20,7 +105,13 @@ const DEFAULT_TIMEOUT_MS = 20_000
 /** CPU inference can be slow on first use, so /predict gets a wider budget. */
 const PREDICT_TIMEOUT_MS = 90_000
 
-export type ApiErrorKind = 'http' | 'network' | 'timeout' | 'aborted' | 'invalid-response'
+export type ApiErrorKind =
+  | 'http'
+  | 'network'
+  | 'timeout'
+  | 'aborted'
+  | 'invalid-response'
+  | 'config'
 
 export class ApiError extends Error {
   readonly kind: ApiErrorKind
@@ -62,6 +153,10 @@ function isErrorEnvelope(value: unknown): value is ErrorEnvelope {
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  if (API_CONFIG_ERROR) {
+    throw new ApiError(API_CONFIG_ERROR, { kind: 'config' })
+  }
+
   const controller = new AbortController()
   let timedOut = false
 

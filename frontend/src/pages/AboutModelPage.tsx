@@ -5,7 +5,7 @@ import { Metric, MetricGrid } from '../components/common/Metric'
 import { PageHeader } from '../components/common/PageHeader'
 import { Spinner } from '../components/common/Spinner'
 import { useModelInfo } from '../hooks/useModelInfo'
-import { GENERAL_DISCLAIMER, HEALTHY_CAVEAT } from '../utils/disclaimers'
+import { GENERAL_DISCLAIMER, HEALTHY_CAVEAT, DATASET_SOURCE_NAME, DATASET_SOURCE_URL, SMARTPHONE_CAVEAT } from '../utils/disclaimers'
 import { SUPPORTED_DISEASES } from '../utils/diseases'
 import { formatDecimal } from '../utils/format'
 
@@ -38,7 +38,7 @@ function modelDisplayName(name: string): string {
 }
 
 export function AboutModelPage() {
-  const { state, info, error, reload } = useModelInfo()
+  const { state, info, error, autoRetrying, reload } = useModelInfo()
 
   return (
     <div className="space-y-6">
@@ -60,7 +60,7 @@ export function AboutModelPage() {
 
       {state === 'error' && error ? (
         <div data-testid="model-info-error">
-          <ErrorNotice error={error} onRetry={reload} />
+          <ErrorNotice error={error} onRetry={reload} autoRetrying={autoRetrying} />
         </div>
       ) : null}
 
@@ -69,7 +69,7 @@ export function AboutModelPage() {
           <section className="card p-5" aria-labelledby="model-identity-heading">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 id="model-identity-heading" className="text-lg font-semibold text-ink-900">
+                <h2 id="model-identity-heading" className="font-display text-xl font-medium tracking-tight text-ink-900">
                   {modelDisplayName(info.model_name)}
                 </h2>
                 <p className="mt-1 text-sm text-ink-600">
@@ -120,7 +120,7 @@ export function AboutModelPage() {
               </div>
               <div>
                 <dt className="font-semibold text-ink-800">Dataset version</dt>
-                <dd className="font-mono text-[11px]">{info.dataset_version}</dd>
+                <dd className="break-all font-mono text-[11px]">{info.dataset_version}</dd>
               </div>
               <div>
                 <dt className="font-semibold text-ink-800">Split protocol</dt>
@@ -142,6 +142,10 @@ export function AboutModelPage() {
                 <dt className="font-semibold text-ink-800">CV balanced accuracy</dt>
                 <dd>{formatDecimal(info.cv_balanced_accuracy_mean, 3)}</dd>
               </div>
+              <div>
+                <dt className="font-semibold text-ink-800">Held-out accuracy</dt>
+                <dd>{formatDecimal(info.held_out_accuracy, 3)}</dd>
+              </div>
             </dl>
             <p className="mt-3 rounded-md bg-ink-50 px-3 py-2 text-[11px] text-ink-500">
               Held-out status: {info.held_out_status}. The 24 held-out images are a single
@@ -151,7 +155,7 @@ export function AboutModelPage() {
           </section>
 
           <section className="card p-5" aria-labelledby="score-reading-heading">
-            <h2 id="score-reading-heading" className="text-lg font-semibold text-ink-900">
+            <h2 id="score-reading-heading" className="font-display text-xl font-medium tracking-tight text-ink-900">
               How to read model scores
             </h2>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -177,7 +181,7 @@ export function AboutModelPage() {
           </section>
 
           <section className="card p-5" aria-labelledby="supported-diseases-heading">
-            <h2 id="supported-diseases-heading" className="text-lg font-semibold text-ink-900">
+            <h2 id="supported-diseases-heading" className="font-display text-xl font-medium tracking-tight text-ink-900">
               Supported disease labels
             </h2>
             <p className="mt-1 text-sm text-ink-600">
@@ -205,7 +209,7 @@ export function AboutModelPage() {
           </section>
 
           <section className="card p-5" aria-labelledby="workflow-heading">
-            <h2 id="workflow-heading" className="text-lg font-semibold text-ink-900">
+            <h2 id="workflow-heading" className="font-display text-xl font-medium tracking-tight text-ink-900">
               Required classical workflow
             </h2>
             <p className="mt-1 text-sm text-ink-600">
@@ -228,9 +232,26 @@ export function AboutModelPage() {
           </section>
 
           <section className="card p-5" aria-labelledby="dataset-heading">
-            <h2 id="dataset-heading" className="text-lg font-semibold text-ink-900">
+            <h2 id="dataset-heading" className="font-display text-xl font-medium tracking-tight text-ink-900">
               Dataset and evaluation protocol
             </h2>
+            <div className="mt-3 flex flex-col gap-2 rounded-xl border border-accent-200 bg-accent-50/60 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-accent-700">
+                  Dataset source
+                </p>
+                <p className="mt-0.5 text-sm font-semibold text-ink-900">{DATASET_SOURCE_NAME}</p>
+              </div>
+              <a
+                href={DATASET_SOURCE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-accent-300 bg-white px-3 py-1.5 text-xs font-semibold text-accent-800 hover:bg-accent-50"
+              >
+                View on Kaggle
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
             <dl className="mt-3 grid gap-3 text-sm text-ink-600 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">
@@ -262,29 +283,30 @@ export function AboutModelPage() {
               </div>
             </dl>
             <p className="mt-3 text-xs leading-relaxed text-ink-500">
-              The dataset is small and visually similar. Confirmed duplicate groups never cross
-              train/validation/test boundaries. The single held-out result carries substantial
-              sampling uncertainty and is not a claim of field performance.
+              The dataset is a small, visually similar collection sourced from the public Kaggle
+              release above; this project uses the approved 120-image subset. Confirmed duplicate
+              groups never cross train/validation/test boundaries. The single held-out result
+              carries substantial sampling uncertainty and is not a claim of field performance.
             </p>
           </section>
 
           <section className="card p-5" aria-labelledby="severity-heading">
-            <h2 id="severity-heading" className="text-lg font-semibold text-ink-900">
+            <h2 id="severity-heading" className="font-display text-xl font-medium tracking-tight text-ink-900">
               Experimental severity
             </h2>
             <p className="mt-1 text-sm text-ink-600">
               Version 1 maps the measured visible-lesion area of the detected leaf onto three
               buckets. There are no expert severity labels and no validated agronomic thresholds.
             </p>
-            <div className="mt-3 overflow-hidden rounded-lg border border-ink-200">
-              <table className="w-full text-sm">
+            <div className="mt-3 overflow-x-auto rounded-lg border border-ink-200">
+              <table className="w-full min-w-[300px] text-sm">
                 <caption className="sr-only">Experimental lesion-area severity buckets</caption>
                 <thead>
                   <tr className="bg-ink-50 text-left text-[11px] uppercase tracking-wide text-ink-500">
-                    <th scope="col" className="px-4 py-2 font-semibold">
+                    <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
                       Lesion area
                     </th>
-                    <th scope="col" className="px-4 py-2 font-semibold">
+                    <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
                       Displayed severity
                     </th>
                   </tr>
@@ -292,8 +314,10 @@ export function AboutModelPage() {
                 <tbody>
                   {SEVERITY_BUCKETS.map((bucket) => (
                     <tr key={bucket.label} className="border-t border-ink-100">
-                      <td className="px-4 py-2 text-ink-700">{bucket.range}</td>
-                      <td className="px-4 py-2 font-semibold text-ink-900">{bucket.label}</td>
+                      <td className="px-3 py-2 text-ink-700 sm:px-4">{bucket.range}</td>
+                      <td className="px-3 py-2 font-semibold text-ink-900 sm:px-4">
+                        {bucket.label}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -312,11 +336,16 @@ export function AboutModelPage() {
           <section className="card p-5" aria-labelledby="limitations-heading">
             <h2
               id="limitations-heading"
-              className="flex items-center gap-2 text-lg font-semibold text-ink-900"
+              className="flex items-center gap-2 font-display text-xl font-medium tracking-tight text-ink-900"
             >
               <AlertTriangleIcon className="h-5 w-5 text-warn-600" />
               Known limitations and failure cases
             </h2>
+            <div className="mt-3">
+              <Callout tone="danger" title="Not validated on smartphone or field photographs">
+                <p>{SMARTPHONE_CAVEAT}</p>
+              </Callout>
+            </div>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-ink-600">
               {info.known_failure_cases.map((failure) => (
                 <li key={failure}>{failure}</li>
@@ -328,6 +357,10 @@ export function AboutModelPage() {
               <li>
                 History and artifacts are temporary and disappear on restart, expiry or clear. No
                 uploaded image is stored permanently.
+              </li>
+              <li>
+                Timing figures are CPU-only observations on a single development machine, not a
+                production service-level guarantee.
               </li>
             </ul>
           </section>

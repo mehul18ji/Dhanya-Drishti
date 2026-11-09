@@ -134,6 +134,20 @@ test.describe('real localhost acceptance (live backend)', () => {
     )
     expect(loaded.every((image) => image.complete && image.naturalWidth > 0)).toBe(true)
 
+    // -- artifact tap previews; the Download button is the only download --- #
+    await page.getByRole('button', { name: /preview oriented upload artifact/i }).click()
+    const viewer = page.getByRole('dialog', { name: /oriented upload preview/i })
+    await expect(viewer).toBeVisible()
+    await expect(viewer.getByTestId('artifact-full-image')).toBeVisible()
+
+    const [artifactDownload] = await Promise.all([
+      page.waitForEvent('download'),
+      viewer.getByRole('button', { name: /^download$/i }).click(),
+    ])
+    expect(artifactDownload.suggestedFilename()).toBe('oriented-upload.png')
+    await viewer.getByRole('button', { name: /close preview/i }).click()
+    await expect(viewer).toBeHidden()
+
     // -- temporary history ------------------------------------------------ #
     await page.getByRole('link', { name: 'Prediction History' }).click()
     await expect(page.getByTestId('history-row')).toHaveCount(1)

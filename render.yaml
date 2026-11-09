@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: dhanyadrishti-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      # Set this in the Render dashboard to the exact Vercel origin, e.g.
+      # https://dhanyadrishti.vercel.app (comma-separate preview origins).
+      - key: CORS_ORIGINS
+        sync: false
+      - key: HISTORY_EXPIRY_MINUTES
+        value: "60"
+      - key: MAX_UPLOAD_MB
+        value: "10"

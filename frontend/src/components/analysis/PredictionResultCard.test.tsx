@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 
-import { API_BASE_URL } from '../../services/api'
 import { makePrediction } from '../../test/fixtures'
 import { SEVERITY_DISCLAIMER, UNCERTAIN_NOTICE } from '../../utils/disclaimers'
 import { PredictionResultCard } from './PredictionResultCard'
@@ -28,19 +28,26 @@ describe('PredictionResultCard', () => {
     expect(screen.queryByText(/\d+% confidence/i)).not.toBeInTheDocument()
   })
 
-  it('links temporary artifacts safely and absolutely', () => {
+  it('previews temporary artifacts in-app instead of downloading them', async () => {
+    const user = userEvent.setup()
     render(<PredictionResultCard prediction={makePrediction()} />)
 
-    const original = screen.getByRole('link', { name: /oriented upload/i })
-    expect(original).toHaveAttribute(
-      'href',
-      `${API_BASE_URL}/api/v1/history/${makePrediction().prediction_id}/original`,
-    )
-    expect(original).toHaveAttribute('target', '_blank')
-    expect(original).toHaveAttribute('rel', 'noopener noreferrer')
-    expect(screen.getByRole('link', { name: /leaf mask/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /lesion mask/i })).toBeInTheDocument()
+    const original = screen.getByRole('button', {
+      name: /preview oriented upload artifact/i,
+    })
+    expect(original).not.toHaveAttribute('href')
+    expect(screen.getByRole('button', { name: /preview leaf mask artifact/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /preview lesion mask artifact/i }),
+    ).toBeInTheDocument()
     expect(screen.getByText(/current backend session/i)).toBeInTheDocument()
+
+    await user.click(original)
+
+    const dialog = screen.getByRole('dialog', { name: /oriented upload preview/i })
+    expect(within(dialog).getByTestId('artifact-full-image')).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: /^download$/i })).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: /close preview/i })).toBeInTheDocument()
   })
 
   it('renders an uncertain label as unconfirmed using the required PRD text', () => {

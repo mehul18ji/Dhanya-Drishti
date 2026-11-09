@@ -191,7 +191,7 @@ test.describe('analysis states', () => {
     await expect(page.getByTestId('preview-orientation')).toHaveText('Landscape')
     await expect(page.getByRole('button', { name: 'Analyze leaf' })).toBeDisabled()
     await expect(page.getByTestId('backend-unavailable')).toContainText(
-      'Could not reach the backend',
+      'Could not reach the analysis service',
     )
   })
 

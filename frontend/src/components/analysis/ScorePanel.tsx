@@ -34,41 +34,45 @@ export function ScorePanel({
         </p>
       </div>
 
-      <table className="w-full text-sm">
-        <caption className="sr-only">
-          Per-class decision-function margins for the three supported rice-leaf diseases
-        </caption>
-        <thead>
-          <tr className="border-b border-ink-100 text-left text-[11px] uppercase tracking-wide text-ink-500">
-            <th scope="col" className="px-4 py-2 font-semibold">
-              Rank
-            </th>
-            <th scope="col" className="px-4 py-2 font-semibold">
-              Supported class
-            </th>
-            <th scope="col" className="px-4 py-2 text-right font-semibold">
-              Decision score
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {ordered.map((label, index) => {
-            const value = scores[label]
-            return (
-              <tr
-                key={label}
-                className={index === 0 ? 'bg-accent-50/60' : 'border-t border-ink-100'}
-              >
-                <td className="px-4 py-2 tabular-nums text-ink-500">{index + 1}</td>
-                <td className="px-4 py-2 font-medium text-ink-800">{diseaseLabel(label)}</td>
-                <td className="px-4 py-2 text-right font-mono tabular-nums text-ink-900">
-                  {formatScore(value)}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[300px] text-sm">
+          <caption className="sr-only">
+            Per-class decision-function margins for the three supported rice-leaf diseases
+          </caption>
+          <thead>
+            <tr className="border-b border-ink-100 text-left text-[11px] uppercase tracking-wide text-ink-500">
+              <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
+                Rank
+              </th>
+              <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
+                Supported class
+              </th>
+              <th scope="col" className="px-3 py-2 text-right font-semibold sm:px-4">
+                Decision score
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {ordered.map((label, index) => {
+              const value = scores[label]
+              return (
+                <tr
+                  key={label}
+                  className={index === 0 ? 'bg-accent-50/60' : 'border-t border-ink-100'}
+                >
+                  <td className="px-3 py-2 tabular-nums text-ink-500 sm:px-4">{index + 1}</td>
+                  <td className="px-3 py-2 font-medium text-ink-800 sm:px-4">
+                    {diseaseLabel(label)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-2 text-right font-mono tabular-nums text-ink-900 sm:px-4">
+                    {formatScore(value)}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
 
       <div className="space-y-1 border-t border-ink-200 bg-ink-50 px-4 py-3 text-xs text-ink-600">
         <p>

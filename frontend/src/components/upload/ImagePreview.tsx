@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useObjectUrl } from '../../hooks/useObjectUrl'
 import { formatFileSize } from '../../utils/format'
-import { ImageIcon, XIcon } from '../common/Icons'
+import { ArtifactPreview } from '../common/ArtifactPreview'
+import { ImageIcon, MaximizeIcon, XIcon } from '../common/Icons'
 
 interface Dimensions {
   width: number
@@ -13,6 +14,8 @@ function orientationLabel({ width, height }: Dimensions): string {
   if (width === height) return 'Square'
   return width > height ? 'Landscape' : 'Portrait'
 }
+
+const SINGLE_ITEM_INDEX = () => {}
 
 export function ImagePreview({
   file,
@@ -26,6 +29,7 @@ export function ImagePreview({
   const src = useObjectUrl(file)
   const [dimensions, setDimensions] = useState<Dimensions | null>(null)
   const [failed, setFailed] = useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
     setDimensions(null)
@@ -34,21 +38,35 @@ export function ImagePreview({
 
   return (
     <div className="space-y-3" data-testid="image-preview">
-      <div className="relative overflow-hidden rounded-lg border border-ink-200 bg-ink-100">
+      <div className="relative overflow-hidden rounded-xl border border-ink-200 bg-ink-100">
         {src && !failed ? (
-          <img
-            src={src}
-            alt={`Preview of the selected leaf image: ${file.name}`}
-            className="mx-auto max-h-[420px] w-full object-contain"
-            data-testid="preview-image"
-            onLoad={(event) =>
-              setDimensions({
-                width: event.currentTarget.naturalWidth,
-                height: event.currentTarget.naturalHeight,
-              })
-            }
-            onError={() => setFailed(true)}
-          />
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            aria-label={`Open full-screen preview of ${file.name}`}
+            className="group relative block w-full cursor-zoom-in bg-ink-100/60"
+          >
+            <img
+              src={src}
+              alt={`Preview of the selected leaf image: ${file.name}`}
+              className="mx-auto max-h-[52vh] w-full object-contain sm:max-h-[420px]"
+              data-testid="preview-image"
+              onLoad={(event) =>
+                setDimensions({
+                  width: event.currentTarget.naturalWidth,
+                  height: event.currentTarget.naturalHeight,
+                })
+              }
+              onError={() => setFailed(true)}
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-ink-950/70 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur transition group-hover:bg-accent-600"
+            >
+              <MaximizeIcon className="h-3 w-3" />
+              Full screen
+            </span>
+          </button>
         ) : (
           <div className="flex min-h-[180px] flex-col items-center justify-center gap-2 px-4 py-8 text-center text-sm text-ink-600">
             <ImageIcon className="h-7 w-7 text-ink-400" />
@@ -66,7 +84,7 @@ export function ImagePreview({
           type="button"
           onClick={onRemove}
           disabled={disabled}
-          className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md border border-ink-300 bg-white/95 px-2 py-1 text-xs font-semibold text-ink-700 shadow-sm hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="absolute right-2 top-2 inline-flex h-9 items-center gap-1 rounded-full border border-ink-300 bg-white/95 px-2.5 text-xs font-semibold text-ink-700 shadow-sm hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
           aria-label="Remove selected image"
         >
           <XIcon className="h-3.5 w-3.5" />
@@ -103,9 +121,16 @@ export function ImagePreview({
         </div>
       </dl>
       <p className="text-xs text-ink-500">
-        Previews are scaled to fit without stretching, so portrait and landscape photos keep
-        their original proportions.
+        Tap the image to preview it full screen. Previews are scaled to fit without stretching, so
+        portrait and landscape photos keep their original proportions.
       </p>
+
+      <ArtifactPreview
+        items={src ? [{ src, label: 'Selected image', caption: file.name, filename: file.name }] : []}
+        index={expanded && src ? 0 : null}
+        onIndexChange={SINGLE_ITEM_INDEX}
+        onClose={() => setExpanded(false)}
+      />
     </div>
   )
 }

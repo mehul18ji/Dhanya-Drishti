@@ -14,17 +14,24 @@ export interface HistoryState {
   error: FriendlyError | null
   refreshing: boolean
   lastLoadedAt: Date | null
+  autoRetrying: boolean
   reload: () => void
   clear: () => Promise<number | null>
   clearing: boolean
   clearError: FriendlyError | null
 }
 
+const RETRY_BASE_MS = 4_000
+const RETRY_MAX_MS = 30_000
+const MAX_AUTO_RETRIES = 6
+
 /**
  * Temporary history client.
  *
  * Only labelled results are stored by the backend, so any defensive `rejected`
- * row is filtered out rather than displayed as a diagnosis.
+ * row is filtered out rather than displayed as a diagnosis. Because a free
+ * Render instance may be asleep, retryable failures are retried automatically
+ * with backoff; the Retry button remains available for an immediate attempt.
  */
 export function useHistory(limit = 50): HistoryState {
   const [items, setItems] = useState<HistoryItem[]>([])
@@ -33,17 +40,29 @@ export function useHistory(limit = 50): HistoryState {
   const [error, setError] = useState<FriendlyError | null>(null)
   const [refreshing, setRefreshing] = useState(false)
   const [lastLoadedAt, setLastLoadedAt] = useState<Date | null>(null)
+  const [autoRetrying, setAutoRetrying] = useState(false)
   const [reloadToken, setReloadToken] = useState(0)
   const [clearing, setClearing] = useState(false)
   const [clearError, setClearError] = useState<FriendlyError | null>(null)
   const controllerRef = useRef<AbortController | null>(null)
+  const retryCountRef = useRef(0)
+  const retryTimerRef = useRef<number | null>(null)
 
-  const reload = useCallback(() => setReloadToken((token) => token + 1), [])
+  const reload = useCallback(() => {
+    retryCountRef.current = 0
+    setReloadToken((token) => token + 1)
+  }, [])
 
   useEffect(() => {
     let active = true
     const controller = new AbortController()
     controllerRef.current = controller
+
+    if (retryTimerRef.current !== null) {
+      window.clearTimeout(retryTimerRef.current)
+      retryTimerRef.current = null
+    }
+    setAutoRetrying(false)
 
     setRefreshing(state === 'success')
     if (state !== 'success') setState('loading')
@@ -52,17 +71,31 @@ export function useHistory(limit = 50): HistoryState {
       .then((response) => {
         if (!active) return
         const labelled = response.items.filter((item) => item.status !== 'rejected')
+        retryCountRef.current = 0
         setItems(labelled)
         setCount(labelled.length)
         setError(null)
+        setAutoRetrying(false)
         setState('success')
         setLastLoadedAt(new Date())
       })
       .catch((caught) => {
         if (!active || isAbortError(caught)) return
-        setError(describeApiError(caught, 'history'))
+        const friendly = describeApiError(caught, 'history')
+        setError(friendly)
         setState('error')
         setLastLoadedAt(new Date())
+
+        if (friendly.retryable && retryCountRef.current < MAX_AUTO_RETRIES) {
+          const attempt = retryCountRef.current + 1
+          retryCountRef.current = attempt
+          const delay = Math.min(RETRY_BASE_MS * 2 ** (attempt - 1), RETRY_MAX_MS)
+          setAutoRetrying(true)
+          retryTimerRef.current = window.setTimeout(() => {
+            retryTimerRef.current = null
+            if (active) setReloadToken((token) => token + 1)
+          }, delay)
+        }
       })
       .finally(() => {
         if (active) setRefreshing(false)
@@ -71,6 +104,10 @@ export function useHistory(limit = 50): HistoryState {
     return () => {
       active = false
       controller.abort()
+      if (retryTimerRef.current !== null) {
+        window.clearTimeout(retryTimerRef.current)
+        retryTimerRef.current = null
+      }
     }
     // `state` is intentionally read to avoid a loading flash on refresh; it must
     // not re-trigger the effect.
@@ -82,10 +119,12 @@ export function useHistory(limit = 50): HistoryState {
     setClearError(null)
     try {
       const response = await deleteHistory()
+      retryCountRef.current = 0
       setItems([])
       setCount(0)
       setState('success')
       setError(null)
+      setAutoRetrying(false)
       setLastLoadedAt(new Date())
       return response.deleted
     } catch (caught) {
@@ -105,6 +144,7 @@ export function useHistory(limit = 50): HistoryState {
     error,
     refreshing,
     lastLoadedAt,
+    autoRetrying,
     reload,
     clear,
     clearing,

@@ -1,4 +1,10 @@
-import { useRef, useState, type DragEvent } from 'react'
+import {
+  useRef,
+  useState,
+  type DragEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from 'react'
 
 import { DEFAULT_UPLOAD_LIMIT_MB } from '../../services/api'
 import { ACCEPT_ATTRIBUTE, validateUploadFile } from '../../utils/upload'
@@ -40,11 +46,30 @@ export function ImageUploader({
     acceptFile(event.dataTransfer.files?.[0])
   }
 
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+    // input.click() bubbles back here; ignore it or the picker would recurse.
+    if (event.target === inputRef.current) return
+    openPicker()
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    openPicker()
+  }
+
+  const label = file ? 'Replace the selected image' : 'Upload a rice-leaf image'
+
   return (
     <div className="space-y-2">
       <div
-        role="group"
-        aria-labelledby="uploader-instruction"
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-label={label}
+        aria-disabled={disabled || undefined}
+        aria-describedby="uploader-instruction uploader-hint"
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
         onDragOver={(event) => {
           event.preventDefault()
           if (!disabled) setDragging(true)
@@ -52,28 +77,38 @@ export function ImageUploader({
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         className={[
-          'rounded-xl border-2 border-dashed px-5 py-7 text-center transition-colors',
+          'group flex min-h-[220px] cursor-pointer select-none flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-8 text-center transition-all duration-200 sm:min-h-[240px] sm:px-6',
           dragging
-            ? 'border-accent-500 bg-accent-50'
-            : 'border-ink-300 bg-ink-50/60 hover:border-accent-400',
-          disabled ? 'opacity-60' : '',
+            ? 'border-accent-500 bg-accent-50 shadow-inner'
+            : 'border-ink-300 bg-white/60 hover:border-accent-500 hover:bg-accent-50/40 dark:border-white/20 dark:bg-white/5 dark:hover:bg-accent-900/20',
+          disabled ? 'cursor-not-allowed opacity-60' : 'active:scale-[0.995]',
+          'focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2',
         ].join(' ')}
+        data-testid="upload-dropzone"
       >
-        <UploadIcon className="mx-auto h-9 w-9 text-accent-600" />
-        <p id="uploader-instruction" className="mt-3 text-sm font-semibold text-ink-900">
-          {file ? 'Replace the selected image' : 'Drag and drop a rice-leaf image here'}
-        </p>
-        <p className="mt-1 text-xs text-ink-500">
-          JPG, JPEG, PNG or WEBP · up to {maxSizeMb} MB
-        </p>
-        <button
-          type="button"
-          onClick={openPicker}
-          disabled={disabled}
-          className="mt-3 inline-flex items-center rounded-lg border border-ink-300 bg-white px-4 py-2 text-sm font-semibold text-ink-800 shadow-sm hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-60"
+        <span
+          aria-hidden="true"
+          className={[
+            'flex h-14 w-14 items-center justify-center rounded-full transition-colors',
+            dragging
+              ? 'bg-accent-500 text-white'
+              : 'bg-accent-500/10 text-accent-700 group-hover:bg-accent-500 group-hover:text-white',
+          ].join(' ')}
         >
-          Browse files
-        </button>
+          <UploadIcon className="h-6 w-6" />
+        </span>
+        <p
+          id="uploader-instruction"
+          className="mt-4 text-base font-semibold text-ink-900 sm:text-lg"
+        >
+          {label}
+        </p>
+        <p className="mt-1 max-w-xs text-xs leading-relaxed text-ink-600 sm:text-sm">
+          Tap anywhere in this box to choose a photo, or drag and drop one here.
+        </p>
+        <p id="uploader-hint" className="mt-3 text-[11px] font-medium text-ink-500">
+          JPG · JPEG · PNG · WEBP · up to {maxSizeMb} MB
+        </p>
         <input
           ref={inputRef}
           type="file"

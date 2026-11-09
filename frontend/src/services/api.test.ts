@@ -8,6 +8,7 @@ import {
   getHealth,
   getHistory,
   predict,
+  resolveApiBaseUrl,
 } from '../services/api'
 import {
   errorEnvelope,
@@ -145,5 +146,44 @@ describe('typed API client', () => {
   it('exposes ApiError as the only client error type', async () => {
     fetchMock.mockResolvedValue(errorEnvelope(500, 'INTERNAL_ERROR', 'boom'))
     await expect(getHealth()).rejects.toBeInstanceOf(ApiError)
+  })
+})
+
+describe('api base URL resolution', () => {
+  it('falls back to localhost only in development', () => {
+    expect(resolveApiBaseUrl(undefined, { dev: true })).toEqual({
+      baseUrl: 'http://localhost:8000',
+      configError: null,
+    })
+
+    const production = resolveApiBaseUrl(undefined, { dev: false })
+    expect(production.configError).toMatch(/VITE_API_BASE_URL/)
+  })
+
+  it('normalises a trailing slash and rejects a path', () => {
+    expect(
+      resolveApiBaseUrl('https://api.example.com/', { dev: false }).baseUrl,
+    ).toBe('https://api.example.com')
+
+    const withPath = resolveApiBaseUrl('https://api.example.com/api/v1', { dev: false })
+    expect(withPath.configError).toMatch(/origin/i)
+  })
+
+  it('treats a loopback backend on a deployed page as a configuration error', () => {
+    const result = resolveApiBaseUrl('http://localhost:8000', {
+      dev: false,
+      pageHostname: 'dhanyadrishti.vercel.app',
+    })
+
+    expect(result.configError).toMatch(/public Render service URL/i)
+  })
+
+  it('accepts a loopback backend during local preview and development', () => {
+    expect(
+      resolveApiBaseUrl('http://127.0.0.1:8000', {
+        dev: false,
+        pageHostname: '127.0.0.1',
+      }),
+    ).toEqual({ baseUrl: 'http://127.0.0.1:8000', configError: null })
   })
 })

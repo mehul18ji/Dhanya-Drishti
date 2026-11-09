@@ -8,11 +8,14 @@ export function ErrorNotice({
   onRetry,
   retryLabel = 'Retry',
   retrying = false,
+  autoRetrying = false,
 }: {
   error: FriendlyError
   onRetry?: () => void
   retryLabel?: string
   retrying?: boolean
+  /** A retry is already scheduled; tell the user no action is required. */
+  autoRetrying?: boolean
 }) {
   return (
     <div data-testid="error-notice">
@@ -31,6 +34,11 @@ export function ErrorNotice({
         {error.code ? (
           <p className="mt-1 font-mono text-[11px] uppercase tracking-wide text-ink-500">
             Code: {error.code}
+          </p>
+        ) : null}
+        {autoRetrying ? (
+          <p className="mt-2 text-xs text-ink-600" data-testid="auto-retry-hint">
+            Retrying automatically — no action needed. The hosted backend may be waking from sleep.
           </p>
         ) : null}
         {onRetry && error.retryable ? (

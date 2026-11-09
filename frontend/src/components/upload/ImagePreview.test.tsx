@@ -33,6 +33,26 @@ describe('ImagePreview', () => {
     expect(screen.getByTestId('preview-orientation')).toHaveTextContent('Landscape')
   })
 
+  it('opens a full-screen preview without downloading the image', async () => {
+    const user = userEvent.setup()
+    render(<ImagePreview file={makeFile({ name: 'leaf.jpg' })} onRemove={vi.fn()} />)
+
+    await user.click(
+      screen.getByRole('button', { name: /open full-screen preview of leaf\.jpg/i }),
+    )
+
+    const dialog = screen.getByRole('dialog', { name: /selected image preview/i })
+    expect(dialog).toBeInTheDocument()
+    expect(screen.getByTestId('artifact-full-image')).toHaveAttribute(
+      'src',
+      expect.stringContaining('blob:'),
+    )
+    expect(screen.getByRole('button', { name: /^download$/i })).toBeInTheDocument()
+
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
   it('removes the selected image through an accessible button', async () => {
     const user = userEvent.setup()
     const onRemove = vi.fn()

@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { API_BASE_URL } from '../services/api'
 import {
   errorEnvelope,
   jsonResponse,
@@ -67,25 +66,26 @@ describe('HistoryPage', () => {
 
     expect(screen.getAllByText('Brown Spot').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Leaf Smut').length).toBeGreaterThan(0)
-    expect(screen.getByText('Predicted')).toBeInTheDocument()
-    expect(screen.getByText('Uncertain')).toBeInTheDocument()
-    expect(screen.getByText('12.4%')).toBeInTheDocument()
-    expect(screen.getByText('Not available')).toBeInTheDocument()
-    expect(screen.getByText('+1.13')).toBeInTheDocument()
-    expect(screen.getAllByText('not a probability').length).toBe(2)
-    expect(screen.getByText(/appears blurry/i)).toBeInTheDocument()
-    expect(screen.getByText('lesion_area_ratio')).toBeInTheDocument()
+    expect(screen.getAllByText('Predicted').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Uncertain').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('12.4%').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Not available').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('+1.13').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('not a probability').length).toBeGreaterThanOrEqual(2)
+    expect(screen.getAllByText(/appears blurry/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText('lesion_area_ratio').length).toBeGreaterThan(0)
     expect(screen.getByText(SEVERITY_DISCLAIMER)).toBeInTheDocument()
     expect(screen.queryByText(/\d+% confidence/i)).not.toBeInTheDocument()
 
-    const artifact = within(rows[0]).getByRole('link', {
-      name: /open temporary image artifact/i,
+    const artifact = within(rows[0]).getByRole('button', {
+      name: /preview temporary image artifact/i,
     })
-    expect(artifact).toHaveAttribute(
-      'href',
-      `${API_BASE_URL}/api/v1/history/${predicted.prediction_id}/original`,
-    )
-    expect(artifact).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(artifact).not.toHaveAttribute('href')
+
+    await userEvent.setup().click(artifact)
+    const preview = screen.getByRole('dialog', { name: /image preview/i })
+    expect(preview).toBeInTheDocument()
+    expect(within(preview).getByRole('button', { name: /^download$/i })).toBeInTheDocument()
   })
 
   it('shows an empty state when no labels have been stored', async () => {

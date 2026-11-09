@@ -53,23 +53,48 @@ describe('ImageUploader', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(/limit is 10 MB/i)
   })
 
-  it('opens the picker from an accessible button', async () => {
+  it('opens the picker from anywhere inside the dashed upload area', async () => {
     const user = userEvent.setup()
     const { container } = render(
       <ImageUploader file={null} onFileSelected={vi.fn()} />,
     )
     const clickSpy = vi.spyOn(fileInput(container), 'click').mockImplementation(() => {})
+    const dropzone = screen.getByTestId('upload-dropzone')
 
-    await user.click(screen.getByRole('button', { name: /browse files/i }))
+    expect(dropzone).toHaveAttribute('role', 'button')
+    expect(screen.queryByRole('button', { name: /browse files/i })).not.toBeInTheDocument()
 
+    await user.click(dropzone)
     expect(clickSpy).toHaveBeenCalledTimes(1)
+
+    await user.click(screen.getByText(/tap anywhere in this box/i))
+    expect(clickSpy).toHaveBeenCalledTimes(2)
   })
 
-  it('disables selection while an analysis is running', () => {
+  it('opens the picker with the keyboard', () => {
+    const { container } = render(
+      <ImageUploader file={null} onFileSelected={vi.fn()} />,
+    )
+    const clickSpy = vi.spyOn(fileInput(container), 'click').mockImplementation(() => {})
+    const dropzone = screen.getByTestId('upload-dropzone')
+
+    fireEvent.keyDown(dropzone, { key: 'Enter' })
+    fireEvent.keyDown(dropzone, { key: ' ' })
+
+    expect(clickSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('disables selection while an analysis is running', async () => {
     const { container } = render(
       <ImageUploader file={makeFile()} onFileSelected={vi.fn()} disabled />,
     )
-    expect(screen.getByRole('button', { name: /browse files/i })).toBeDisabled()
+    const dropzone = screen.getByRole('button', { name: /replace the selected image/i })
+    const clickSpy = vi.spyOn(fileInput(container), 'click').mockImplementation(() => {})
+
+    expect(dropzone).toHaveAttribute('aria-disabled', 'true')
     expect(fileInput(container)).toBeDisabled()
+
+    fireEvent.click(dropzone)
+    expect(clickSpy).not.toHaveBeenCalled()
   })
 })

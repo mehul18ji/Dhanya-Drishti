@@ -1,71 +1,68 @@
-# DhanyaDrishti
+<p align="center">
+  <img src="frontend/public/favicon.svg" width="76" height="76" alt="DhanyaDrishti logo" />
+</p>
 
-**Rice-leaf disease analysis with a classical computer-vision and machine-learning pipeline.**
+<h1 align="center">DhanyaDrishti</h1>
 
-[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-classical%20ML-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![Status](https://img.shields.io/badge/status-Phase%206%20complete-2ea44f)](#project-status)
+<p align="center">
+  <strong>Rice-leaf disease analysis, explained stage by stage.</strong>
+</p>
 
-DhanyaDrishti is an academic web dashboard that examines a single photograph of a diseased
-rice leaf and returns a supported disease label, decision-margin scores, a lesion-area
-estimate, and an experimental severity estimate. The complete pipeline is **classical
-computer vision and machine learning** — there is no deep learning in Version 1.
+<p align="center">
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11" /></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white" alt="FastAPI" /></a>
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" alt="React 18" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5" /></a>
+  <a href="https://scikit-learn.org/"><img src="https://img.shields.io/badge/scikit--learn-classical%20ML-F7931E?logo=scikitlearn&logoColor=white" alt="scikit-learn" /></a>
+  <a href="https://opencv.org/"><img src="https://img.shields.io/badge/OpenCV-computer%20vision-5C3EE8?logo=opencv&logoColor=white" alt="OpenCV" /></a>
+  <a href="https://vite.dev/"><img src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white" alt="Vite 6" /></a>
+</p>
 
-> **Scope:** three diseased rice-leaf classes only — Bacterial Leaf Blight, Brown Spot and
-> Leaf Smut. The system does not detect healthy leaves, other diseases, or plant-level
-> conditions. Results are academic estimates, not agricultural advice.
+DhanyaDrishti turns a single rice-leaf photograph into an inspectable diagnostic report: a
+supported disease label, per-class decision-function margins, a segmented lesion-area
+estimate, an experimental severity band, and the quality warnings behind the result. The
+pipeline is classical computer vision and machine learning — no deep learning and no hidden
+probability scores.
 
----
+**Scope.** The model supports three classes: Bacterial Leaf Blight, Brown Spot and Leaf Smut.
+It has no healthy-leaf class and is not intended for treatment decisions. See
+[Responsible use](#responsible-use).
 
 ## Live Demo
 
-Phase 7 cloud deployment has not started yet. The public frontend URL will be added here
-after the Vercel deployment is complete.
+> **Dashboard:** _Public link coming soon._
 
-| Component | URL | Status |
-|---|---|---|
-| Frontend (Vercel) | _Placeholder — to be added after deployment_ | Pending |
-| Backend API | `http://localhost:8000` | Local development |
+The frontend is a static Vite application; the API and interactive documentation run as a
+separate FastAPI service. Deployment configuration and environment requirements are covered
+in [`DEPLOYMENT.md`](./DEPLOYMENT.md).
 
-<!-- VERCEL_FRONTEND_URL: replace the placeholder row above after Phase 7 deployment. -->
+## Capabilities
 
----
+- **Transparent inference** — per-class SVM decision-function values, the best-vs-second
+  margin and the full class ranking. Scores are never presented as probabilities or
+  confidence percentages.
+- **Reliability first** — unusable images are rejected with a reason, unreliable lesion
+  measurements are withheld, and uncertain results carry explicit quality warnings.
+- **Visual evidence** — the oriented upload, leaf mask and lesion mask are available as
+  in-app full-screen previews. Files download only when the user explicitly asks.
+- **Mobile-ready workspace** — responsive layouts, tap-to-upload, mobile history cards,
+  accessible dialogs and a light/dark theme.
+- **Deployment-aware client** — environment-driven API configuration, automatic recovery
+  from sleeping backends, offline detection and an app-wide error boundary.
+- **Temporary by design** — predictions and PNG artifacts live in runtime storage and
+  disappear on restart, expiry or explicit clear.
 
-## Overview
-
-The project covers the full path from an uploaded leaf photograph to an honest,
-inspectable result:
-
-- **Disease prediction** — one of three supported classes.
-- **Decision-margin scores** — per-class SVM decision-function values and a best-vs-second
-  margin. These are **not** calibrated probabilities or confidence percentages.
-- **Lesion analysis** — estimated visible-lesion area with explicit reliability gating.
-- **Experimental severity** — Mild / Moderate / Severe from lesion-area thresholds, always
-  shown with its disclaimer.
-- **Quality and uncertainty warnings** — the UI reports when a result is unreliable instead
-  of presenting a false confirmation.
-- **Temporary history** — predictions and PNG artifacts last only for the current backend
-  session and are wiped on restart.
-
-The application is intentionally conservative: rejected inputs return no disease label, no
-severity and no history entry.
-
----
-
-## How It Works
+## Pipeline
 
 ```text
 Upload
-  → upload validation (type, size, decode, EXIF)
+  → validation (type, size, decode, EXIF orientation)
   → preprocessing (aspect-preserving resize, letterbox, denoise)
   → quality assessment
   → leaf segmentation (HSV + Lab, K-Means, morphology)
   → lesion segmentation inside the leaf mask
   → 50-feature extraction (colour, GLCM texture, shape, lesion, spatial)
-  → SVM inference (decision-function margins, not probabilities)
+  → RBF SVM inference (decision-function margins)
   → experimental severity estimate
   → temporary history and artifact storage
 ```
@@ -73,21 +70,19 @@ Upload
 | Stage | What happens |
 |---|---|
 | Validation | File type, size, image decode, dimension limits and EXIF orientation are checked before analysis. |
-| Preprocessing | The image is resized without stretching, letterboxed to a square canvas, and denoised. |
+| Preprocessing | The image is resized without stretching, letterboxed to a square canvas and denoised. |
 | Segmentation | A primary leaf mask is produced, followed by a lesion mask constrained to that leaf. |
-| Feature extraction | A versioned 50-feature schema captures colour, texture, shape, lesion and spatial measurements. |
+| Features | A versioned 50-feature schema captures colour, texture, shape, lesion and spatial measurements. |
 | Inference | The production bundle verifies its schema and config hashes, then predicts with an RBF SVM. |
 | Reporting | The API returns margins, lesion reliability, warnings, provenance, timings and artifact URLs. |
 
 The backend never retrains, recalibrates or reads held-out evaluation rows during a request.
 
----
-
-## Model and Evaluation
+## Model
 
 | Item | Value |
 |---|---|
-| Dataset | 120 approved diseased rice-leaf images, 3 classes |
+| Dataset | 120 diseased rice-leaf images, 3 classes |
 | Split protocol | 96 development images (group-aware 5-fold CV) / 24 held-out images (8 per class) |
 | Candidates compared | RBF SVM, Random Forest, K-Nearest Neighbours |
 | Selected model | RBF SVM (`C=1.0`, `gamma="scale"`) |
@@ -100,9 +95,7 @@ The backend never retrains, recalibrates or reads held-out evaluation rows durin
 The held-out set was evaluated once after model selection and was not used for tuning. The
 24-image sample is small, so the final metric carries sampling uncertainty.
 
----
-
-## Tech Stack
+## Technology
 
 | Layer | Technology |
 |---|---|
@@ -113,46 +106,38 @@ The held-out set was evaluated once after model selection and was not used for t
 | Runtime storage | SQLite + local PNG artifacts, temporary only |
 | Testing | pytest, Vitest, Testing Library, Playwright |
 
----
-
-## Repository Structure
+## Repository Layout
 
 ```text
 DhanyaDrishti/
-├── backend/                 FastAPI app, vision/ML modules, configs, tests, production bundle
-├── frontend/                React + Vite + TypeScript dashboard
-├── data/                    Raw dataset (ignored), frozen splits, tracked reproducibility snapshots
-├── demo_images/             Curated UI-only demo images and provenance notes
-├── docs/                    Architecture, API, QA, acceptance evidence and model documentation
-├── notebooks/               Dataset audit, segmentation and model-comparison notebooks
-├── scripts/                 Audit, split, train, evaluate, export and acceptance scripts
-└── tests/end_to_end/        Cross-stack Playwright browser tests
+├── backend/                 FastAPI service, vision/ML pipeline, configs, tests and bundle
+├── frontend/                React + Vite dashboard and Vercel configuration
+├── data/                    Dataset guidance, frozen splits and reproducibility snapshots
+├── demo_images/             Curated images for interface demonstrations
+├── docs/                    Architecture, API contract, decisions, QA and dataset audit
+├── notebooks/               Dataset audit, segmentation and model-comparison analysis
+├── scripts/                 Audit, split, train, evaluate, export and acceptance tooling
+├── tests/end_to_end/        Cross-stack Playwright browser tests
+├── DEPLOYMENT.md            Vercel + Render deployment runbook
+└── render.yaml              Render blueprint for the API service
 ```
-
----
 
 ## Getting Started
 
-### Prerequisites
-
-- Python 3.11+
-- Node.js 20+ and npm
-- Git
+**Prerequisites:** Python 3.11+, Node.js 20+ and npm.
 
 ### Backend
 
-```powershell
+```bash
 cd backend
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements-dev.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
 - API documentation: <http://localhost:8000/docs>
 - Health check: <http://localhost:8000/api/v1/health>
-
-Expected health response with the production bundle loaded:
 
 ```json
 {
@@ -165,123 +150,73 @@ Expected health response with the production bundle loaded:
 
 ### Frontend
 
-```powershell
+```bash
 cd frontend
 npm install
+cp .env.example .env
 npm run dev
 ```
 
-- Dashboard: <http://localhost:5173>
-- Build: `npm run build`
-- Type check: `npm run typecheck`
-
-Set the backend URL through `VITE_API_BASE_URL` (copy `frontend/.env.example` to
-`frontend/.env`). If `localhost` resolves to IPv6 while the backend binds IPv4, use
+Set `VITE_API_BASE_URL` to the API origin (default local value:
+`http://localhost:8000`). If `localhost` resolves to IPv6 while the backend binds IPv4, use
 `http://127.0.0.1:8000`.
 
-### Dataset and Local Inputs
+- Dashboard: <http://localhost:5173>
+- Production build: `npm run build`
+- Local production preview: `npm run preview`
+- Type check: `npm run typecheck`
 
-The approved 120-image dataset is **not committed**. Place it at
-`data/raw/rice_leaf_diseases/` before running the full pipeline, audits or acceptance
-matrix. The local acceptance photographs under `data/local_acceptance_inputs/` are also
-gitignored and must be present on disk for the 38-check acceptance run.
+### API
 
-See [`data/README.md`](./data/README.md) and [`docs/DATASET_AUDIT.md`](./docs/DATASET_AUDIT.md)
-for provenance and split rules.
+FastAPI exposes health, model information, prediction, history and artifact endpoints under
+`/api/v1`. Request and response contracts are documented in [`docs/API.md`](./docs/API.md).
 
----
+## Deployment
 
-## Testing and Quality
+The repository ships with deployment configuration for a split frontend/API setup:
 
-Last verified on 2026-11-09:
+- **Vercel** — root directory `frontend`; [`frontend/vercel.json`](./frontend/vercel.json)
+  handles SPA routing; set `VITE_API_BASE_URL` to the public API origin.
+- **Render** — use [`render.yaml`](./render.yaml) or the equivalent manual service; set
+  `CORS_ORIGINS` to the exact Vercel origin.
+- **Runbook** — environment variables, smoke tests, cold-start behaviour and troubleshooting
+  are in [`DEPLOYMENT.md`](./DEPLOYMENT.md).
+
+## Verification
 
 | Suite | Command | Result |
 |---|---|---|
-| Backend | `cd backend && python -m pytest -q` | **222 passed** |
-| Root split invariants | `python -m pytest tests -q` | **6 passed** |
-| Frontend component/API | `cd frontend && npm test` | **64 passed** |
-| Frontend typecheck | `npm run typecheck` | **clean** |
-| Frontend build | `npm run build` | **clean** |
-| Playwright — development | `cd tests/end_to_end && npx playwright test` | **22 passed** (Chrome + Edge) |
-| Playwright — production preview | `npx playwright test --config=playwright.preview.config.ts` | **11 passed** (Chrome) |
-| Local acceptance matrix | `python scripts/run_local_acceptance.py` | **38 / 38 checks** |
-| Restart cleanup | `python scripts/check_restart_cleanup.py` | **PASS** |
+| Backend | `cd backend && python -m pytest -q` | 222 passed |
+| Split invariants | `python -m pytest tests -q` | 6 passed |
+| Frontend unit | `cd frontend && npm test` | 73 passed |
+| Type check | `cd frontend && npm run typecheck` | clean |
+| Production build | `cd frontend && npm run build` | clean |
+| Browser — development | `cd tests/end_to_end && npx playwright test` | 34 passed (Chrome + Edge) |
+| Browser — production preview | `npx playwright test --config=playwright.preview.config.ts` | 17 passed (Chrome) |
 
-The acceptance matrix uses a real backend process, real dataset images and a real model
-bundle. It covers upload validation, orientation handling, quality warnings, rejection
-behaviour, history, artifact serving, clear-history and a fresh-process restart with the
-same runtime directory.
+The browser suites cover the live upload-to-result flow, artifact preview and download,
+history, phone layouts, backend cold-start recovery and offline/error states.
 
----
+## Responsible Use
 
-## Demo Images
-
-[`demo_images/`](./demo_images/) contains four curated files for **UI demonstration only**:
-three development-split dataset images and one synthetic blank frame that must be rejected
-with `NO_CLEAR_LEAF_FOUND`.
-
-See [`demo_images/README.md`](./demo_images/README.md) for each file's source, expected
-behaviour and the warning that a training/development image is **not evidence of
-generalization**. No smartphone images are included or claimed.
-
----
+- **Three classes only.** There is no healthy-leaf or out-of-distribution class.
+  Healthy-looking or non-rice inputs may be `uncertain` or rejected, never “healthy”.
+- **Margins, not probabilities.** Decision-function scores are not calibrated confidence
+  values and must not be presented as such.
+- **Experimental severity.** The severity band is a visible-lesion-area estimate under
+  provisional thresholds, not a validated agronomic grade.
+- **Limited evidence base.** The model was trained on 120 images and evaluated on 24; it has
+  not been validated on smartphone or field-camera photographs.
+- **Not professional advice.** DhanyaDrishti is a research and educational system, not a
+  substitute for expert plant-pathology diagnosis, field inspection or treatment advice.
 
 ## Documentation
 
 | Document | Purpose |
 |---|---|
-| [`PRD.txt`](./PRD.txt) | Approved product requirements |
-| [`PHASE_PLAN.txt`](./PHASE_PLAN.txt) | Phase-wise plan, risks and acceptance criteria |
-| [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) | Current state and next exact task |
+| [`DEPLOYMENT.md`](./DEPLOYMENT.md) | Vercel + Render release, environment and failure handling |
 | [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) | System boundaries and component flow |
 | [`docs/API.md`](./docs/API.md) | Endpoint contracts and response rules |
-| [`docs/DECISIONS.md`](./docs/DECISIONS.md) | Locked decisions and rationale |
-| [`docs/QA_REPORT.md`](./docs/QA_REPORT.md) | Browser E2E, contract checks and known limitations |
-| [`docs/LOCAL_ACCEPTANCE_REPORT.md`](./docs/LOCAL_ACCEPTANCE_REPORT.md) | Localhost acceptance evidence and timings |
+| [`docs/DECISIONS.md`](./docs/DECISIONS.md) | Engineering decisions and rationale |
+| [`docs/QA_REPORT.md`](./docs/QA_REPORT.md) | Browser, contract and integration test evidence |
 | [`docs/DATASET_AUDIT.md`](./docs/DATASET_AUDIT.md) | Dataset audit, duplicate review and split protocol |
-
----
-
-## Project Status
-
-| Phase | State |
-|---|---|
-| 1 — Dataset audit and reproducible splits | Complete |
-| 2 — Classical vision pipeline and segmentation audit | Complete |
-| 3 — Features, model comparison and production bundle | Complete |
-| 4 — FastAPI service, prediction, history and artifacts | Complete |
-| 5 — React dashboard and component tests | Complete |
-| 6 — Integration, QA, local acceptance and model card | Complete |
-| 7 — Cloud deployment | **Not started** |
-
-The current repository is prepared for Phase 7 deployment preparation. No cloud
-deployment has been performed.
-
----
-
-## Limitations
-
-- **Three classes only.** There is no healthy-leaf class and no out-of-distribution class.
-  Healthy-looking or non-rice inputs may return `uncertain` or `rejected`, never “healthy”.
-- **Academic prototype.** Results are not a substitute for expert plant-pathology
-  diagnosis, field inspection or treatment advice.
-- **Small held-out sample.** The final metric is based on 24 images; expect meaningful
-  sampling uncertainty.
-- **No smartphone or field validation.** Tests use the approved dataset and synthetic
-  fixtures. No smartphone result is claimed.
-- **Uncalibrated scores.** The SVM exposes decision-function margins, not probabilities.
-  The interface does not present confidence percentages.
-- **Experimental severity.** Severity is a visible-lesion-area estimate under provisional
-  thresholds, not an agronomic grade.
-- **Temporary storage only.** History and artifacts are wiped on restart, expiry or
-  explicit clear. Nothing is permanently stored.
-- **CPU-only, single-machine timings.** Performance figures are local observations, not a
-  production SLA.
-
----
-
-## Disclaimer
-
-DhanyaDrishti is an academic prototype trained on 120 diseased rice-leaf images. Its
-severity output is an experimental visible-lesion-area estimate. It is not a replacement
-for agricultural experts, field inspection or plant-pathology diagnosis.

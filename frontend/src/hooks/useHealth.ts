@@ -80,5 +80,20 @@ export function useHealth({
     }
   }, [pollIntervalMs, retryIntervalMs, refreshToken])
 
+  // Re-check immediately when connectivity returns or the tab becomes active
+  // again; a backgrounded tab may have missed the backend waking up.
+  useEffect(() => {
+    const nudge = () => setRefreshToken((token) => token + 1)
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') nudge()
+    }
+    window.addEventListener('online', nudge)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => {
+      window.removeEventListener('online', nudge)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+  }, [])
+
   return { state, modelLoaded, modelVersion, lastChecked, error, refresh }
 }
