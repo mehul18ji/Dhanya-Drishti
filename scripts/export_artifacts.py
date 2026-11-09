@@ -25,7 +25,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -108,6 +107,18 @@ class ExportError(RuntimeError):
 
 def sha256_of(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def _write_json(path: Path, payload: Any) -> None:
+    """Write JSON with LF endings on every platform.
+
+    ``Path.write_text`` translates ``\\n`` to the platform line separator, which
+    emits CRLF on Windows. A bundle whose manifest records CRLF hashes then fails
+    integrity verification on a Linux host (or after ``core.autocrlf`` strips
+    CRLF on commit), because the recorded hash no longer matches the file. Writing
+    encoded bytes guarantees byte-identical LF output on Windows and Linux.
+    """
+    Path(path).write_bytes((json.dumps(payload, indent=2) + "\n").encode("utf-8"))
 
 
 def _source_paths(
@@ -408,9 +419,7 @@ def export_bundle(
     exported_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
     joblib.dump(pipeline, destination / MODEL_FILE)
-    (destination / PREPROCESSING_FILE).write_text(
-        json.dumps(build_preprocessing(pipeline), indent=2) + "\n", encoding="utf-8"
-    )
+    _write_json(destination / PREPROCESSING_FILE, build_preprocessing(pipeline))
 
     schema = feature_schema()
     schema["classes"] = list(CLASS_LABELS)
@@ -420,31 +429,30 @@ def export_bundle(
     schema["segmentation_config_sha256"] = segmentation.content_sha256
     schema["quality_config_version"] = quality.quality_config_version
     schema["quality_config_sha256"] = quality.content_sha256
-    (destination / SCHEMA_FILE).write_text(
-        json.dumps(schema, indent=2) + "\n", encoding="utf-8"
+    _write_json(destination / SCHEMA_FILE, schema)
+
+    _write_json(
+        destination / CONFIG_FILE,
+        {
+            "segmentation_config_version": segmentation.segmentation_config_version,
+            "segmentation_config_sha256": segmentation.content_sha256,
+            "quality_config_version": quality.quality_config_version,
+            "quality_config_sha256": quality.content_sha256,
+            "segmentation_source": "backend/configs/segmentation.yaml",
+            "quality_source": "backend/configs/quality_thresholds.yaml",
+            "note": (
+                "The bundle pins the Phase 2 configurations that produced the "
+                "features; a different hash means the features are not comparable."
+            ),
+        },
     )
 
-    (destination / CONFIG_FILE).write_text(
-        json.dumps(
-            {
-                "segmentation_config_version": segmentation.segmentation_config_version,
-                "segmentation_config_sha256": segmentation.content_sha256,
-                "quality_config_version": quality.quality_config_version,
-                "quality_config_sha256": quality.content_sha256,
-                "segmentation_source": "backend/configs/segmentation.yaml",
-                "quality_source": "backend/configs/quality_thresholds.yaml",
-                "note": (
-                    "The bundle pins the Phase 2 configurations that produced the "
-                    "features; a different hash means the features are not comparable."
-                ),
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
-
-    shutil.copyfile(evaluation_source, destination / EVALUATION_FILE)
+    # The M4 evaluation report is an authoritative input; copy it verbatim except
+    # for line endings so the bundle stays LF-consistent (see ``_write_json``).
+    evaluation_bytes = evaluation_source.read_bytes()
+    if b"\r\n" in evaluation_bytes:
+        evaluation_bytes = evaluation_bytes.replace(b"\r\n", b"\n")
+    (destination / EVALUATION_FILE).write_bytes(evaluation_bytes)
 
     manifest = build_manifest(
         pipeline,
@@ -453,9 +461,7 @@ def export_bundle(
         evaluation_report=evaluation_report,
         exported_at=exported_at,
     )
-    (destination / MANIFEST_FILE).write_text(
-        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
-    )
+    _write_json(destination / MANIFEST_FILE, manifest)
     log(f"bundle written to {destination}")
     for name in BUNDLE_FILES:
         log(f"  {name}")

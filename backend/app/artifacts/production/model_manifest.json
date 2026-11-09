@@ -1,7 +1,7 @@
 {
   "bundle_version": "1.0.0",
   "bundle_status": "approved_phase3_m5_export",
-  "exported_at": "2026-11-07T18:58:15+00:00",
+  "exported_at": "2026-11-09T19:51:30+00:00",
   "model": {
     "name": "svm",
     "estimator": "SVC(kernel='rbf', class_weight='balanced')",
@@ -110,20 +110,20 @@
       "bytes": 38981
     },
     "preprocessing.json": {
-      "sha256": "6622e7ec1a45730a2a5dd5a2188d8100bd5c2e8a71234ca05ceb0f15fa9217d6",
-      "bytes": 8086
+      "sha256": "6b0c18f74985cf3f91f0ac21f4f7a68a47fecfd84ab8ab7ed450e335fbf94773",
+      "bytes": 7762
     },
     "feature_schema.json": {
-      "sha256": "875638860e39ed1a734b559a940836637b3f6f2935d17f0cdbeb56ac4fcff731",
-      "bytes": 4221
+      "sha256": "f60b22f899b67727c4796746fdde29addacf887308a30c12375254b69ce72462",
+      "bytes": 4054
     },
     "segmentation_config.json": {
-      "sha256": "84d11bb385abb8199d0f874cef58fcba59824bf8dcf4d7915130350e41404f10",
-      "bytes": 557
+      "sha256": "5b0e23257ad678467ff8dfdcc25a1d329944f3d45e9277398d4823ec6d4ffe62",
+      "bytes": 548
     },
     "evaluation_report.json": {
-      "sha256": "7bac8b24008367d9378fb6d264ea8a5a7931342c35c9c857133390ba456fe427",
-      "bytes": 19152
+      "sha256": "10ddacadff68797672a520fb54a65caac85a0850dec82df8780c121d2d833238",
+      "bytes": 18489
     }
   },
   "known_failure_cases": [
