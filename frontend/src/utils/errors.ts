@@ -1,4 +1,5 @@
 import { API_BASE_URL, ApiError, DEFAULT_UPLOAD_LIMIT_MB } from '../services/api'
+import { apiTargetLabel, resolveApiTarget } from './apiTarget'
 
 export type ErrorContext = 'predict' | 'history' | 'model' | 'health'
 
@@ -82,9 +83,14 @@ export function describeApiError(
   }
 
   if (error.kind === 'network') {
+    const target = resolveApiTarget(API_BASE_URL)
+    const targetLabel = apiTargetLabel(target)
     return {
       title: 'Starting analysis service…',
-      message: `Could not reach the analysis service at ${API_BASE_URL}. A free-hosted backend can take up to a minute to wake from sleep. This page retries automatically; if the problem persists, check that the Render URL and CORS origin match this deployment.`,
+      message:
+        target === 'local'
+          ? `Could not reach the local analysis service at ${API_BASE_URL}. Start the FastAPI backend, then retry.`
+          : `Could not reach the ${targetLabel} analysis service at ${API_BASE_URL}. A free-hosted backend can take up to a minute to wake from sleep. This page retries automatically; if the problem persists, check that the API URL and CORS origin match this deployment.`,
       tone: 'warning',
       retryable: true,
       code: error.reasonCode,

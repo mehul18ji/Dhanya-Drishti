@@ -74,7 +74,8 @@ export function AboutModelPage() {
                 </h2>
                 <p className="mt-1 text-sm text-ink-600">
                   Selected during development from SVM, Random Forest and KNN by macro F1 on the
-                  frozen cross-validation folds. The committed bundle is served unchanged.
+                  frozen cross-validation folds. The committed bundle is served unchanged. The live
+                  SVM is configured with `C=1.0`, `gamma="scale"` and `class_weight="balanced"`.
                 </p>
               </div>
               <span className="badge border-accent-200 bg-accent-50 text-accent-800">

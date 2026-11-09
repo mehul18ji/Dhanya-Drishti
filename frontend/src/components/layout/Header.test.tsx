@@ -1,15 +1,28 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { BackendHealthContext } from '../../hooks/useBackendHealth'
+import type { HealthState } from '../../hooks/useHealth'
 import { Header } from './Header'
 
-function renderHeader() {
+const connectedHealth: HealthState = {
+  state: 'online',
+  modelLoaded: true,
+  modelVersion: 'svm-v1.0.0',
+  lastChecked: new Date(),
+  error: null,
+  refresh: vi.fn(),
+}
+
+function renderHeader(health: HealthState = connectedHealth) {
   return render(
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <Header />
-    </MemoryRouter>,
+    <BackendHealthContext.Provider value={health}>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Header />
+      </MemoryRouter>
+    </BackendHealthContext.Provider>,
   )
 }
 
@@ -19,17 +32,33 @@ describe('Header', () => {
     document.documentElement.classList.remove('dark')
   })
 
-  it('shows the rebranded name and hides backend/model status text', () => {
+  it('shows the brand and a live backend connection badge', () => {
     renderHeader()
 
     expect(screen.getByText('DhanyaDrishti')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /dhanyadrishti home/i })).toHaveAttribute('href', '/')
-    expect(screen.queryByText(/backend online/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/backend offline/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/model: classical ml/i)).not.toBeInTheDocument()
+    const status = screen.getByTestId('backend-status')
+    expect(status).toHaveTextContent('Connected')
+    expect(status).toHaveTextContent('Local')
+    expect(status).toHaveAttribute('data-state', 'online')
+    expect(status).toHaveAttribute('data-target', 'local')
   })
 
-  it('keeps the theme toggle as the only header action', () => {
+  it('shows an offline backend without breaking the header actions', () => {
+    renderHeader({
+      ...connectedHealth,
+      state: 'offline',
+      modelLoaded: false,
+      modelVersion: null,
+    })
+
+    const status = screen.getByTestId('backend-status')
+    expect(status).toHaveTextContent(/backend offline/i)
+    expect(status).toHaveAttribute('data-state', 'offline')
+    expect(screen.getByRole('button', { name: /switch to dark mode/i })).toBeInTheDocument()
+  })
+
+  it('keeps the theme toggle as the only header button', () => {
     renderHeader()
 
     expect(screen.getAllByRole('button')).toHaveLength(1)

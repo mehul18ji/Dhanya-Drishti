@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom'
 
+import { useBackendHealth } from '../../hooks/useBackendHealth'
+import { BackendStatus } from './BackendStatus'
 import { BrandMark } from './Brand'
 import { ThemeToggle } from './ThemeToggle'
 
 export function Header() {
+  const health = useBackendHealth()
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-ink-950/95 text-white backdrop-blur supports-[backdrop-filter]:bg-ink-950/85">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-3.5 lg:px-8">
@@ -23,7 +27,8 @@ export function Header() {
           </span>
         </Link>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <BackendStatus health={health} />
           <ThemeToggle />
         </div>
       </div>

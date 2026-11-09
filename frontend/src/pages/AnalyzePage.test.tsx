@@ -10,8 +10,17 @@ import {
   makePrediction,
   makeRejected,
 } from '../test/fixtures'
+import { BackendHealthProvider } from '../hooks/useBackendHealth'
 import { UNCERTAIN_NOTICE } from '../utils/disclaimers'
 import { AnalyzePage } from './AnalyzePage'
+
+function renderPage() {
+  return render(
+    <BackendHealthProvider>
+      <AnalyzePage />
+    </BackendHealthProvider>,
+  )
+}
 
 function selectFile() {
   const input = document.querySelector('input[type="file"]')
@@ -41,7 +50,7 @@ describe('AnalyzePage', () => {
     })
     const user = userEvent.setup()
 
-    render(<AnalyzePage />)
+    renderPage()
     expect(await screen.findByTestId('model-ready')).toBeInTheDocument()
 
     selectFile()
@@ -78,7 +87,7 @@ describe('AnalyzePage', () => {
     })
     const user = userEvent.setup()
 
-    render(<AnalyzePage />)
+    renderPage()
     await screen.findByTestId('model-ready')
     selectFile()
     await user.click(screen.getByRole('button', { name: /analyze leaf/i }))
@@ -102,7 +111,7 @@ describe('AnalyzePage', () => {
     })
     const user = userEvent.setup()
 
-    render(<AnalyzePage />)
+    renderPage()
     await screen.findByTestId('model-ready')
     selectFile()
     await user.click(screen.getByRole('button', { name: /analyze leaf/i }))
@@ -123,7 +132,7 @@ describe('AnalyzePage', () => {
     })
     const user = userEvent.setup()
 
-    render(<AnalyzePage />)
+    renderPage()
     await screen.findByTestId('model-ready')
     selectFile()
     await user.click(screen.getByRole('button', { name: /analyze leaf/i }))
@@ -148,7 +157,7 @@ describe('AnalyzePage', () => {
     })
     const user = userEvent.setup()
 
-    render(<AnalyzePage />)
+    renderPage()
     await screen.findByTestId('model-ready')
     selectFile()
     await user.click(screen.getByRole('button', { name: /analyze leaf/i }))
@@ -171,7 +180,7 @@ describe('AnalyzePage', () => {
     })
     const user = userEvent.setup()
 
-    render(<AnalyzePage />)
+    renderPage()
     await screen.findByTestId('model-ready')
     selectFile()
     await user.click(screen.getByRole('button', { name: /analyze leaf/i }))
@@ -193,12 +202,12 @@ describe('AnalyzePage', () => {
     })
     const user = userEvent.setup()
 
-    render(<AnalyzePage />)
+    renderPage()
     expect(await screen.findByTestId('backend-unavailable')).toHaveTextContent(
       /starting analysis service/i,
     )
 
-    selectFile()
+    expect(screen.getByTestId('upload-dropzone')).toHaveAttribute('aria-disabled', 'true')
     const analyze = screen.getByRole('button', { name: /analyze leaf/i })
     expect(analyze).toBeDisabled()
     expect(screen.queryByTestId('model-ready')).not.toBeInTheDocument()
@@ -206,6 +215,7 @@ describe('AnalyzePage', () => {
     await user.click(screen.getByRole('button', { name: /retry connection/i }))
 
     expect(await screen.findByTestId('model-ready')).toBeInTheDocument()
+    selectFile()
     expect(screen.getByRole('button', { name: /analyze leaf/i })).toBeEnabled()
   })
 
@@ -219,9 +229,9 @@ describe('AnalyzePage', () => {
       return Promise.reject(new Error('predict should not be called'))
     })
 
-    render(<AnalyzePage />)
+    renderPage()
     expect(await screen.findByTestId('model-unavailable')).toBeInTheDocument()
-    selectFile()
+    expect(screen.getByTestId('upload-dropzone')).toHaveAttribute('aria-disabled', 'true')
     expect(screen.getByRole('button', { name: /analyze leaf/i })).toBeDisabled()
   })
 })

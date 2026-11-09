@@ -20,6 +20,29 @@ async function json(route: Route, body: unknown, status = 200) {
 test.describe('hosted-service resilience', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true })
 
+  test('marks a disconnected backend and pauses uploads without breaking navigation', async ({
+    page,
+  }) => {
+    await page.route('**/api/v1/health', (route) => route.abort('failed'))
+
+    await page.goto('/')
+
+    const status = page.getByTestId('backend-status')
+    await expect(status).toBeVisible()
+    await expect(status).toContainText(/backend offline/i)
+    await expect(status).toHaveAttribute('data-state', 'offline')
+    await expect(status).toHaveAttribute('data-target', 'local')
+    await expect(page.getByTestId('upload-dropzone')).toHaveAttribute('aria-disabled', 'true')
+    await expect(page.getByRole('button', { name: 'Analyze leaf' })).toBeDisabled()
+    await expect(page.getByTestId('backend-unavailable')).toContainText(
+      /start the fastapi backend/i,
+    )
+
+    await page.getByRole('link', { name: 'About Model' }).click()
+    await expect(page).toHaveURL(/\/about$/)
+    await expect(page.getByRole('heading', { name: 'About Model' })).toBeVisible()
+  })
+
   test('the model card recovers automatically while the backend wakes', async ({ page }) => {
     await page.route('**/api/v1/health', (route) => json(route, makeHealth()))
 

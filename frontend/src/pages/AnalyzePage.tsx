@@ -10,9 +10,10 @@ import { PageHeader } from '../components/common/PageHeader'
 import { Spinner } from '../components/common/Spinner'
 import { ImagePreview } from '../components/upload/ImagePreview'
 import { ImageUploader } from '../components/upload/ImageUploader'
-import { useHealth } from '../hooks/useHealth'
-import { predict } from '../services/api'
+import { useBackendHealth } from '../hooks/useBackendHealth'
+import { API_BASE_URL, predict } from '../services/api'
 import type { PredictResponse } from '../types/api'
+import { apiTargetLabel, resolveApiTarget } from '../utils/apiTarget'
 import { describeApiError, isAbortError } from '../utils/errors'
 import type { FriendlyError } from '../utils/errors'
 
@@ -54,7 +55,10 @@ function EmptyResultState() {
 }
 
 export function AnalyzePage() {
-  const health = useHealth()
+  const health = useBackendHealth()
+  const apiLabel = apiTargetLabel(resolveApiTarget(API_BASE_URL))
+  const modelReady = health.state === 'online' && health.modelLoaded
+  const unavailable = health.state === 'offline' || (health.state === 'online' && !health.modelLoaded)
   const [file, setFile] = useState<File | null>(null)
   const [result, setResult] = useState<PredictResponse | null>(null)
   const [error, setError] = useState<FriendlyError | null>(null)
@@ -76,6 +80,7 @@ export function AnalyzePage() {
   }, [pending, result, error])
 
   const chooseFile = (selected: File) => {
+    if (unavailable) return
     controllerRef.current?.abort()
     setPending(false)
     setFile(selected)
@@ -92,7 +97,7 @@ export function AnalyzePage() {
   }
 
   const analyze = async () => {
-    if (!file || pending) return
+    if (!file || pending || !modelReady) return
     controllerRef.current?.abort()
     const controller = new AbortController()
     controllerRef.current = controller
@@ -111,8 +116,6 @@ export function AnalyzePage() {
     }
   }
 
-  const modelReady = health.state === 'online' && health.modelLoaded
-  const unavailable = health.state === 'offline' || (health.state === 'online' && !health.modelLoaded)
   const analyzeDisabled = !file || pending || !modelReady
 
   return (
@@ -161,9 +164,8 @@ export function AnalyzePage() {
         <div data-testid="model-unavailable">
           <Callout tone="warning" title="Backend online — model still starting">
             <p>
-              The API is reachable but the production model bundle is not loaded yet. Wait a few
-              seconds and retry. Uploading is available, but analysis stays disabled until the
-              model is ready.
+              The API is reachable but the production model bundle is not loaded yet. Uploading and
+              analysis are paused until the model is ready; the page checks again automatically.
             </p>
             <button
               type="button"
@@ -179,8 +181,7 @@ export function AnalyzePage() {
       {modelReady ? (
         <p className="text-xs text-ink-500" data-testid="model-ready">
           Model ready
-          {health.modelVersion ? ` · ${health.modelVersion}` : ''} · images are processed in
-          temporary runtime storage only.
+          {health.modelVersion ? ` · ${health.modelVersion}` : ''} ·          Connected to the {apiLabel} API · images are processed in temporary runtime storage only.
         </p>
       ) : null}
 
@@ -208,7 +209,7 @@ export function AnalyzePage() {
             <ImageUploader
               file={file}
               onFileSelected={chooseFile}
-              disabled={pending}
+              disabled={pending || unavailable}
             />
           </div>
 
@@ -240,14 +241,15 @@ export function AnalyzePage() {
             ) : null}
           </div>
 
-          {!file ? (
+          {unavailable ? (
+            <p className="mt-2 text-xs text-warn-800">
+              {file
+                ? 'Analysis is disabled until the backend and model are ready. The retry button above refreshes the health status.'
+                : 'Uploads are paused while the analysis service is unavailable. The rest of the dashboard stays usable; uploads resume automatically when the backend reconnects.'}
+            </p>
+          ) : !file ? (
             <p className="mt-2 text-xs text-ink-500">
               Choose a file to enable analysis.
-            </p>
-          ) : unavailable ? (
-            <p className="mt-2 text-xs text-warn-800">
-              Analysis is disabled until the backend and model are ready. The retry button above
-              refreshes the health status.
             </p>
           ) : null}
         </section>

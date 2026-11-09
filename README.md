@@ -85,7 +85,7 @@ The backend never retrains, recalibrates or reads held-out evaluation rows durin
 | Dataset | 120 diseased rice-leaf images, 3 classes |
 | Split protocol | 96 development images (group-aware 5-fold CV) / 24 held-out images (8 per class) |
 | Candidates compared | RBF SVM, Random Forest, K-Nearest Neighbours |
-| Selected model | RBF SVM (`C=1.0`, `gamma="scale"`) |
+| Selected model | RBF SVM (`C=1.0`, `gamma="scale"`, `class_weight="balanced"`) |
 | Cross-validation macro F1 | **0.8412 ± 0.0604** |
 | Held-out macro F1 | **0.7855** (n = 24) |
 | Held-out accuracy | **0.7917** |
@@ -187,12 +187,11 @@ The repository ships with deployment configuration for a split frontend/API setu
 | Suite | Command | Result |
 |---|---|---|
 | Backend | `cd backend && python -m pytest -q` | 222 passed |
-| Split invariants | `python -m pytest tests -q` | 6 passed |
-| Frontend unit | `cd frontend && npm test` | 73 passed |
-| Type check | `cd frontend && npm run typecheck` | clean |
+| Split invariants | `python -m pytest tests -q` | 6 passed || Frontend unit | `cd frontend && npm test` | 64 passed |
+| Typecheck | `cd frontend && npm run typecheck` | clean |
 | Production build | `cd frontend && npm run build` | clean |
-| Browser — development | `cd tests/end_to_end && npx playwright test` | 34 passed (Chrome + Edge) |
-| Browser — production preview | `npx playwright test --config=playwright.preview.config.ts` | 17 passed (Chrome) |
+| Browser — development | `cd tests/end_to_end && npx playwright test` | 22 passed (Chrome + Edge) |
+| Browser — production preview | `npx playwright test --config=playwright.preview.config.ts` | 11 passed (Chrome) |
 
 The browser suites cover the live upload-to-result flow, artifact preview and download,
 history, phone layouts, backend cold-start recovery and offline/error states.

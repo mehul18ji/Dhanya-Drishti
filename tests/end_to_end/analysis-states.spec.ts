@@ -187,11 +187,11 @@ test.describe('analysis states', () => {
 
     await page.goto('/')
     await expect(page.getByTestId('backend-unavailable')).toBeVisible()
-    await chooseFile(page, LANDSCAPE)
-    await expect(page.getByTestId('preview-orientation')).toHaveText('Landscape')
+    await expect(page.getByTestId('upload-dropzone')).toHaveAttribute('aria-disabled', 'true')
+    await expect(page.getByTestId('preview-orientation')).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Analyze leaf' })).toBeDisabled()
     await expect(page.getByTestId('backend-unavailable')).toContainText(
-      'Could not reach the analysis service',
+      /could not reach the local analysis service/i,
     )
   })
 
@@ -203,7 +203,7 @@ test.describe('analysis states', () => {
 
     await page.goto('/')
     await expect(page.getByTestId('model-unavailable')).toBeVisible()
-    await chooseFile(page, LANDSCAPE)
+    await expect(page.getByTestId('upload-dropzone')).toHaveAttribute('aria-disabled', 'true')
     await expect(page.getByRole('button', { name: 'Analyze leaf' })).toBeDisabled()
     await expect(page.getByTestId('model-ready')).toHaveCount(0)
   })
