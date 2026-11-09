@@ -39,7 +39,11 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     max_upload_mb: int = 10
+    #: Temporary history TTL (PRD §16). ``history_expiry_minutes`` is the age at
+    #: which a record becomes invalid; the sweep interval is how often the
+    #: running process actually deletes expired rows and their PNG files.
     history_expiry_minutes: int = 60
+    history_sweep_interval_seconds: int = 60
 
     runtime_dir: Path = BACKEND_DIR / ".runtime"
     model_dir: Path = BACKEND_DIR / "app" / "artifacts" / "production"

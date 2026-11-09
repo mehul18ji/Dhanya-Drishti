@@ -140,6 +140,7 @@ interface RequestOptions {
   headers?: Record<string, string>
   signal?: AbortSignal
   timeoutMs?: number
+  cache?: RequestCache
 }
 
 function isErrorEnvelope(value: unknown): value is ErrorEnvelope {
@@ -179,6 +180,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
         headers: { Accept: 'application/json', ...options.headers },
         body: options.body,
         signal: controller.signal,
+        cache: options.cache,
       })
     } catch (error) {
       if (options.signal?.aborted) {
@@ -241,9 +243,13 @@ export function artifactUrl(url: string | null | undefined): string | null {
 
 /** GET /api/v1/health */
 export function getHealth(signal?: AbortSignal): Promise<HealthResponse> {
+  // `no-store` makes every health call a real request instead of a cached read:
+  // the same call doubles as the keep-alive ping that stops a free-tier backend
+  // from spinning down while the dashboard is open.
   return request<HealthResponse>('/api/v1/health', {
     signal,
     timeoutMs: HEALTH_TIMEOUT_MS,
+    cache: 'no-store',
   })
 }
 

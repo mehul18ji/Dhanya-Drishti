@@ -58,7 +58,7 @@ export function HistoryPage() {
       <PageHeader
         eyebrow="Session history"
         title="Prediction History"
-        description="Temporary records from the currently running backend session. Nothing here survives a restart, server sleep or expiry."
+        description="Temporary records from the currently running backend session. Each record and its images are deleted automatically 60 minutes after creation, and nothing here survives a restart or server sleep."
         actions={
           <>
             <button

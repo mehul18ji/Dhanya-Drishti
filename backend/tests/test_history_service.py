@@ -6,7 +6,9 @@ network, no permanent state.
 
 from __future__ import annotations
 
+import asyncio
 import uuid
+from contextlib import suppress
 from datetime import timedelta
 from pathlib import Path
 
@@ -18,7 +20,7 @@ from app.core.exceptions import (
     PredictionNotFoundError,
 )
 from app.db.history_repository import HistoryRepository, iso, utc_now
-from app.services.history_service import HistoryService
+from app.services.history_service import HistoryService, sweep_expired_periodically
 from app.services.image_artifact_service import (
     ARTIFACT_KINDS,
     ArtifactStore,
@@ -202,6 +204,59 @@ def test_get_reports_an_expired_row_as_missing(tmp_path: Path) -> None:
 
     with pytest.raises(PredictionNotFoundError):
         service.get(result.prediction_id)
+    assert service.repository.count() == 0
+
+
+def test_periodic_sweep_deletes_expired_records_without_any_request(
+    tmp_path: Path,
+) -> None:
+    """A record must vanish on the timer even if no client ever reads history."""
+    service = _service(tmp_path, expiry_minutes=10)
+    result = _prediction()
+    service.record(result, now=utc_now() - timedelta(minutes=30))
+
+    async def run_briefly() -> None:
+        task = asyncio.create_task(sweep_expired_periodically(service, 0.02))
+        await asyncio.sleep(0.12)
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
+
+    asyncio.run(run_briefly())
+
+    assert service.repository.count() == 0
+    assert not service.artifacts.prediction_dir(result.prediction_id).exists()
+
+
+def test_periodic_sweep_keeps_going_after_a_transient_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """One failed sweep must not stop the expiry loop for the process lifetime."""
+    service = _service(tmp_path, expiry_minutes=10)
+    result = _prediction()
+    service.record(result, now=utc_now() - timedelta(minutes=30))
+
+    original = service.sweep_expired
+    calls = {"count": 0}
+
+    def flaky(*, now=None):  # type: ignore[no-untyped-def]
+        calls["count"] += 1
+        if calls["count"] == 1:
+            raise RuntimeError("transient disk hiccup")
+        return original(now=now)
+
+    monkeypatch.setattr(service, "sweep_expired", flaky)
+
+    async def run_briefly() -> None:
+        task = asyncio.create_task(sweep_expired_periodically(service, 0.02))
+        await asyncio.sleep(0.12)
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
+
+    asyncio.run(run_briefly())
+
+    assert calls["count"] >= 2
     assert service.repository.count() == 0
 
 

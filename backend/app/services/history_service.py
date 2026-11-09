@@ -17,6 +17,8 @@ have to guess.
 
 from __future__ import annotations
 
+import asyncio
+import logging
 import threading
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -29,6 +31,8 @@ from app.services.prediction_service import PredictionResult
 
 DEFAULT_HISTORY_LIMIT: int = 50
 DEFAULT_API_PREFIX: str = "/api/v1"
+
+LOGGER = logging.getLogger(__name__)
 
 #: URL suffix per artifact kind (PRD §15 `artifacts` block).
 ARTIFACT_ROUTES: dict[str, str] = {
@@ -213,3 +217,38 @@ def reset_history_service() -> None:
     global _service
     with _service_lock:
         _service = None
+
+
+# --------------------------------------------------------------------------- #
+# Automatic expiry
+# --------------------------------------------------------------------------- #
+
+
+async def sweep_expired_periodically(
+    service: HistoryService,
+    interval_seconds: float,
+    *,
+    logger: logging.Logger = LOGGER,
+) -> None:
+    """Delete expired rows and their PNG files every ``interval_seconds``.
+
+    Listing and fetching sweep lazily, but that only cleans up when a client
+    happens to ask. A record must disappear within the configured TTL even if
+    nobody opens the history page, so the lifespan runs this loop for the life
+    of the process (cancelled on shutdown). The blocking SQLite/filesystem work
+    runs in a worker thread so the event loop and the API stay responsive.
+    """
+    delay = max(float(interval_seconds), 0.01)
+    while True:
+        await asyncio.sleep(delay)
+        try:
+            removed = await asyncio.to_thread(service.sweep_expired)
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001 - keep sweeping after a transient fault
+            logger.exception("periodic history sweep failed; retrying in %ss", delay)
+        else:
+            if removed:
+                logger.info(
+                    "history sweep removed %d expired prediction(s)", removed
+                )

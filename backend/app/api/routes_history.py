@@ -22,7 +22,7 @@ from fastapi import APIRouter, Query, Request
 from fastapi.responses import FileResponse
 from starlette.concurrency import run_in_threadpool
 
-from app.core.exceptions import ArtifactNotFoundError
+from app.core.exceptions import ArtifactNotFoundError, PredictionNotFoundError
 from app.schemas.history import (
     HistoryDeleteResponse,
     HistoryItem,
@@ -118,6 +118,12 @@ async def get_history_item(prediction_id: uuid.UUID, request: Request) -> Histor
 
 async def _artifact(request: Request, prediction_id: uuid.UUID, kind: str) -> FileResponse:
     history = _history_for(request)
+    # An expired record is gone even if the periodic sweep has not deleted its
+    # files yet: never serve a PNG past the 60-minute TTL.
+    try:
+        await run_in_threadpool(history.get, str(prediction_id))
+    except PredictionNotFoundError:
+        raise ArtifactNotFoundError() from None
     try:
         path = await run_in_threadpool(
             history.artifacts.resolve, str(prediction_id), kind

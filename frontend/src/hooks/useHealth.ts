@@ -6,6 +6,12 @@ import type { FriendlyError } from '../utils/errors'
 
 export type BackendState = 'checking' | 'online' | 'offline'
 
+/**
+ * Keep-alive cadence: free hosts (Render) sleep after ~15 idle minutes, so one
+ * health request per minute keeps the service responsive without wasting quota.
+ */
+export const KEEP_ALIVE_INTERVAL_MS = 60_000
+
 export interface HealthState {
   state: BackendState
   modelLoaded: boolean
@@ -21,9 +27,16 @@ export interface HealthState {
  * A healthy backend without a loaded model is reported as `online` with
  * `modelLoaded: false`; the UI then says the model is starting rather than
  * pretending a prediction is possible.
+ *
+ * The regular poll doubles as the **keep-alive ping**: a free-tier backend spins
+ * down after ~15 minutes without traffic, so an open dashboard keeps hitting
+ * `/api/v1/health` once a minute, which is frequent enough to stay awake and
+ * cheap enough to leave running. Polling continues while the tab is hidden
+ * (browsers throttle it to about once a minute, still well inside the window)
+ * and a visibility/online event forces an immediate check on return.
  */
 export function useHealth({
-  pollIntervalMs = 30_000,
+  pollIntervalMs = KEEP_ALIVE_INTERVAL_MS,
   retryIntervalMs = 5_000,
 }: {
   pollIntervalMs?: number

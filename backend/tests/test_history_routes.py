@@ -109,6 +109,23 @@ def test_expired_rows_and_artifacts_disappear(client: TestClient) -> None:
     assert client.get(predicted["artifacts"]["original_url"]).status_code == 404
 
 
+def test_expired_artifact_is_not_served_before_the_sweep_runs(client: TestClient) -> None:
+    predicted = _predict(client)
+    history = client.app.state.history
+    record = history.repository.get(predicted["prediction_id"])
+    assert record is not None
+    history.repository.upsert(
+        dataclasses.replace(record, expires_at=iso(utc_now() - timedelta(minutes=1)))
+    )
+
+    # Deliberately no GET /history first: the artifact route must refuse the
+    # expired record itself instead of serving a stale PNG.
+    response = client.get(predicted["artifacts"]["original_url"])
+
+    assert response.status_code == 404
+    assert response.json()["reason_code"] == "ARTIFACT_NOT_FOUND"
+
+
 def test_history_status_matches_the_prediction_status(client: TestClient) -> None:
     predicted = _predict(client)
 

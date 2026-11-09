@@ -9,9 +9,10 @@ loads a model from disk, and nothing is stored permanently.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,6 +54,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     history.sweep_expired()
     app.state.history = history
 
+    # PRD §16: a record must be deleted within its TTL (60 minutes) even when no
+    # client opens the history page, so sweep on a timer for the process lifetime.
+    sweep_task = asyncio.create_task(
+        history_service.sweep_expired_periodically(
+            history, settings.history_sweep_interval_seconds
+        )
+    )
+
     try:
         service = inference_service.get_inference_service()
     except (inference_service.InferenceError, OSError) as exc:
@@ -78,6 +87,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     )
 
     yield
+
+    sweep_task.cancel()
+    with suppress(asyncio.CancelledError):
+        await sweep_task
 
     app.state.inference = None
     app.state.model_loaded = False

@@ -8,6 +8,7 @@ import { Callout } from '../components/common/Callout'
 import { ErrorNotice } from '../components/common/ErrorNotice'
 import { PageHeader } from '../components/common/PageHeader'
 import { Spinner } from '../components/common/Spinner'
+import { DemoImagePicker } from '../components/upload/DemoImagePicker'
 import { ImagePreview } from '../components/upload/ImagePreview'
 import { ImageUploader } from '../components/upload/ImageUploader'
 import { useBackendHealth } from '../hooks/useBackendHealth'
@@ -210,6 +211,14 @@ export function AnalyzePage() {
               file={file}
               onFileSelected={chooseFile}
               disabled={pending || unavailable}
+            />
+          </div>
+
+          <div className="mt-4 border-t border-ink-200 pt-4 dark:border-white/10">
+            <DemoImagePicker
+              onFileSelected={chooseFile}
+              disabled={pending || unavailable}
+              selectedName={file?.name ?? null}
             />
           </div>
 

@@ -9,6 +9,7 @@
 </p>
 
 <p align="center">
+  <a href="https://dhanya-drishti.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-online-2ea44f?logo=vercel&logoColor=white" alt="Live demo" /></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11" /></a>
   <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white" alt="FastAPI" /></a>
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" alt="React 18" /></a>
@@ -30,11 +31,26 @@ It has no healthy-leaf class and is not intended for treatment decisions. See
 
 ## Live Demo
 
-> **Dashboard:** _Public link coming soon._
+| | URL |
+|---|---|
+| Dashboard | <https://dhanya-drishti.vercel.app/> |
+| API | <https://dhanya-drishti.onrender.com> |
+| API documentation | <https://dhanya-drishti.onrender.com/docs> |
+| Health check | <https://dhanya-drishti.onrender.com/api/v1/health> |
 
-The frontend is a static Vite application; the API and interactive documentation run as a
-separate FastAPI service. Deployment configuration and environment requirements are covered
-in [`DEPLOYMENT.md`](./DEPLOYMENT.md).
+The dashboard is a static Vite build on Vercel; the API and its interactive documentation
+run as a separate FastAPI service on Render. At the time of writing the live service reports
+`model_loaded: true` for `svm-v1.0.0`.
+
+**Cold starts.** The API runs on Render's free tier, which sleeps after 15 minutes without
+inbound traffic. The first visit after a quiet period can therefore take about a minute: the
+dashboard checks the health endpoint as soon as it loads, retries while the service wakes,
+and enables analysis only once the model is ready. While a dashboard tab is open it sends a
+health request every 60 seconds, which keeps the service warm during a review session.
+No image is needed to try the flow — three demo leaves are bundled with the dashboard.
+
+Deployment configuration and environment requirements are covered in
+[`DEPLOYMENT.md`](./DEPLOYMENT.md).
 
 ## Capabilities
 
@@ -45,12 +61,17 @@ in [`DEPLOYMENT.md`](./DEPLOYMENT.md).
   measurements are withheld, and uncertain results carry explicit quality warnings.
 - **Visual evidence** — the oriented upload, leaf mask and lesion mask are available as
   in-app full-screen previews. Files download only when the user explicitly asks.
-- **Mobile-ready workspace** — responsive layouts, tap-to-upload, mobile history cards,
-  accessible dialogs and a light/dark theme.
+- **Try it without an upload** — three demo leaves ship with the dashboard, so the full
+  upload-to-result flow can be exercised without the dataset, the repository or a local file.
+  Their public names are deliberately neutral, so a result can never be read off a filename.
+- **Mobile-ready workspace** — responsive layouts, tap-to-upload, a three-up demo picker that
+  holds from 320 px phones to desktop, mobile history cards, accessible dialogs and a
+  light/dark theme.
 - **Deployment-aware client** — environment-driven API configuration, automatic recovery
-  from sleeping backends, offline detection and an app-wide error boundary.
-- **Temporary by design** — predictions and PNG artifacts live in runtime storage and
-  disappear on restart, expiry or explicit clear.
+  from sleeping backends, a 60-second keep-alive ping while a dashboard tab is open, offline
+  detection and an app-wide error boundary.
+- **Temporary by design** — predictions and PNG artifacts live in runtime storage and are
+  deleted automatically 60 minutes after creation, on restart or on explicit clear.
 
 ## Pipeline
 
@@ -111,9 +132,9 @@ The held-out set was evaluated once after model selection and was not used for t
 ```text
 DhanyaDrishti/
 ├── backend/                 FastAPI service, vision/ML pipeline, configs, tests and bundle
-├── frontend/                React + Vite dashboard and Vercel configuration
+├── frontend/                React + Vite dashboard, bundled demo images, Vercel config
 ├── data/                    Dataset guidance, frozen splits and reproducibility snapshots
-├── demo_images/             Curated images for interface demonstrations
+├── demo_images/             Curated demo images (three mirrored into frontend/public/demo/)
 ├── docs/                    Architecture, API contract, decisions, QA and dataset audit
 ├── notebooks/               Dataset audit, segmentation and model-comparison analysis
 ├── scripts/                 Audit, split, train, evaluate, export and acceptance tooling
@@ -166,6 +187,9 @@ Set `VITE_API_BASE_URL` to the API origin (default local value:
 - Local production preview: `npm run preview`
 - Type check: `npm run typecheck`
 
+The Analysis page also offers three bundled demo leaves (**Or try a demo leaf**), so the
+flow can be exercised before choosing your own photograph.
+
 ### API
 
 FastAPI exposes health, model information, prediction, history and artifact endpoints under
@@ -175,26 +199,33 @@ FastAPI exposes health, model information, prediction, history and artifact endp
 
 The repository ships with deployment configuration for a split frontend/API setup:
 
-- **Vercel** — root directory `frontend`; [`frontend/vercel.json`](./frontend/vercel.json)
-  handles SPA routing; set `VITE_API_BASE_URL` to the public API origin.
-- **Render** — use [`render.yaml`](./render.yaml) or the equivalent manual service; set
-  `CORS_ORIGINS` to the exact Vercel origin.
-- **Runbook** — environment variables, smoke tests, cold-start behaviour and troubleshooting
-  are in [`DEPLOYMENT.md`](./DEPLOYMENT.md).
+| Service | Configuration |
+|---|---|
+| Vercel (dashboard) | Root directory `frontend`; [`frontend/vercel.json`](./frontend/vercel.json) handles SPA routing; `VITE_API_BASE_URL` is set to the Render origin. |
+| Render (API) | [`render.yaml`](./render.yaml) or the equivalent manual service; `CORS_ORIGINS` lists the exact Vercel origins. |
+| Runbook | Environment variables, smoke tests, cold-start behaviour and troubleshooting: [`DEPLOYMENT.md`](./DEPLOYMENT.md). |
+
+The two services are cross-wired: the dashboard bakes in the API origin at build time, and
+the API accepts only the listed dashboard origins. The API verifies its production bundle
+hashes at startup, so a bundle that does not match its manifest reports `model_loaded: false`
+rather than serving predictions.
 
 ## Verification
 
 | Suite | Command | Result |
 |---|---|---|
-| Backend | `cd backend && python -m pytest -q` | 222 passed |
-| Split invariants | `python -m pytest tests -q` | 6 passed || Frontend unit | `cd frontend && npm test` | 64 passed |
+| Backend | `cd backend && python -m pytest -q` | 225 passed |
+| Split invariants | `python -m pytest tests -q` | 6 passed |
+| Frontend unit | `cd frontend && npm test` | 88 passed (16 files) |
 | Typecheck | `cd frontend && npm run typecheck` | clean |
 | Production build | `cd frontend && npm run build` | clean |
 | Browser — development | `cd tests/end_to_end && npx playwright test` | 22 passed (Chrome + Edge) |
 | Browser — production preview | `npx playwright test --config=playwright.preview.config.ts` | 11 passed (Chrome) |
 
 The browser suites cover the live upload-to-result flow, artifact preview and download,
-history, phone layouts, backend cold-start recovery and offline/error states.
+history, phone layouts, backend cold-start recovery and offline/error states. Backend,
+frontend unit, typecheck and build results were re-run on 2026-11-10; the browser suites
+were last run on 2026-11-09.
 
 ## Responsible Use
 
