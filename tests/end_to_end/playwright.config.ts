@@ -61,7 +61,10 @@ export default defineConfig({
       cwd: backendDir,
       url: `${apiURL}/api/v1/health`,
       timeout: 120_000,
-      reuseExistingServer: !process.env.CI,
+      // Never reuse a listener here. Reuse silently kept whichever backend was already
+      // on :8000 (with its own RUNTIME_DIR), which made the local-acceptance "restart"
+      // check read the old process's history instead of proving startup cleanup.
+      reuseExistingServer: false,
       env: {
         ...process.env,
         ENVIRONMENT: 'e2e',

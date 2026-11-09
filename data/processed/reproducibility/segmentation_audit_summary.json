@@ -1,0 +1,102 @@
+{
+  "segmentation_config_version": "seg-v2",
+  "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
+  "quality_config_version": "quality-v1",
+  "quality_config_sha256": "c4cfe9e2f9110db2b13a021dc43ed860e19bdd33f65d64d3dece1e34ce3e062e",
+  "generated_at": "2026-11-09T14:46:20+00:00",
+  "overall": {
+    "images": 120,
+    "leaf_found": 120,
+    "leaf_ok": 120,
+    "leaf_ok_fraction": 1.0,
+    "full_frame_fallback": 8,
+    "multiple_leaves": 0,
+    "lesion_unreliable": 0,
+    "clean": 87,
+    "uncertain": 33,
+    "rejected": 0
+  },
+  "development": {
+    "images": 96,
+    "leaf_found": 96,
+    "leaf_ok": 96,
+    "leaf_ok_fraction": 1.0,
+    "full_frame_fallback": 7,
+    "multiple_leaves": 0,
+    "lesion_unreliable": 0,
+    "clean": 71,
+    "uncertain": 25,
+    "rejected": 0
+  },
+  "held_out_test": {
+    "images": 24,
+    "leaf_found": 24,
+    "leaf_ok": 24,
+    "leaf_ok_fraction": 1.0,
+    "full_frame_fallback": 1,
+    "multiple_leaves": 0,
+    "lesion_unreliable": 0,
+    "clean": 16,
+    "uncertain": 8,
+    "rejected": 0
+  },
+  "per_class": {
+    "bacterial_leaf_blight": {
+      "images": 40,
+      "leaf_found": 40,
+      "leaf_ok": 40,
+      "leaf_ok_fraction": 1.0,
+      "full_frame_fallback": 0,
+      "multiple_leaves": 0,
+      "lesion_unreliable": 0,
+      "clean": 37,
+      "uncertain": 3,
+      "rejected": 0
+    },
+    "brown_spot": {
+      "images": 40,
+      "leaf_found": 40,
+      "leaf_ok": 40,
+      "leaf_ok_fraction": 1.0,
+      "full_frame_fallback": 4,
+      "multiple_leaves": 0,
+      "lesion_unreliable": 0,
+      "clean": 23,
+      "uncertain": 17,
+      "rejected": 0
+    },
+    "leaf_smut": {
+      "images": 40,
+      "leaf_found": 40,
+      "leaf_ok": 40,
+      "leaf_ok_fraction": 1.0,
+      "full_frame_fallback": 4,
+      "multiple_leaves": 0,
+      "lesion_unreliable": 0,
+      "clean": 27,
+      "uncertain": 13,
+      "rejected": 0
+    }
+  },
+  "warning_histogram": {
+    "SMALL_IMAGE": 19,
+    "BLURRY_IMAGE": 10,
+    "FULL_FRAME_FALLBACK": 8,
+    "BRIGHT_IMAGE": 3,
+    "LOW_CONTRAST": 1
+  },
+  "rejection_histogram": {},
+  "timing_ms": {
+    "mean": 137.11,
+    "p50": 124.65,
+    "p95": 148.18,
+    "max": 1568.37
+  },
+  "lesion_area_percentage": {
+    "mean": 13.707,
+    "p50": 10.446,
+    "p95": 39.903
+  },
+  "scope": "full",
+  "images_with_panels": 0
+}

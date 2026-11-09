@@ -26,6 +26,7 @@ frontend/.vite/
 
 # --- Runtime storage (temporary, never committed) ---
 backend/.runtime/
+backend/.runtime-*/
 backend/app/runtime/
 *.sqlite
 *.sqlite3
@@ -38,8 +39,32 @@ data/processed/*
 !data/processed/.gitkeep
 !data/processed/README.md
 
+# Small, tracked reproducibility snapshots. Only these exact numerical files are
+# whitelisted; the full feature matrix, model binaries, held-out per-image rows,
+# panels and contact sheets stay inside the ignored working tree.
+!data/processed/reproducibility/
+data/processed/reproducibility/*
+!data/processed/reproducibility/README.md
+!data/processed/reproducibility/dataset_manifest.csv
+!data/processed/reproducibility/dataset_audit.json
+!data/processed/reproducibility/near_duplicates.csv
+!data/processed/reproducibility/near_duplicate_summary.json
+!data/processed/reproducibility/segmentation_audit.csv
+!data/processed/reproducibility/segmentation_audit_summary.json
+!data/processed/reproducibility/feature_matrix.json
+!data/processed/reproducibility/feature_matrix_summary.md
+!data/processed/reproducibility/model_comparison.json
+!data/processed/reproducibility/model_comparison.md
+!data/processed/reproducibility/cv_predictions.csv
+!data/processed/reproducibility/evaluation_report.json
+!data/processed/reproducibility/evaluation_report.md
+
 # Split manifests are small and must be reproducible/committed
 !data/splits/
+
+# Local-only acceptance photographs (not part of the approved 120-image dataset).
+# Required on disk to run scripts/run_local_acceptance.py, never committed.
+data/local_acceptance_inputs/
 
 # --- Generated / temporary files ---
 *.log
@@ -48,6 +73,13 @@ temp/
 Thumbs.db
 desktop.ini
 .DS_Store
+junit*.xml
+*.junit.xml
+blob-report/
+
+# --- Coverage ---
+coverage/
+frontend/coverage/
 
 # --- Playwright E2E test artifacts (never committed) ---
 tests/end_to_end/test-results/

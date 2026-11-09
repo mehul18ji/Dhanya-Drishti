@@ -88,6 +88,10 @@ python -m pytest tests -q
 python scripts/run_segmentation_audit.py
 python scripts/run_segmentation_audit.py --only leaf_smut --limit 5   # quick spot-check
 python scripts/run_segmentation_audit.py --no-panels --no-curated     # numbers only
+
+# Local acceptance (real backend + real dataset images; writes evidence JSON)
+python scripts/run_local_acceptance.py
+python scripts/check_restart_cleanup.py
 ```
 
 Environment:
@@ -95,7 +99,7 @@ Environment:
 - Root `.env` (copy of `.env.example`) → backend settings.
 - `frontend/.env` (copy of `frontend/.env.example`) → `VITE_API_BASE_URL`.
 
-## 5. Current state (Phases 1–5 complete; Phase 6 next, not started)
+## 5. Current state (Phases 1–6 complete; Phase 7 deployment not started)
 
 - Backend: app factory, typed settings, logging, error mapping, CORS, health endpoint,
   `GET /api/v1/model-info`, upload validation, the artifact-backed inference service and the
@@ -145,12 +149,25 @@ Environment:
   and the About Model card from `/api/v1/model-info`. Honesty rules and the state matrix are
   documented in `docs/FRONTEND.md`.
 - Phase 5 tests: 13 frontend files / 64 Vitest tests green; `npm run typecheck` and
-  `npm run build` clean. Backend remains 217 tests + 6 split invariants, all green. A live
+  `npm run build` clean. Backend remained 217 tests + 6 split invariants at Phase 5 close (222
+  after the 2026-11-09 final audit), all green. A live
   smoke test against a real backend verified prediction, artifacts, 200 rejection not stored,
   413/415/422, history delete and artifact 404 after delete.
-- The backend API and dashboard are feature-complete for V1. Phase 6 (real-browser E2E,
-  QA matrix, smartphone trials, error analysis, model card) is next but has **not** started.
-- Tests: 64 frontend + 217 backend (`backend/`) + 6 split invariants (root `tests/`).
+- Local acceptance correction (2026-11-09): the previous "restart did not clear history"
+  finding was a harness defect, not an application defect. Startup cleanup was proven with two
+  real processes sharing one `RUNTIME_DIR` (8 rows + 24 files → 0 rows + 0 files, old URLs 404).
+  Both Playwright configs now use backend `reuseExistingServer: false`, and
+  `backend/tests/test_restart_cleanup.py` (3 tests) pins startup cleanup. The full 38-check
+  matrix and its evidence live in `docs/LOCAL_ACCEPTANCE_REPORT.md` and
+  `docs/local_acceptance/api_evidence.json`.
+- Final localhost-release audit (2026-11-09): the acceptance evidence-path reporting bug is
+  fixed (`scripts/run_local_acceptance.py` accepts an external `--evidence` path safely) and
+  pinned by `backend/tests/test_local_acceptance_reporting.py` (2 tests). The 14 snapshots under
+  `data/processed/reproducibility/` are tracked; `demo_images/` holds four documented UI-only
+  examples; disposable caches/reports/runtimes were moved to a dated quarantine outside the repo.
+- Tests: 64 frontend + 222 backend (`backend/`) + 6 split invariants (root `tests/`),
+  22 Playwright dev tests (Chrome + Edge) + 11 Playwright production-preview tests, plus the
+  38-check local acceptance matrix.
 
 ## 6. Rules that prevent damage
 
@@ -172,12 +189,18 @@ Environment:
   them as predictions (P-16/P-20/P-24).
 - Do not add runtime frontend dependencies without a decision; the test toolchain is
   dev-only (P-25).
+- Never claim a restart/cleanup pass from a server you did not start. An existing listener on
+  `:8000` keeps its old `RUNTIME_DIR`; prove the old PID exited and the port closed (see
+  `scripts/check_restart_cleanup.py`). Playwright must keep backend `reuseExistingServer: false`.
+- Do not weaken the restart requirement: shutdown cleanup is best-effort on a hard kill, so
+  startup wipe (`HistoryService.start_fresh()` in the lifespan) is the guarantee that must stay
+  tested.
 
 ## 7. Handoff checklist for the next session
 
 - [ ] Read the five documents listed in §1.
 - [ ] Confirm tests pass before edits (`npm test`, `npm run build`, backend `pytest -q`).
 - [ ] Pick up the "Next exact task" from `PROJECT_STATUS.md`.
-- [ ] Do not start Phase 6 or Phase 7 without explicit user approval.
+- [ ] Phase 6 and local acceptance are complete; do not start Phase 7 (deployment) without explicit user approval.
 - [ ] Stay inside the current phase; do not start the next phase early.
 - [ ] Update `PROJECT_STATUS.md` before finishing.

@@ -1,0 +1,1987 @@
+{
+  "runtime_dir": "backend\\.runtime-local-acceptance",
+  "started_at": "2026-11-09T19:40:07+0530",
+  "preprocessing_geometry": [
+    {
+      "label": "held_out_landscape",
+      "leaf_found": true,
+      "source_width": 3081,
+      "source_height": 897,
+      "source_aspect": 3.4348,
+      "working_width": 768,
+      "working_height": 224,
+      "working_scale": [
+        0.24927,
+        0.249721
+      ],
+      "crop_box": [
+        0,
+        0,
+        768,
+        207
+      ],
+      "crop_aspect": 3.7101,
+      "resize_scale": [
+        0.666667,
+        0.666667
+      ],
+      "resized_size": [
+        512,
+        138
+      ],
+      "resized_aspect": 3.7101,
+      "pad": [
+        0,
+        187
+      ],
+      "canvas_size": 512,
+      "uniform_scale_max_deviation_pct": 0.181,
+      "uniform_scale": true
+    },
+    {
+      "label": "portrait_rotated",
+      "leaf_found": true,
+      "source_width": 897,
+      "source_height": 3081,
+      "source_aspect": 0.2911,
+      "working_width": 224,
+      "working_height": 768,
+      "working_scale": [
+        0.249721,
+        0.24927
+      ],
+      "crop_box": [
+        17,
+        0,
+        207,
+        768
+      ],
+      "crop_aspect": 0.2695,
+      "resize_scale": [
+        0.666667,
+        0.666667
+      ],
+      "resized_size": [
+        138,
+        512
+      ],
+      "resized_aspect": 0.2695,
+      "pad": [
+        187,
+        0
+      ],
+      "canvas_size": 512,
+      "uniform_scale_max_deviation_pct": 0.181,
+      "uniform_scale": true
+    },
+    {
+      "label": "portrait_exif_orientation_6",
+      "leaf_found": true,
+      "source_width": 466,
+      "source_height": 1600,
+      "source_aspect": 0.2913,
+      "working_width": 224,
+      "working_height": 768,
+      "working_scale": [
+        0.480687,
+        0.48
+      ],
+      "crop_box": [
+        0,
+        0,
+        207,
+        768
+      ],
+      "crop_aspect": 0.2695,
+      "resize_scale": [
+        0.666667,
+        0.666667
+      ],
+      "resized_size": [
+        138,
+        512
+      ],
+      "resized_aspect": 0.2695,
+      "pad": [
+        187,
+        0
+      ],
+      "canvas_size": 512,
+      "uniform_scale_max_deviation_pct": 0.143,
+      "uniform_scale": true
+    }
+  ],
+  "health_first": {
+    "status": "ok",
+    "model_loaded": true,
+    "model_version": "svm-v1.0.0",
+    "runtime_storage": "temporary"
+  },
+  "dataset_smoke": {
+    "prediction_id": "a61b9c29-ec53-453f-ae1c-ddf9fc5bef96",
+    "status": "predicted",
+    "disease": "brown_spot",
+    "decision_scores": {
+      "bacterial_leaf_blight": -0.18507888090346641,
+      "brown_spot": 2.222220460320079,
+      "leaf_smut": 0.8569725857590378
+    },
+    "margin": 1.3652478745610412,
+    "ranking": [
+      "brown_spot",
+      "leaf_smut",
+      "bacterial_leaf_blight"
+    ],
+    "score_kind": "decision_margin",
+    "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+    "lesion_area_percentage": 28.25739870884143,
+    "lesion_reliable": true,
+    "severity": "Severe",
+    "severity_note": "Experimental lesion-area estimate.",
+    "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+    "severity_reason_code": null,
+    "severity_method": "experimental_lesion_area_thresholds",
+    "severity_config_version": "severity-v1",
+    "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+    "warnings": [],
+    "rejections": [],
+    "missing_features": [],
+    "artifacts": {
+      "original_url": "/api/v1/history/a61b9c29-ec53-453f-ae1c-ddf9fc5bef96/original",
+      "leaf_mask_url": "/api/v1/history/a61b9c29-ec53-453f-ae1c-ddf9fc5bef96/leaf-mask",
+      "lesion_mask_url": "/api/v1/history/a61b9c29-ec53-453f-ae1c-ddf9fc5bef96/lesion-mask"
+    },
+    "model_name": "svm",
+    "model_version": "svm-v1.0.0",
+    "feature_set_version": "1.0.0",
+    "segmentation_config_version": "seg-v2",
+    "quality_config_version": "quality-v1",
+    "stage_ms": {
+      "decode_and_working": 8.25,
+      "basic_quality": 1.26,
+      "leaf_segmentation": 1501.27,
+      "leaf_quality": 0.38,
+      "canvas": 1.12,
+      "lesion_segmentation": 51.84,
+      "lesion_quality": 0.01,
+      "total": 1564.13
+    },
+    "created_at": "2026-11-09T14:10:13+00:00",
+    "runtime_storage": "temporary"
+  },
+  "held_out_smoke": {
+    "manifest_path": "data\\raw\\rice_leaf_diseases\\Bacterial leaf blight\\DSC_0367.JPG",
+    "manifest_label": "bacterial_leaf_blight",
+    "response": {
+      "prediction_id": "633d74a5-cd26-485e-a8bc-918072398bcc",
+      "status": "predicted",
+      "disease": "bacterial_leaf_blight",
+      "decision_scores": {
+        "bacterial_leaf_blight": 2.2240710715631877,
+        "brown_spot": 0.8462685809370327,
+        "leaf_smut": -0.1814597019934467
+      },
+      "margin": 1.377802490626155,
+      "ranking": [
+        "bacterial_leaf_blight",
+        "brown_spot",
+        "leaf_smut"
+      ],
+      "score_kind": "decision_margin",
+      "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+      "lesion_area_percentage": 8.919800532413483,
+      "lesion_reliable": true,
+      "severity": "Mild",
+      "severity_note": "Experimental lesion-area estimate.",
+      "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+      "severity_reason_code": null,
+      "severity_method": "experimental_lesion_area_thresholds",
+      "severity_config_version": "severity-v1",
+      "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+      "warnings": [],
+      "rejections": [],
+      "missing_features": [],
+      "artifacts": {
+        "original_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/original",
+        "leaf_mask_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/leaf-mask",
+        "lesion_mask_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/lesion-mask"
+      },
+      "model_name": "svm",
+      "model_version": "svm-v1.0.0",
+      "feature_set_version": "1.0.0",
+      "segmentation_config_version": "seg-v2",
+      "quality_config_version": "quality-v1",
+      "stage_ms": {
+        "decode_and_working": 27.35,
+        "basic_quality": 2.55,
+        "leaf_segmentation": 41.8,
+        "leaf_quality": 0.34,
+        "canvas": 1.32,
+        "lesion_segmentation": 41.57,
+        "lesion_quality": 0.01,
+        "total": 114.94
+      },
+      "created_at": "2026-11-09T14:10:13+00:00",
+      "runtime_storage": "temporary"
+    }
+  },
+  "portrait_rotated": {
+    "prediction_id": "13d65694-3e13-44de-8939-f931521866f1",
+    "status": "predicted",
+    "disease": "bacterial_leaf_blight",
+    "decision_scores": {
+      "bacterial_leaf_blight": 2.19502437987413,
+      "brown_spot": 1.033313771269035,
+      "leaf_smut": -0.20111601820259778
+    },
+    "margin": 1.161710608605095,
+    "ranking": [
+      "bacterial_leaf_blight",
+      "brown_spot",
+      "leaf_smut"
+    ],
+    "score_kind": "decision_margin",
+    "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+    "lesion_area_percentage": 3.5872546950833506,
+    "lesion_reliable": true,
+    "severity": "Mild",
+    "severity_note": "Experimental lesion-area estimate.",
+    "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+    "severity_reason_code": null,
+    "severity_method": "experimental_lesion_area_thresholds",
+    "severity_config_version": "severity-v1",
+    "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+    "warnings": [],
+    "rejections": [],
+    "missing_features": [],
+    "artifacts": {
+      "original_url": "/api/v1/history/13d65694-3e13-44de-8939-f931521866f1/original",
+      "leaf_mask_url": "/api/v1/history/13d65694-3e13-44de-8939-f931521866f1/leaf-mask",
+      "lesion_mask_url": "/api/v1/history/13d65694-3e13-44de-8939-f931521866f1/lesion-mask"
+    },
+    "model_name": "svm",
+    "model_version": "svm-v1.0.0",
+    "feature_set_version": "1.0.0",
+    "segmentation_config_version": "seg-v2",
+    "quality_config_version": "quality-v1",
+    "stage_ms": {
+      "decode_and_working": 18.07,
+      "basic_quality": 1.68,
+      "leaf_segmentation": 45.56,
+      "leaf_quality": 0.5,
+      "canvas": 2.0,
+      "lesion_segmentation": 47.84,
+      "lesion_quality": 0.01,
+      "total": 115.66
+    },
+    "created_at": "2026-11-09T14:10:14+00:00",
+    "runtime_storage": "temporary"
+  },
+  "portrait_exif": {
+    "prediction_id": "d306644e-0b0d-4b8a-ab21-ccc0283fdf71",
+    "status": "predicted",
+    "disease": "bacterial_leaf_blight",
+    "decision_scores": {
+      "bacterial_leaf_blight": 2.2444092866437786,
+      "brown_spot": 0.8409842177386968,
+      "leaf_smut": -0.21580926134540998
+    },
+    "margin": 1.4034250689050818,
+    "ranking": [
+      "bacterial_leaf_blight",
+      "brown_spot",
+      "leaf_smut"
+    ],
+    "score_kind": "decision_margin",
+    "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+    "lesion_area_percentage": 8.662956835614379,
+    "lesion_reliable": true,
+    "severity": "Mild",
+    "severity_note": "Experimental lesion-area estimate.",
+    "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+    "severity_reason_code": null,
+    "severity_method": "experimental_lesion_area_thresholds",
+    "severity_config_version": "severity-v1",
+    "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+    "warnings": [],
+    "rejections": [],
+    "missing_features": [],
+    "artifacts": {
+      "original_url": "/api/v1/history/d306644e-0b0d-4b8a-ab21-ccc0283fdf71/original",
+      "leaf_mask_url": "/api/v1/history/d306644e-0b0d-4b8a-ab21-ccc0283fdf71/leaf-mask",
+      "lesion_mask_url": "/api/v1/history/d306644e-0b0d-4b8a-ab21-ccc0283fdf71/lesion-mask"
+    },
+    "model_name": "svm",
+    "model_version": "svm-v1.0.0",
+    "feature_set_version": "1.0.0",
+    "segmentation_config_version": "seg-v2",
+    "quality_config_version": "quality-v1",
+    "stage_ms": {
+      "decode_and_working": 6.93,
+      "basic_quality": 1.91,
+      "leaf_segmentation": 46.11,
+      "leaf_quality": 0.55,
+      "canvas": 1.53,
+      "lesion_segmentation": 42.17,
+      "lesion_quality": 0.01,
+      "total": 99.21
+    },
+    "created_at": "2026-11-09T14:10:14+00:00",
+    "runtime_storage": "temporary"
+  },
+  "multiple_leaves": {
+    "prediction_id": "12918cc1-2ada-4134-a0a9-a4e9a89e5721",
+    "status": "uncertain",
+    "disease": "leaf_smut",
+    "decision_scores": {
+      "bacterial_leaf_blight": -0.19999661484297607,
+      "brown_spot": 1.0831480179141664,
+      "leaf_smut": 2.1795527713969576
+    },
+    "margin": 1.0964047534827912,
+    "ranking": [
+      "leaf_smut",
+      "brown_spot",
+      "bacterial_leaf_blight"
+    ],
+    "score_kind": "decision_margin",
+    "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+    "lesion_area_percentage": 17.17412243150685,
+    "lesion_reliable": true,
+    "severity": "Moderate",
+    "severity_note": "Experimental lesion-area estimate.",
+    "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+    "severity_reason_code": null,
+    "severity_method": "experimental_lesion_area_thresholds",
+    "severity_config_version": "severity-v1",
+    "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+    "warnings": [
+      "FULL_FRAME_FALLBACK"
+    ],
+    "rejections": [],
+    "missing_features": [],
+    "artifacts": {
+      "original_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/original",
+      "leaf_mask_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/leaf-mask",
+      "lesion_mask_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/lesion-mask"
+    },
+    "model_name": "svm",
+    "model_version": "svm-v1.0.0",
+    "feature_set_version": "1.0.0",
+    "segmentation_config_version": "seg-v2",
+    "quality_config_version": "quality-v1",
+    "stage_ms": {
+      "decode_and_working": 1.98,
+      "basic_quality": 3.1,
+      "leaf_segmentation": 65.21,
+      "leaf_quality": 1.17,
+      "canvas": 5.7,
+      "lesion_segmentation": 58.15,
+      "lesion_quality": 0.01,
+      "total": 135.32
+    },
+    "created_at": "2026-11-09T14:10:14+00:00",
+    "runtime_storage": "temporary"
+  },
+  "poor_quality": {
+    "status": "rejected",
+    "reason_code": "VERY_DARK_IMAGE",
+    "message": "The image is too dark for reliable analysis. Increase the lighting and try again.",
+    "runtime_storage": "temporary"
+  },
+  "healthy": {
+    "prediction_id": "5f01574d-2d9b-45f2-8bb3-e777d6ee36f5",
+    "status": "uncertain",
+    "disease": "leaf_smut",
+    "decision_scores": {
+      "bacterial_leaf_blight": -0.18933781070693864,
+      "brown_spot": 1.113019667849135,
+      "leaf_smut": 2.148342638236861
+    },
+    "margin": 1.035322970387726,
+    "ranking": [
+      "leaf_smut",
+      "brown_spot",
+      "bacterial_leaf_blight"
+    ],
+    "score_kind": "decision_margin",
+    "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+    "lesion_area_percentage": 0.0,
+    "lesion_reliable": true,
+    "severity": "Mild",
+    "severity_note": "Experimental lesion-area estimate.",
+    "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+    "severity_reason_code": null,
+    "severity_method": "experimental_lesion_area_thresholds",
+    "severity_config_version": "severity-v1",
+    "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+    "warnings": [
+      "BLURRY_IMAGE"
+    ],
+    "rejections": [],
+    "missing_features": [],
+    "artifacts": {
+      "original_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/original",
+      "leaf_mask_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/leaf-mask",
+      "lesion_mask_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/lesion-mask"
+    },
+    "model_name": "svm",
+    "model_version": "svm-v1.0.0",
+    "feature_set_version": "1.0.0",
+    "segmentation_config_version": "seg-v2",
+    "quality_config_version": "quality-v1",
+    "stage_ms": {
+      "decode_and_working": 5.49,
+      "basic_quality": 4.7,
+      "leaf_segmentation": 49.55,
+      "leaf_quality": 1.31,
+      "canvas": 1.7,
+      "lesion_segmentation": 57.4,
+      "lesion_quality": 0.01,
+      "total": 120.16
+    },
+    "created_at": "2026-11-09T14:10:14+00:00",
+    "runtime_storage": "temporary"
+  },
+  "non_rice": {
+    "prediction_id": "7fe11612-548a-484d-af14-c2741e8e3fb3",
+    "status": "uncertain",
+    "disease": "leaf_smut",
+    "decision_scores": {
+      "bacterial_leaf_blight": -0.1821298936458064,
+      "brown_spot": 1.0485989347278044,
+      "leaf_smut": 2.169440853710547
+    },
+    "margin": 1.1208419189827425,
+    "ranking": [
+      "leaf_smut",
+      "brown_spot",
+      "bacterial_leaf_blight"
+    ],
+    "score_kind": "decision_margin",
+    "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+    "lesion_area_percentage": 55.3015350877193,
+    "lesion_reliable": true,
+    "severity": "Severe",
+    "severity_note": "Experimental lesion-area estimate.",
+    "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+    "severity_reason_code": null,
+    "severity_method": "experimental_lesion_area_thresholds",
+    "severity_config_version": "severity-v1",
+    "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+    "warnings": [
+      "FULL_FRAME_FALLBACK"
+    ],
+    "rejections": [],
+    "missing_features": [],
+    "artifacts": {
+      "original_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/original",
+      "leaf_mask_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/leaf-mask",
+      "lesion_mask_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/lesion-mask"
+    },
+    "model_name": "svm",
+    "model_version": "svm-v1.0.0",
+    "feature_set_version": "1.0.0",
+    "segmentation_config_version": "seg-v2",
+    "quality_config_version": "quality-v1",
+    "stage_ms": {
+      "decode_and_working": 1.55,
+      "basic_quality": 2.33,
+      "leaf_segmentation": 56.77,
+      "leaf_quality": 0.75,
+      "canvas": 1.26,
+      "lesion_segmentation": 59.76,
+      "lesion_quality": 0.01,
+      "total": 122.43
+    },
+    "created_at": "2026-11-09T14:10:15+00:00",
+    "runtime_storage": "temporary"
+  },
+  "rejected_valid_image": {
+    "status": "rejected",
+    "reason_code": "NO_CLEAR_LEAF_FOUND",
+    "message": "No suitable rice leaf region could be detected. Upload one clear, well-lit leaf.",
+    "runtime_storage": "temporary"
+  },
+  "history_before_clear": {
+    "count": 8,
+    "prediction_ids": [
+      "7fe11612-548a-484d-af14-c2741e8e3fb3",
+      "5f01574d-2d9b-45f2-8bb3-e777d6ee36f5",
+      "12918cc1-2ada-4134-a0a9-a4e9a89e5721",
+      "d306644e-0b0d-4b8a-ab21-ccc0283fdf71",
+      "13d65694-3e13-44de-8939-f931521866f1",
+      "5e19288b-6e4d-458d-a08f-486c971ede90",
+      "633d74a5-cd26-485e-a8bc-918072398bcc",
+      "a61b9c29-ec53-453f-ae1c-ddf9fc5bef96"
+    ]
+  },
+  "artifact_http_status": {
+    "original_url": 200,
+    "leaf_mask_url": 200,
+    "lesion_mask_url": 200
+  },
+  "before_restart": {
+    "history_rows": 8,
+    "artifact_files": [
+      "artifacts\\12918cc1-2ada-4134-a0a9-a4e9a89e5721\\leaf_mask.png",
+      "artifacts\\12918cc1-2ada-4134-a0a9-a4e9a89e5721\\lesion_mask.png",
+      "artifacts\\12918cc1-2ada-4134-a0a9-a4e9a89e5721\\original.png",
+      "artifacts\\13d65694-3e13-44de-8939-f931521866f1\\leaf_mask.png",
+      "artifacts\\13d65694-3e13-44de-8939-f931521866f1\\lesion_mask.png",
+      "artifacts\\13d65694-3e13-44de-8939-f931521866f1\\original.png",
+      "artifacts\\5e19288b-6e4d-458d-a08f-486c971ede90\\leaf_mask.png",
+      "artifacts\\5e19288b-6e4d-458d-a08f-486c971ede90\\lesion_mask.png",
+      "artifacts\\5e19288b-6e4d-458d-a08f-486c971ede90\\original.png",
+      "artifacts\\5f01574d-2d9b-45f2-8bb3-e777d6ee36f5\\leaf_mask.png",
+      "artifacts\\5f01574d-2d9b-45f2-8bb3-e777d6ee36f5\\lesion_mask.png",
+      "artifacts\\5f01574d-2d9b-45f2-8bb3-e777d6ee36f5\\original.png",
+      "artifacts\\633d74a5-cd26-485e-a8bc-918072398bcc\\leaf_mask.png",
+      "artifacts\\633d74a5-cd26-485e-a8bc-918072398bcc\\lesion_mask.png",
+      "artifacts\\633d74a5-cd26-485e-a8bc-918072398bcc\\original.png",
+      "artifacts\\7fe11612-548a-484d-af14-c2741e8e3fb3\\leaf_mask.png",
+      "artifacts\\7fe11612-548a-484d-af14-c2741e8e3fb3\\lesion_mask.png",
+      "artifacts\\7fe11612-548a-484d-af14-c2741e8e3fb3\\original.png",
+      "artifacts\\a61b9c29-ec53-453f-ae1c-ddf9fc5bef96\\leaf_mask.png",
+      "artifacts\\a61b9c29-ec53-453f-ae1c-ddf9fc5bef96\\lesion_mask.png",
+      "artifacts\\a61b9c29-ec53-453f-ae1c-ddf9fc5bef96\\original.png",
+      "artifacts\\d306644e-0b0d-4b8a-ab21-ccc0283fdf71\\leaf_mask.png",
+      "artifacts\\d306644e-0b0d-4b8a-ab21-ccc0283fdf71\\lesion_mask.png",
+      "artifacts\\d306644e-0b0d-4b8a-ab21-ccc0283fdf71\\original.png"
+    ],
+    "exit_code": 1
+  },
+  "restart": {
+    "pid": 11184,
+    "health": {
+      "status": "ok",
+      "model_loaded": true,
+      "model_version": "svm-v1.0.0",
+      "runtime_storage": "temporary"
+    },
+    "history_after": 0,
+    "old_artifact_http_status": {
+      "original_url": 404,
+      "leaf_mask_url": 404,
+      "lesion_mask_url": 404
+    }
+  },
+  "clear_history": {
+    "deleted": 1,
+    "history_after": 0,
+    "artifact_http_status": {
+      "original_url": 404,
+      "leaf_mask_url": 404,
+      "lesion_mask_url": 404
+    }
+  },
+  "timings": {
+    "labelled_samples": 8,
+    "first_request_cold_ms": 1621.6,
+    "warm_samples": 7,
+    "warm_mean_ms": 192.5,
+    "warm_p50_ms": 193.5,
+    "warm_p95_ms": 220.4,
+    "warm_max_ms": 220.4,
+    "warm_pipeline_stage_total_mean_ms": 114.9
+  },
+  "checks": [
+    {
+      "check": "preprocessing resize/crop/letterbox - held_out_landscape",
+      "category": "preprocessing",
+      "result": "pass",
+      "detail": "source=3081x897 -> working=768x224 -> crop=[0, 0, 768, 207] -> resize=[512, 138] -> pad=[0, 187] -> canvas=512x512 | uniform scale=True (max deviation 0.181 %)",
+      "evidence": {
+        "label": "held_out_landscape",
+        "leaf_found": true,
+        "source_width": 3081,
+        "source_height": 897,
+        "source_aspect": 3.4348,
+        "working_width": 768,
+        "working_height": 224,
+        "working_scale": [
+          0.24927,
+          0.249721
+        ],
+        "crop_box": [
+          0,
+          0,
+          768,
+          207
+        ],
+        "crop_aspect": 3.7101,
+        "resize_scale": [
+          0.666667,
+          0.666667
+        ],
+        "resized_size": [
+          512,
+          138
+        ],
+        "resized_aspect": 3.7101,
+        "pad": [
+          0,
+          187
+        ],
+        "canvas_size": 512,
+        "uniform_scale_max_deviation_pct": 0.181,
+        "uniform_scale": true
+      }
+    },
+    {
+      "check": "preprocessing resize/crop/letterbox - portrait_rotated",
+      "category": "preprocessing",
+      "result": "pass",
+      "detail": "source=897x3081 -> working=224x768 -> crop=[17, 0, 207, 768] -> resize=[138, 512] -> pad=[187, 0] -> canvas=512x512 | uniform scale=True (max deviation 0.181 %)",
+      "evidence": {
+        "label": "portrait_rotated",
+        "leaf_found": true,
+        "source_width": 897,
+        "source_height": 3081,
+        "source_aspect": 0.2911,
+        "working_width": 224,
+        "working_height": 768,
+        "working_scale": [
+          0.249721,
+          0.24927
+        ],
+        "crop_box": [
+          17,
+          0,
+          207,
+          768
+        ],
+        "crop_aspect": 0.2695,
+        "resize_scale": [
+          0.666667,
+          0.666667
+        ],
+        "resized_size": [
+          138,
+          512
+        ],
+        "resized_aspect": 0.2695,
+        "pad": [
+          187,
+          0
+        ],
+        "canvas_size": 512,
+        "uniform_scale_max_deviation_pct": 0.181,
+        "uniform_scale": true
+      }
+    },
+    {
+      "check": "preprocessing resize/crop/letterbox - portrait_exif_orientation_6",
+      "category": "preprocessing",
+      "result": "pass",
+      "detail": "source=466x1600 -> working=224x768 -> crop=[0, 0, 207, 768] -> resize=[138, 512] -> pad=[187, 0] -> canvas=512x512 | uniform scale=True (max deviation 0.143 %)",
+      "evidence": {
+        "label": "portrait_exif_orientation_6",
+        "leaf_found": true,
+        "source_width": 466,
+        "source_height": 1600,
+        "source_aspect": 0.2913,
+        "working_width": 224,
+        "working_height": 768,
+        "working_scale": [
+          0.480687,
+          0.48
+        ],
+        "crop_box": [
+          0,
+          0,
+          207,
+          768
+        ],
+        "crop_aspect": 0.2695,
+        "resize_scale": [
+          0.666667,
+          0.666667
+        ],
+        "resized_size": [
+          138,
+          512
+        ],
+        "resized_aspect": 0.2695,
+        "pad": [
+          187,
+          0
+        ],
+        "canvas_size": 512,
+        "uniform_scale_max_deviation_pct": 0.143,
+        "uniform_scale": true
+      }
+    },
+    {
+      "check": "health / model bundle",
+      "category": "service",
+      "result": "pass",
+      "detail": "{'status': 'ok', 'model_loaded': True, 'model_version': 'svm-v1.0.0', 'runtime_storage': 'temporary'}",
+      "evidence": {
+        "status": "ok",
+        "model_loaded": true,
+        "model_version": "svm-v1.0.0",
+        "runtime_storage": "temporary"
+      }
+    },
+    {
+      "check": "real dataset image is accepted",
+      "category": "smoke",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "a61b9c29-ec53-453f-ae1c-ddf9fc5bef96",
+          "status": "predicted",
+          "disease": "brown_spot",
+          "decision_scores": {
+            "bacterial_leaf_blight": -0.18507888090346641,
+            "brown_spot": 2.222220460320079,
+            "leaf_smut": 0.8569725857590378
+          },
+          "margin": 1.3652478745610412,
+          "ranking": [
+            "brown_spot",
+            "leaf_smut",
+            "bacterial_leaf_blight"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 28.25739870884143,
+          "lesion_reliable": true,
+          "severity": "Severe",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/a61b9c29-ec53-453f-ae1c-ddf9fc5bef96/original",
+            "leaf_mask_url": "/api/v1/history/a61b9c29-ec53-453f-ae1c-ddf9fc5bef96/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/a61b9c29-ec53-453f-ae1c-ddf9fc5bef96/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 8.25,
+            "basic_quality": 1.26,
+            "leaf_segmentation": 1501.27,
+            "leaf_quality": 0.38,
+            "canvas": 1.12,
+            "lesion_segmentation": 51.84,
+            "lesion_quality": 0.01,
+            "total": 1564.13
+          },
+          "created_at": "2026-11-09T14:10:13+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "real dataset smoke prediction",
+      "category": "smoke",
+      "result": "pass",
+      "detail": "predicted | brown_spot | margin=1.3652478745610412 | severity=Severe | lesion=28.25739870884143 | 1622 ms | warnings=[]",
+      "evidence": {
+        "status": "predicted",
+        "disease": "brown_spot",
+        "decision_scores": {
+          "bacterial_leaf_blight": -0.18507888090346641,
+          "brown_spot": 2.222220460320079,
+          "leaf_smut": 0.8569725857590378
+        },
+        "margin": 1.3652478745610412,
+        "severity": "Severe",
+        "lesion_area_percentage": 28.25739870884143,
+        "lesion_reliable": true,
+        "warnings": [],
+        "missing_features": [],
+        "prediction_id": "a61b9c29-ec53-453f-ae1c-ddf9fc5bef96",
+        "request_ms": 1621.6,
+        "stage_ms": {
+          "decode_and_working": 8.25,
+          "basic_quality": 1.26,
+          "leaf_segmentation": 1501.27,
+          "leaf_quality": 0.38,
+          "canvas": 1.12,
+          "lesion_segmentation": 51.84,
+          "lesion_quality": 0.01,
+          "total": 1564.13
+        }
+      }
+    },
+    {
+      "check": "held-out image is accepted",
+      "category": "smoke",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "633d74a5-cd26-485e-a8bc-918072398bcc",
+          "status": "predicted",
+          "disease": "bacterial_leaf_blight",
+          "decision_scores": {
+            "bacterial_leaf_blight": 2.2240710715631877,
+            "brown_spot": 0.8462685809370327,
+            "leaf_smut": -0.1814597019934467
+          },
+          "margin": 1.377802490626155,
+          "ranking": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 8.919800532413483,
+          "lesion_reliable": true,
+          "severity": "Mild",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/original",
+            "leaf_mask_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 27.35,
+            "basic_quality": 2.55,
+            "leaf_segmentation": 41.8,
+            "leaf_quality": 0.34,
+            "canvas": 1.32,
+            "lesion_segmentation": 41.57,
+            "lesion_quality": 0.01,
+            "total": 114.94
+          },
+          "created_at": "2026-11-09T14:10:13+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "held-out smoke prediction (functional only, no tuning)",
+      "category": "smoke",
+      "result": "pass",
+      "detail": "predicted | bacterial_leaf_blight | margin=1.377802490626155 | severity=Mild | lesion=8.919800532413483 | 214 ms | warnings=[]",
+      "evidence": {
+        "status": "predicted",
+        "disease": "bacterial_leaf_blight",
+        "decision_scores": {
+          "bacterial_leaf_blight": 2.2240710715631877,
+          "brown_spot": 0.8462685809370327,
+          "leaf_smut": -0.1814597019934467
+        },
+        "margin": 1.377802490626155,
+        "severity": "Mild",
+        "lesion_area_percentage": 8.919800532413483,
+        "lesion_reliable": true,
+        "warnings": [],
+        "missing_features": [],
+        "prediction_id": "633d74a5-cd26-485e-a8bc-918072398bcc",
+        "request_ms": 213.6,
+        "stage_ms": {
+          "decode_and_working": 27.35,
+          "basic_quality": 2.55,
+          "leaf_segmentation": 41.8,
+          "leaf_quality": 0.34,
+          "canvas": 1.32,
+          "lesion_segmentation": 41.57,
+          "lesion_quality": 0.01,
+          "total": 114.94
+        }
+      }
+    },
+    {
+      "check": "landscape upload",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "5e19288b-6e4d-458d-a08f-486c971ede90",
+          "status": "predicted",
+          "disease": "bacterial_leaf_blight",
+          "decision_scores": {
+            "bacterial_leaf_blight": 2.2240710715631877,
+            "brown_spot": 0.8462685809370327,
+            "leaf_smut": -0.1814597019934467
+          },
+          "margin": 1.377802490626155,
+          "ranking": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 8.919800532413483,
+          "lesion_reliable": true,
+          "severity": "Mild",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/5e19288b-6e4d-458d-a08f-486c971ede90/original",
+            "leaf_mask_url": "/api/v1/history/5e19288b-6e4d-458d-a08f-486c971ede90/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/5e19288b-6e4d-458d-a08f-486c971ede90/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 28.4,
+            "basic_quality": 2.01,
+            "leaf_segmentation": 45.16,
+            "leaf_quality": 0.52,
+            "canvas": 1.8,
+            "lesion_segmentation": 46.01,
+            "lesion_quality": 0.01,
+            "total": 123.91
+          },
+          "created_at": "2026-11-09T14:10:13+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "landscape upload result",
+      "category": "orientation",
+      "result": "pass",
+      "detail": "predicted | bacterial_leaf_blight | margin=1.377802490626155 | severity=Mild | lesion=8.919800532413483 | 220 ms | warnings=[]",
+      "evidence": {
+        "status": "predicted",
+        "disease": "bacterial_leaf_blight",
+        "decision_scores": {
+          "bacterial_leaf_blight": 2.2240710715631877,
+          "brown_spot": 0.8462685809370327,
+          "leaf_smut": -0.1814597019934467
+        },
+        "margin": 1.377802490626155,
+        "severity": "Mild",
+        "lesion_area_percentage": 8.919800532413483,
+        "lesion_reliable": true,
+        "warnings": [],
+        "missing_features": [],
+        "prediction_id": "5e19288b-6e4d-458d-a08f-486c971ede90",
+        "request_ms": 220.4,
+        "stage_ms": {
+          "decode_and_working": 28.4,
+          "basic_quality": 2.01,
+          "leaf_segmentation": 45.16,
+          "leaf_quality": 0.52,
+          "canvas": 1.8,
+          "lesion_segmentation": 46.01,
+          "lesion_quality": 0.01,
+          "total": 123.91
+        }
+      }
+    },
+    {
+      "check": "portrait upload",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "13d65694-3e13-44de-8939-f931521866f1",
+          "status": "predicted",
+          "disease": "bacterial_leaf_blight",
+          "decision_scores": {
+            "bacterial_leaf_blight": 2.19502437987413,
+            "brown_spot": 1.033313771269035,
+            "leaf_smut": -0.20111601820259778
+          },
+          "margin": 1.161710608605095,
+          "ranking": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 3.5872546950833506,
+          "lesion_reliable": true,
+          "severity": "Mild",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/13d65694-3e13-44de-8939-f931521866f1/original",
+            "leaf_mask_url": "/api/v1/history/13d65694-3e13-44de-8939-f931521866f1/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/13d65694-3e13-44de-8939-f931521866f1/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 18.07,
+            "basic_quality": 1.68,
+            "leaf_segmentation": 45.56,
+            "leaf_quality": 0.5,
+            "canvas": 2.0,
+            "lesion_segmentation": 47.84,
+            "lesion_quality": 0.01,
+            "total": 115.66
+          },
+          "created_at": "2026-11-09T14:10:14+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "portrait upload result (rotated real pixels)",
+      "category": "orientation",
+      "result": "pass",
+      "detail": "predicted | bacterial_leaf_blight | margin=1.161710608605095 | severity=Mild | lesion=3.5872546950833506 | 215 ms | warnings=[]",
+      "evidence": {
+        "status": "predicted",
+        "disease": "bacterial_leaf_blight",
+        "decision_scores": {
+          "bacterial_leaf_blight": 2.19502437987413,
+          "brown_spot": 1.033313771269035,
+          "leaf_smut": -0.20111601820259778
+        },
+        "margin": 1.161710608605095,
+        "severity": "Mild",
+        "lesion_area_percentage": 3.5872546950833506,
+        "lesion_reliable": true,
+        "warnings": [],
+        "missing_features": [],
+        "prediction_id": "13d65694-3e13-44de-8939-f931521866f1",
+        "request_ms": 215.2,
+        "stage_ms": {
+          "decode_and_working": 18.07,
+          "basic_quality": 1.68,
+          "leaf_segmentation": 45.56,
+          "leaf_quality": 0.5,
+          "canvas": 2.0,
+          "lesion_segmentation": 47.84,
+          "lesion_quality": 0.01,
+          "total": 115.66
+        }
+      }
+    },
+    {
+      "check": "EXIF orientation 6 upload",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "d306644e-0b0d-4b8a-ab21-ccc0283fdf71",
+          "status": "predicted",
+          "disease": "bacterial_leaf_blight",
+          "decision_scores": {
+            "bacterial_leaf_blight": 2.2444092866437786,
+            "brown_spot": 0.8409842177386968,
+            "leaf_smut": -0.21580926134540998
+          },
+          "margin": 1.4034250689050818,
+          "ranking": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 8.662956835614379,
+          "lesion_reliable": true,
+          "severity": "Mild",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/d306644e-0b0d-4b8a-ab21-ccc0283fdf71/original",
+            "leaf_mask_url": "/api/v1/history/d306644e-0b0d-4b8a-ab21-ccc0283fdf71/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/d306644e-0b0d-4b8a-ab21-ccc0283fdf71/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 6.93,
+            "basic_quality": 1.91,
+            "leaf_segmentation": 46.11,
+            "leaf_quality": 0.55,
+            "canvas": 1.53,
+            "lesion_segmentation": 42.17,
+            "lesion_quality": 0.01,
+            "total": 99.21
+          },
+          "created_at": "2026-11-09T14:10:14+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "EXIF-portrait result",
+      "category": "orientation",
+      "result": "pass",
+      "detail": "predicted | bacterial_leaf_blight | margin=1.4034250689050818 | severity=Mild | lesion=8.662956835614379 | 154 ms | warnings=[]",
+      "evidence": {
+        "status": "predicted",
+        "disease": "bacterial_leaf_blight",
+        "decision_scores": {
+          "bacterial_leaf_blight": 2.2444092866437786,
+          "brown_spot": 0.8409842177386968,
+          "leaf_smut": -0.21580926134540998
+        },
+        "margin": 1.4034250689050818,
+        "severity": "Mild",
+        "lesion_area_percentage": 8.662956835614379,
+        "lesion_reliable": true,
+        "warnings": [],
+        "missing_features": [],
+        "prediction_id": "d306644e-0b0d-4b8a-ab21-ccc0283fdf71",
+        "request_ms": 154.0,
+        "stage_ms": {
+          "decode_and_working": 6.93,
+          "basic_quality": 1.91,
+          "leaf_segmentation": 46.11,
+          "leaf_quality": 0.55,
+          "canvas": 1.53,
+          "lesion_segmentation": 42.17,
+          "lesion_quality": 0.01,
+          "total": 99.21
+        }
+      }
+    },
+    {
+      "check": "multiple-leaf image is handled without crashing",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "12918cc1-2ada-4134-a0a9-a4e9a89e5721",
+          "status": "uncertain",
+          "disease": "leaf_smut",
+          "decision_scores": {
+            "bacterial_leaf_blight": -0.19999661484297607,
+            "brown_spot": 1.0831480179141664,
+            "leaf_smut": 2.1795527713969576
+          },
+          "margin": 1.0964047534827912,
+          "ranking": [
+            "leaf_smut",
+            "brown_spot",
+            "bacterial_leaf_blight"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 17.17412243150685,
+          "lesion_reliable": true,
+          "severity": "Moderate",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [
+            "FULL_FRAME_FALLBACK"
+          ],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/original",
+            "leaf_mask_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 1.98,
+            "basic_quality": 3.1,
+            "leaf_segmentation": 65.21,
+            "leaf_quality": 1.17,
+            "canvas": 5.7,
+            "lesion_segmentation": 58.15,
+            "lesion_quality": 0.01,
+            "total": 135.32
+          },
+          "created_at": "2026-11-09T14:10:14+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "multiple-leaf handling",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "status=uncertain | warnings=['FULL_FRAME_FALLBACK'] | MULTIPLE_LEAVES=False",
+      "evidence": {
+        "prediction_id": "12918cc1-2ada-4134-a0a9-a4e9a89e5721",
+        "status": "uncertain",
+        "disease": "leaf_smut",
+        "decision_scores": {
+          "bacterial_leaf_blight": -0.19999661484297607,
+          "brown_spot": 1.0831480179141664,
+          "leaf_smut": 2.1795527713969576
+        },
+        "margin": 1.0964047534827912,
+        "ranking": [
+          "leaf_smut",
+          "brown_spot",
+          "bacterial_leaf_blight"
+        ],
+        "score_kind": "decision_margin",
+        "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+        "lesion_area_percentage": 17.17412243150685,
+        "lesion_reliable": true,
+        "severity": "Moderate",
+        "severity_note": "Experimental lesion-area estimate.",
+        "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+        "severity_reason_code": null,
+        "severity_method": "experimental_lesion_area_thresholds",
+        "severity_config_version": "severity-v1",
+        "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+        "warnings": [
+          "FULL_FRAME_FALLBACK"
+        ],
+        "rejections": [],
+        "missing_features": [],
+        "artifacts": {
+          "original_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/original",
+          "leaf_mask_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/leaf-mask",
+          "lesion_mask_url": "/api/v1/history/12918cc1-2ada-4134-a0a9-a4e9a89e5721/lesion-mask"
+        },
+        "model_name": "svm",
+        "model_version": "svm-v1.0.0",
+        "feature_set_version": "1.0.0",
+        "segmentation_config_version": "seg-v2",
+        "quality_config_version": "quality-v1",
+        "stage_ms": {
+          "decode_and_working": 1.98,
+          "basic_quality": 3.1,
+          "leaf_segmentation": 65.21,
+          "leaf_quality": 1.17,
+          "canvas": 5.7,
+          "lesion_segmentation": 58.15,
+          "lesion_quality": 0.01,
+          "total": 135.32
+        },
+        "created_at": "2026-11-09T14:10:14+00:00",
+        "runtime_storage": "temporary"
+      }
+    },
+    {
+      "check": "multiple-leaf result contract",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "uncertain | leaf_smut | margin=1.0964047534827912 | severity=Moderate | lesion=17.17412243150685 | 194 ms | warnings=['FULL_FRAME_FALLBACK']",
+      "evidence": {
+        "status": "uncertain",
+        "disease": "leaf_smut",
+        "decision_scores": {
+          "bacterial_leaf_blight": -0.19999661484297607,
+          "brown_spot": 1.0831480179141664,
+          "leaf_smut": 2.1795527713969576
+        },
+        "margin": 1.0964047534827912,
+        "severity": "Moderate",
+        "lesion_area_percentage": 17.17412243150685,
+        "lesion_reliable": true,
+        "warnings": [
+          "FULL_FRAME_FALLBACK"
+        ],
+        "missing_features": [],
+        "prediction_id": "12918cc1-2ada-4134-a0a9-a4e9a89e5721",
+        "request_ms": 193.5,
+        "stage_ms": {
+          "decode_and_working": 1.98,
+          "basic_quality": 3.1,
+          "leaf_segmentation": 65.21,
+          "leaf_quality": 1.17,
+          "canvas": 5.7,
+          "lesion_segmentation": 58.15,
+          "lesion_quality": 0.01,
+          "total": 135.32
+        }
+      }
+    },
+    {
+      "check": "poor-quality image is handled",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=VERY_DARK_IMAGE | The image is too dark for reliable analysis. Increase the lighting and try again.",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "status": "rejected",
+          "reason_code": "VERY_DARK_IMAGE",
+          "message": "The image is too dark for reliable analysis. Increase the lighting and try again.",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "poor-quality image honesty",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "status=rejected | warnings=None | rejections=None",
+      "evidence": {
+        "status": "rejected",
+        "reason_code": "VERY_DARK_IMAGE",
+        "message": "The image is too dark for reliable analysis. Increase the lighting and try again.",
+        "runtime_storage": "temporary"
+      }
+    },
+    {
+      "check": "healthy-looking image is handled",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "5f01574d-2d9b-45f2-8bb3-e777d6ee36f5",
+          "status": "uncertain",
+          "disease": "leaf_smut",
+          "decision_scores": {
+            "bacterial_leaf_blight": -0.18933781070693864,
+            "brown_spot": 1.113019667849135,
+            "leaf_smut": 2.148342638236861
+          },
+          "margin": 1.035322970387726,
+          "ranking": [
+            "leaf_smut",
+            "brown_spot",
+            "bacterial_leaf_blight"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 0.0,
+          "lesion_reliable": true,
+          "severity": "Mild",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [
+            "BLURRY_IMAGE"
+          ],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/original",
+            "leaf_mask_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 5.49,
+            "basic_quality": 4.7,
+            "leaf_segmentation": 49.55,
+            "leaf_quality": 1.31,
+            "canvas": 1.7,
+            "lesion_segmentation": 57.4,
+            "lesion_quality": 0.01,
+            "total": 120.16
+          },
+          "created_at": "2026-11-09T14:10:14+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "healthy-looking image makes no healthy claim",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "status=uncertain | disease=leaf_smut | warnings=['BLURRY_IMAGE'] | rejections=[]",
+      "evidence": {
+        "prediction_id": "5f01574d-2d9b-45f2-8bb3-e777d6ee36f5",
+        "status": "uncertain",
+        "disease": "leaf_smut",
+        "decision_scores": {
+          "bacterial_leaf_blight": -0.18933781070693864,
+          "brown_spot": 1.113019667849135,
+          "leaf_smut": 2.148342638236861
+        },
+        "margin": 1.035322970387726,
+        "ranking": [
+          "leaf_smut",
+          "brown_spot",
+          "bacterial_leaf_blight"
+        ],
+        "score_kind": "decision_margin",
+        "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+        "lesion_area_percentage": 0.0,
+        "lesion_reliable": true,
+        "severity": "Mild",
+        "severity_note": "Experimental lesion-area estimate.",
+        "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+        "severity_reason_code": null,
+        "severity_method": "experimental_lesion_area_thresholds",
+        "severity_config_version": "severity-v1",
+        "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+        "warnings": [
+          "BLURRY_IMAGE"
+        ],
+        "rejections": [],
+        "missing_features": [],
+        "artifacts": {
+          "original_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/original",
+          "leaf_mask_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/leaf-mask",
+          "lesion_mask_url": "/api/v1/history/5f01574d-2d9b-45f2-8bb3-e777d6ee36f5/lesion-mask"
+        },
+        "model_name": "svm",
+        "model_version": "svm-v1.0.0",
+        "feature_set_version": "1.0.0",
+        "segmentation_config_version": "seg-v2",
+        "quality_config_version": "quality-v1",
+        "stage_ms": {
+          "decode_and_working": 5.49,
+          "basic_quality": 4.7,
+          "leaf_segmentation": 49.55,
+          "leaf_quality": 1.31,
+          "canvas": 1.7,
+          "lesion_segmentation": 57.4,
+          "lesion_quality": 0.01,
+          "total": 120.16
+        },
+        "created_at": "2026-11-09T14:10:14+00:00",
+        "runtime_storage": "temporary"
+      }
+    },
+    {
+      "check": "healthy-looking image labelled contract",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "uncertain | leaf_smut | margin=1.035322970387726 | severity=Mild | lesion=0.0 | 181 ms | warnings=['BLURRY_IMAGE']",
+      "evidence": {
+        "status": "uncertain",
+        "disease": "leaf_smut",
+        "decision_scores": {
+          "bacterial_leaf_blight": -0.18933781070693864,
+          "brown_spot": 1.113019667849135,
+          "leaf_smut": 2.148342638236861
+        },
+        "margin": 1.035322970387726,
+        "severity": "Mild",
+        "lesion_area_percentage": 0.0,
+        "lesion_reliable": true,
+        "warnings": [
+          "BLURRY_IMAGE"
+        ],
+        "missing_features": [],
+        "prediction_id": "5f01574d-2d9b-45f2-8bb3-e777d6ee36f5",
+        "request_ms": 180.6,
+        "stage_ms": {
+          "decode_and_working": 5.49,
+          "basic_quality": 4.7,
+          "leaf_segmentation": 49.55,
+          "leaf_quality": 1.31,
+          "canvas": 1.7,
+          "lesion_segmentation": 57.4,
+          "lesion_quality": 0.01,
+          "total": 120.16
+        }
+      }
+    },
+    {
+      "check": "non-rice image (wheat) is handled",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "7fe11612-548a-484d-af14-c2741e8e3fb3",
+          "status": "uncertain",
+          "disease": "leaf_smut",
+          "decision_scores": {
+            "bacterial_leaf_blight": -0.1821298936458064,
+            "brown_spot": 1.0485989347278044,
+            "leaf_smut": 2.169440853710547
+          },
+          "margin": 1.1208419189827425,
+          "ranking": [
+            "leaf_smut",
+            "brown_spot",
+            "bacterial_leaf_blight"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 55.3015350877193,
+          "lesion_reliable": true,
+          "severity": "Severe",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [
+            "FULL_FRAME_FALLBACK"
+          ],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/original",
+            "leaf_mask_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 1.55,
+            "basic_quality": 2.33,
+            "leaf_segmentation": 56.77,
+            "leaf_quality": 0.75,
+            "canvas": 1.26,
+            "lesion_segmentation": 59.76,
+            "lesion_quality": 0.01,
+            "total": 122.43
+          },
+          "created_at": "2026-11-09T14:10:15+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "non-rice image (wheat) makes no healthy claim",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "status=uncertain | disease=leaf_smut | warnings=['FULL_FRAME_FALLBACK'] | rejections=[]",
+      "evidence": {
+        "prediction_id": "7fe11612-548a-484d-af14-c2741e8e3fb3",
+        "status": "uncertain",
+        "disease": "leaf_smut",
+        "decision_scores": {
+          "bacterial_leaf_blight": -0.1821298936458064,
+          "brown_spot": 1.0485989347278044,
+          "leaf_smut": 2.169440853710547
+        },
+        "margin": 1.1208419189827425,
+        "ranking": [
+          "leaf_smut",
+          "brown_spot",
+          "bacterial_leaf_blight"
+        ],
+        "score_kind": "decision_margin",
+        "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+        "lesion_area_percentage": 55.3015350877193,
+        "lesion_reliable": true,
+        "severity": "Severe",
+        "severity_note": "Experimental lesion-area estimate.",
+        "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+        "severity_reason_code": null,
+        "severity_method": "experimental_lesion_area_thresholds",
+        "severity_config_version": "severity-v1",
+        "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+        "warnings": [
+          "FULL_FRAME_FALLBACK"
+        ],
+        "rejections": [],
+        "missing_features": [],
+        "artifacts": {
+          "original_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/original",
+          "leaf_mask_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/leaf-mask",
+          "lesion_mask_url": "/api/v1/history/7fe11612-548a-484d-af14-c2741e8e3fb3/lesion-mask"
+        },
+        "model_name": "svm",
+        "model_version": "svm-v1.0.0",
+        "feature_set_version": "1.0.0",
+        "segmentation_config_version": "seg-v2",
+        "quality_config_version": "quality-v1",
+        "stage_ms": {
+          "decode_and_working": 1.55,
+          "basic_quality": 2.33,
+          "leaf_segmentation": 56.77,
+          "leaf_quality": 0.75,
+          "canvas": 1.26,
+          "lesion_segmentation": 59.76,
+          "lesion_quality": 0.01,
+          "total": 122.43
+        },
+        "created_at": "2026-11-09T14:10:15+00:00",
+        "runtime_storage": "temporary"
+      }
+    },
+    {
+      "check": "non-rice image (wheat) labelled contract",
+      "category": "edge-case",
+      "result": "pass",
+      "detail": "uncertain | leaf_smut | margin=1.1208419189827425 | severity=Severe | lesion=55.3015350877193 | 170 ms | warnings=['FULL_FRAME_FALLBACK']",
+      "evidence": {
+        "status": "uncertain",
+        "disease": "leaf_smut",
+        "decision_scores": {
+          "bacterial_leaf_blight": -0.1821298936458064,
+          "brown_spot": 1.0485989347278044,
+          "leaf_smut": 2.169440853710547
+        },
+        "margin": 1.1208419189827425,
+        "severity": "Severe",
+        "lesion_area_percentage": 55.3015350877193,
+        "lesion_reliable": true,
+        "warnings": [
+          "FULL_FRAME_FALLBACK"
+        ],
+        "missing_features": [],
+        "prediction_id": "7fe11612-548a-484d-af14-c2741e8e3fb3",
+        "request_ms": 170.3,
+        "stage_ms": {
+          "decode_and_working": 1.55,
+          "basic_quality": 2.33,
+          "leaf_segmentation": 56.77,
+          "leaf_quality": 0.75,
+          "canvas": 1.26,
+          "lesion_segmentation": 59.76,
+          "lesion_quality": 0.01,
+          "total": 122.43
+        }
+      }
+    },
+    {
+      "check": "valid but rejected image returns HTTP 200 + no prediction",
+      "category": "rejection",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=NO_CLEAR_LEAF_FOUND | No suitable rice leaf region could be detected. Upload one clear, well-lit leaf.",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "status": "rejected",
+          "reason_code": "NO_CLEAR_LEAF_FOUND",
+          "message": "No suitable rice leaf region could be detected. Upload one clear, well-lit leaf.",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "rejected valid image leaves no history row or artifact",
+      "category": "rejection",
+      "result": "pass",
+      "detail": "status=rejected | reason=NO_CLEAR_LEAF_FOUND | id=None | artifacts=None | history 8 -> 8 | 60 ms",
+      "evidence": {
+        "status": "rejected",
+        "reason_code": "NO_CLEAR_LEAF_FOUND",
+        "message": "No suitable rice leaf region could be detected. Upload one clear, well-lit leaf.",
+        "runtime_storage": "temporary"
+      }
+    },
+    {
+      "check": "oversize upload (11 MB) -> 413",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 413 (expected 413) | reason=FILE_TOO_LARGE | The uploaded file exceeds the maximum allowed size of 10 MB.",
+      "evidence": {
+        "status_code": 413,
+        "body": {
+          "status": "error",
+          "reason_code": "FILE_TOO_LARGE",
+          "message": "The uploaded file exceeds the maximum allowed size of 10 MB."
+        }
+      }
+    },
+    {
+      "check": "unsupported extension (txt) -> 415",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 415 (expected 415) | reason=UNSUPPORTED_FILE_TYPE | Unsupported file type. Allowed types: JPG, JPEG, PNG, WEBP.",
+      "evidence": {
+        "status_code": 415,
+        "body": {
+          "status": "error",
+          "reason_code": "UNSUPPORTED_FILE_TYPE",
+          "message": "Unsupported file type. Allowed types: JPG, JPEG, PNG, WEBP."
+        }
+      }
+    },
+    {
+      "check": "corrupt image bytes -> 422",
+      "category": "invalid-upload",
+      "result": "pass",
+      "detail": "HTTP 422 (expected 422) | reason=INVALID_UPLOAD | The uploaded file is not a readable image.",
+      "evidence": {
+        "status_code": 422,
+        "body": {
+          "status": "error",
+          "reason_code": "INVALID_UPLOAD",
+          "message": "The uploaded file is not a readable image."
+        }
+      }
+    },
+    {
+      "check": "history holds exactly the labelled results",
+      "category": "history",
+      "result": "pass",
+      "detail": "count=8 expected=8 | id mismatch=[]",
+      "evidence": {
+        "count": 8,
+        "expected": 8,
+        "id_mismatch": []
+      }
+    },
+    {
+      "check": "single history row retrieval",
+      "category": "history",
+      "result": "pass",
+      "detail": "HTTP 200",
+      "evidence": {
+        "prediction_id": "633d74a5-cd26-485e-a8bc-918072398bcc",
+        "created_at": "2026-11-09T14:10:13+00:00",
+        "expires_at": "2026-11-09T15:10:13+00:00",
+        "status": "predicted",
+        "disease": "bacterial_leaf_blight",
+        "decision_scores": {
+          "bacterial_leaf_blight": 2.2240710715631877,
+          "brown_spot": 0.8462685809370327,
+          "leaf_smut": -0.1814597019934467
+        },
+        "margin": 1.377802490626155,
+        "severity": "Mild",
+        "severity_reason_code": null,
+        "severity_config_version": "severity-v1",
+        "lesion_area_percentage": 8.919800532413483,
+        "lesion_reliable": true,
+        "model_name": "svm",
+        "model_version": "svm-v1.0.0",
+        "feature_set_version": "1.0.0",
+        "segmentation_config_version": "seg-v2",
+        "quality_config_version": "quality-v1",
+        "warnings": [],
+        "rejections": [],
+        "missing_features": [],
+        "stage_ms": {
+          "decode_and_working": 27.35,
+          "basic_quality": 2.55,
+          "leaf_segmentation": 41.8,
+          "leaf_quality": 0.34,
+          "canvas": 1.32,
+          "lesion_segmentation": 41.57,
+          "lesion_quality": 0.01,
+          "total": 114.94
+        },
+        "artifacts": {
+          "original_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/original",
+          "leaf_mask_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/leaf-mask",
+          "lesion_mask_url": "/api/v1/history/633d74a5-cd26-485e-a8bc-918072398bcc/lesion-mask"
+        }
+      }
+    },
+    {
+      "check": "artifact retrieval returns real PNGs",
+      "category": "artifacts",
+      "result": "pass",
+      "detail": "{'original_url': 200, 'leaf_mask_url': 200, 'lesion_mask_url': 200}",
+      "evidence": {
+        "original_url": 200,
+        "leaf_mask_url": 200,
+        "lesion_mask_url": 200
+      }
+    },
+    {
+      "check": "backend restart clears temporary history and artifacts",
+      "category": "restart",
+      "result": "pass",
+      "detail": "fresh pid=11184 | same RUNTIME_DIR | history 8 -> 0 | artifact files 24 -> 0 | old URLs {'original_url': 404, 'leaf_mask_url': 404, 'lesion_mask_url': 404}",
+      "evidence": {
+        "history_before": 8,
+        "history_after": 0,
+        "artifact_files_before": 24,
+        "artifact_files_after": 0,
+        "old_artifact_http_status": {
+          "original_url": 404,
+          "leaf_mask_url": 404,
+          "lesion_mask_url": 404
+        },
+        "health": {
+          "status": "ok",
+          "model_loaded": true,
+          "model_version": "svm-v1.0.0",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "restarted process can predict",
+      "category": "service",
+      "result": "pass",
+      "detail": "HTTP 200 (expected 200) | reason=None | ",
+      "evidence": {
+        "status_code": 200,
+        "body": {
+          "prediction_id": "6748f7ec-0748-4046-b796-187a18ed8dc0",
+          "status": "predicted",
+          "disease": "bacterial_leaf_blight",
+          "decision_scores": {
+            "bacterial_leaf_blight": 2.2240710715631877,
+            "brown_spot": 0.8462685809370327,
+            "leaf_smut": -0.1814597019934467
+          },
+          "margin": 1.377802490626155,
+          "ranking": [
+            "bacterial_leaf_blight",
+            "brown_spot",
+            "leaf_smut"
+          ],
+          "score_kind": "decision_margin",
+          "score_note": "decision_function values (one-vs-rest margins), not probabilities. A larger value means the model preferred that class; it is not a confidence percentage.",
+          "lesion_area_percentage": 8.919800532413483,
+          "lesion_reliable": true,
+          "severity": "Mild",
+          "severity_note": "Experimental lesion-area estimate.",
+          "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade.",
+          "severity_reason_code": null,
+          "severity_method": "experimental_lesion_area_thresholds",
+          "severity_config_version": "severity-v1",
+          "severity_config_sha256": "afd30d594f0dfe6c9842f16476f27a64afdd554e7f173d84796150b2e46ebca8",
+          "warnings": [],
+          "rejections": [],
+          "missing_features": [],
+          "artifacts": {
+            "original_url": "/api/v1/history/6748f7ec-0748-4046-b796-187a18ed8dc0/original",
+            "leaf_mask_url": "/api/v1/history/6748f7ec-0748-4046-b796-187a18ed8dc0/leaf-mask",
+            "lesion_mask_url": "/api/v1/history/6748f7ec-0748-4046-b796-187a18ed8dc0/lesion-mask"
+          },
+          "model_name": "svm",
+          "model_version": "svm-v1.0.0",
+          "feature_set_version": "1.0.0",
+          "segmentation_config_version": "seg-v2",
+          "quality_config_version": "quality-v1",
+          "stage_ms": {
+            "decode_and_working": 27.56,
+            "basic_quality": 2.25,
+            "leaf_segmentation": 1507.65,
+            "leaf_quality": 0.56,
+            "canvas": 1.59,
+            "lesion_segmentation": 43.0,
+            "lesion_quality": 0.01,
+            "total": 1582.62
+          },
+          "created_at": "2026-11-09T14:10:20+00:00",
+          "runtime_storage": "temporary"
+        }
+      }
+    },
+    {
+      "check": "restarted-process prediction contract",
+      "category": "service",
+      "result": "pass",
+      "detail": "predicted | bacterial_leaf_blight | margin=1.377802490626155 | severity=Mild | lesion=8.919800532413483 | 1687 ms | warnings=[]",
+      "evidence": {
+        "status": "predicted",
+        "disease": "bacterial_leaf_blight",
+        "decision_scores": {
+          "bacterial_leaf_blight": 2.2240710715631877,
+          "brown_spot": 0.8462685809370327,
+          "leaf_smut": -0.1814597019934467
+        },
+        "margin": 1.377802490626155,
+        "severity": "Mild",
+        "lesion_area_percentage": 8.919800532413483,
+        "lesion_reliable": true,
+        "warnings": [],
+        "missing_features": [],
+        "prediction_id": "6748f7ec-0748-4046-b796-187a18ed8dc0",
+        "request_ms": 1687.2,
+        "stage_ms": {
+          "decode_and_working": 27.56,
+          "basic_quality": 2.25,
+          "leaf_segmentation": 1507.65,
+          "leaf_quality": 0.56,
+          "canvas": 1.59,
+          "lesion_segmentation": 43.0,
+          "lesion_quality": 0.01,
+          "total": 1582.62
+        }
+      }
+    },
+    {
+      "check": "clear history removes rows, files and artifact URLs",
+      "category": "history",
+      "result": "pass",
+      "detail": "deleted=1 | history 1 -> 0 | artifact files left=0 | urls={'original_url': 404, 'leaf_mask_url': 404, 'lesion_mask_url': 404}",
+      "evidence": {
+        "deleted": 1,
+        "history_after": 0,
+        "artifact_http_status": {
+          "original_url": 404,
+          "leaf_mask_url": 404,
+          "lesion_mask_url": 404
+        }
+      }
+    },
+    {
+      "check": "response-time measurement (labelled uploads)",
+      "category": "performance",
+      "result": "pass",
+      "detail": "first/cold=1621.6 ms | warm n=7 mean=192.5 ms | p50=193.5 ms | p95=220.4 ms | max=220.4 ms",
+      "evidence": {
+        "labelled_samples": 8,
+        "first_request_cold_ms": 1621.6,
+        "warm_samples": 7,
+        "warm_mean_ms": 192.5,
+        "warm_p50_ms": 193.5,
+        "warm_p95_ms": 220.4,
+        "warm_max_ms": 220.4,
+        "warm_pipeline_stage_total_mean_ms": 114.9
+      }
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-11-09T19:40:20+0530"
+}

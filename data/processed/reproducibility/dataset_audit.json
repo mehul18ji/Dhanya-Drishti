@@ -1,0 +1,315 @@
+{
+  "class_counts": {
+    "bacterial_leaf_blight": 40,
+    "brown_spot": 40,
+    "leaf_smut": 40
+  },
+  "classes": {
+    "bacterial_leaf_blight": {
+      "aspect_max": 3.4348,
+      "aspect_min": 3.4348,
+      "bytes": 17730491,
+      "distinct_resolutions": 1,
+      "files": [
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0370.jpg",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0373.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0374.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0378.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0379.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0380.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0381.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0382.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0383.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0384.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0385.jpg",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0386.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0388.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0389.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0390.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0392.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0393.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0395.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0396.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0399.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0400.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0401.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0402.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0403.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0404.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0406.JPG",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg",
+        "data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG"
+      ],
+      "height_max": 897,
+      "height_min": 897,
+      "images": 40,
+      "width_max": 3081,
+      "width_min": 3081
+    },
+    "brown_spot": {
+      "aspect_max": 5.3047,
+      "aspect_min": 1.3333,
+      "bytes": 9840124,
+      "distinct_resolutions": 20,
+      "files": [
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0105.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0106.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0107.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0108.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0109.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0110.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0111.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0112.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0114.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0115.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0116.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0117.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0118.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0292.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0295.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0296.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0299.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0300.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0302.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0303.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0304.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0305.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0306.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0307.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0323.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0324.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0325.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0329.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0332.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0333.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0337.JPG",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0391.jpg",
+        "data/raw/rice_leaf_diseases/Brown spot/DSC_0394.jpg"
+      ],
+      "height_max": 900,
+      "height_min": 88,
+      "images": 40,
+      "width_max": 3081,
+      "width_min": 286
+    },
+    "leaf_smut": {
+      "aspect_max": 5.0274,
+      "aspect_min": 1.25,
+      "bytes": 12163084,
+      "distinct_resolutions": 16,
+      "files": [
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0293.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0308.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0309.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0310.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0312.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0313.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0314.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0315.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0316.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0317.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0318.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0319.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0321.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0322.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0328.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0330.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0331.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0335.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0338.JPG",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0339.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0500.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0501.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0502.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0503.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0505.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0506.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0507.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0508.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0510.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0511.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0513.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0514.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0515.jpg",
+        "data/raw/rice_leaf_diseases/Leaf smut/DSC_0516.jpg"
+      ],
+      "height_max": 2340,
+      "height_min": 71,
+      "images": 40,
+      "width_max": 4160,
+      "width_min": 250
+    }
+  },
+  "dataset_checksum_sha256": "cc74ed659044a56034d02e96a9da47679a1164dfdc1ac7a3a980ff16964c7f79",
+  "dataset_version": "ds-cc74ed659044",
+  "decode_failures": [],
+  "exact_duplicate_groups": [],
+  "exif_orientations": {
+    "1": 110,
+    "3": 10
+  },
+  "extensions": {
+    ".jpg": 120
+  },
+  "full_frame_green_ratio_above": 0.7,
+  "full_frame_images": [
+    {
+      "leaf_green_fraction": 0.716991,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0109.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.747989,
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0511.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.775339,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0108.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.806139,
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0502.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.808984,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0115.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.863298,
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0500.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.890801,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0116.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.900124,
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0510.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.93344,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0110.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.954354,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0117.jpg"
+    },
+    {
+      "leaf_green_fraction": 0.954874,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0111.jpg"
+    }
+  ],
+  "image_count": 120,
+  "quality_metric_percentiles": {
+    "laplacian_variance": {
+      "p25": 157.0987,
+      "p5": 86.9984,
+      "p50": 232.392,
+      "p75": 381.296,
+      "p95": 943.9121
+    },
+    "leaf_green_fraction": {
+      "p25": 0.2714,
+      "p5": 0.2005,
+      "p50": 0.3796,
+      "p75": 0.5182,
+      "p95": 0.8117
+    },
+    "mean_brightness": {
+      "p25": 186.7535,
+      "p5": 155.4659,
+      "p50": 198.4705,
+      "p75": 205.653,
+      "p95": 221.5553
+    },
+    "overexposed_fraction": {
+      "p25": 0.0,
+      "p5": 0.0,
+      "p50": 0.0,
+      "p75": 0.152,
+      "p95": 0.6429
+    }
+  },
+  "tiny_images": [
+    {
+      "height": 71,
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0502.jpg",
+      "short_side": 71,
+      "width": 301
+    },
+    {
+      "height": 73,
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0501.jpg",
+      "short_side": 73,
+      "width": 367
+    },
+    {
+      "height": 80,
+      "path": "data/raw/rice_leaf_diseases/Leaf smut/DSC_0500.jpg",
+      "short_side": 80,
+      "width": 376
+    },
+    {
+      "height": 88,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0114.jpg",
+      "short_side": 88,
+      "width": 296
+    },
+    {
+      "height": 92,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0115.jpg",
+      "short_side": 92,
+      "width": 286
+    },
+    {
+      "height": 94,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0116.jpg",
+      "short_side": 94,
+      "width": 340
+    },
+    {
+      "height": 104,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0117.jpg",
+      "short_side": 104,
+      "width": 467
+    },
+    {
+      "height": 124,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0110.jpg",
+      "short_side": 124,
+      "width": 456
+    },
+    {
+      "height": 127,
+      "path": "data/raw/rice_leaf_diseases/Brown spot/DSC_0111.jpg",
+      "short_side": 127,
+      "width": 316
+    }
+  ],
+  "tiny_images_short_side_below": 128,
+  "total_bytes": 39733699
+}

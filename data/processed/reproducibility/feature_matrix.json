@@ -1,0 +1,330 @@
+{
+  "feature_set_version": "1.0.0",
+  "schema": {
+    "schema_name": "dhanyadrishti-leaf-features",
+    "feature_set_version": "1.0.0",
+    "feature_count": 50,
+    "feature_names": [
+      "rgb_r_mean",
+      "rgb_r_std",
+      "rgb_g_mean",
+      "rgb_g_std",
+      "rgb_b_mean",
+      "rgb_b_std",
+      "hsv_h_mean",
+      "hsv_h_std",
+      "hsv_s_mean",
+      "hsv_s_std",
+      "hsv_v_mean",
+      "hsv_v_std",
+      "lab_l_mean",
+      "lab_l_std",
+      "lab_a_mean",
+      "lab_a_std",
+      "lab_b_mean",
+      "lab_b_std",
+      "hsv_s_p90",
+      "hsv_v_p10",
+      "lab_a_p90",
+      "lab_b_p90",
+      "glcm_contrast",
+      "glcm_dissimilarity",
+      "glcm_homogeneity",
+      "glcm_energy",
+      "glcm_correlation",
+      "leaf_area_fraction",
+      "leaf_fill_ratio",
+      "leaf_aspect_ratio",
+      "leaf_perimeter_ratio",
+      "leaf_circularity",
+      "leaf_solidity",
+      "leaf_convexity",
+      "leaf_equivalent_diameter_ratio",
+      "lesion_area_ratio",
+      "lesion_count_per_kpx",
+      "lesion_largest_ratio",
+      "lesion_mean_ratio",
+      "lesion_perimeter_ratio",
+      "lesion_compactness",
+      "lesion_centroid_dx",
+      "lesion_centroid_dy",
+      "lesion_spread_x",
+      "lesion_spread_y",
+      "lesion_border_mean_distance",
+      "lesion_quadrant_tl_ratio",
+      "lesion_quadrant_tr_ratio",
+      "lesion_quadrant_bl_ratio",
+      "lesion_quadrant_br_ratio"
+    ],
+    "groups": {
+      "colour": [
+        "rgb_r_mean",
+        "rgb_r_std",
+        "rgb_g_mean",
+        "rgb_g_std",
+        "rgb_b_mean",
+        "rgb_b_std",
+        "hsv_h_mean",
+        "hsv_h_std",
+        "hsv_s_mean",
+        "hsv_s_std",
+        "hsv_v_mean",
+        "hsv_v_std",
+        "lab_l_mean",
+        "lab_l_std",
+        "lab_a_mean",
+        "lab_a_std",
+        "lab_b_mean",
+        "lab_b_std",
+        "hsv_s_p90",
+        "hsv_v_p10",
+        "lab_a_p90",
+        "lab_b_p90"
+      ],
+      "texture": [
+        "glcm_contrast",
+        "glcm_dissimilarity",
+        "glcm_homogeneity",
+        "glcm_energy",
+        "glcm_correlation"
+      ],
+      "shape": [
+        "leaf_area_fraction",
+        "leaf_fill_ratio",
+        "leaf_aspect_ratio",
+        "leaf_perimeter_ratio",
+        "leaf_circularity",
+        "leaf_solidity",
+        "leaf_convexity",
+        "leaf_equivalent_diameter_ratio"
+      ],
+      "lesion": [
+        "lesion_area_ratio",
+        "lesion_count_per_kpx",
+        "lesion_largest_ratio",
+        "lesion_mean_ratio",
+        "lesion_perimeter_ratio",
+        "lesion_compactness"
+      ],
+      "spatial": [
+        "lesion_centroid_dx",
+        "lesion_centroid_dy",
+        "lesion_spread_x",
+        "lesion_spread_y",
+        "lesion_border_mean_distance",
+        "lesion_quadrant_tl_ratio",
+        "lesion_quadrant_tr_ratio",
+        "lesion_quadrant_bl_ratio",
+        "lesion_quadrant_br_ratio"
+      ]
+    },
+    "lesion_dependent_features": [
+      "lesion_area_ratio",
+      "lesion_count_per_kpx",
+      "lesion_largest_ratio",
+      "lesion_mean_ratio",
+      "lesion_perimeter_ratio",
+      "lesion_compactness",
+      "lesion_centroid_dx",
+      "lesion_centroid_dy",
+      "lesion_spread_x",
+      "lesion_spread_y",
+      "lesion_border_mean_distance",
+      "lesion_quadrant_tl_ratio",
+      "lesion_quadrant_tr_ratio",
+      "lesion_quadrant_bl_ratio",
+      "lesion_quadrant_br_ratio"
+    ],
+    "missing_value_policy": "Leak-free NaN sentinel: a lesion-dependent feature is NaN when the lesion estimate is not calibrated. It is never 0.0 in that case.",
+    "value_range": "all features are scale-invariant ratios or 0..1 normalised colours",
+    "glcm": {
+      "levels": 32,
+      "distances": [
+        1
+      ],
+      "angles_radians": [
+        0.0,
+        0.785398,
+        1.570796,
+        2.356194
+      ],
+      "properties": [
+        "contrast",
+        "dissimilarity",
+        "homogeneity",
+        "energy",
+        "correlation"
+      ],
+      "region": "leaf bounding box, non-leaf pixels replaced by the leaf median grey"
+    }
+  },
+  "matrix_columns": [
+    "image_id",
+    "relative_path",
+    "label",
+    "split",
+    "cv_fold",
+    "status",
+    "lesion_reliable",
+    "lesion_area_percentage",
+    "segmentation_config_version",
+    "segmentation_config_sha256",
+    "quality_config_version",
+    "quality_config_sha256",
+    "rgb_r_mean",
+    "rgb_r_std",
+    "rgb_g_mean",
+    "rgb_g_std",
+    "rgb_b_mean",
+    "rgb_b_std",
+    "hsv_h_mean",
+    "hsv_h_std",
+    "hsv_s_mean",
+    "hsv_s_std",
+    "hsv_v_mean",
+    "hsv_v_std",
+    "lab_l_mean",
+    "lab_l_std",
+    "lab_a_mean",
+    "lab_a_std",
+    "lab_b_mean",
+    "lab_b_std",
+    "hsv_s_p90",
+    "hsv_v_p10",
+    "lab_a_p90",
+    "lab_b_p90",
+    "glcm_contrast",
+    "glcm_dissimilarity",
+    "glcm_homogeneity",
+    "glcm_energy",
+    "glcm_correlation",
+    "leaf_area_fraction",
+    "leaf_fill_ratio",
+    "leaf_aspect_ratio",
+    "leaf_perimeter_ratio",
+    "leaf_circularity",
+    "leaf_solidity",
+    "leaf_convexity",
+    "leaf_equivalent_diameter_ratio",
+    "lesion_area_ratio",
+    "lesion_count_per_kpx",
+    "lesion_largest_ratio",
+    "lesion_mean_ratio",
+    "lesion_perimeter_ratio",
+    "lesion_compactness",
+    "lesion_centroid_dx",
+    "lesion_centroid_dy",
+    "lesion_spread_x",
+    "lesion_spread_y",
+    "lesion_border_mean_distance",
+    "lesion_quadrant_tl_ratio",
+    "lesion_quadrant_tr_ratio",
+    "lesion_quadrant_bl_ratio",
+    "lesion_quadrant_br_ratio",
+    "warnings",
+    "rejections",
+    "missing_features"
+  ],
+  "scope": "full",
+  "generated_at": "2026-11-09T14:43:02+00:00",
+  "row_count": 120,
+  "splits": {
+    "development": {
+      "images": 96,
+      "rows": 96,
+      "rows_with_feature_values": 96,
+      "class_counts": {
+        "bacterial_leaf_blight": 32,
+        "brown_spot": 32,
+        "leaf_smut": 32
+      },
+      "status_counts": {
+        "clean": 71,
+        "uncertain": 25,
+        "rejected": 0
+      },
+      "lesion_reliable": 96,
+      "lesion_unreliable": 0,
+      "cv_folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "held_out_test": {
+      "images": 24,
+      "rows": 24,
+      "rows_with_feature_values": 24,
+      "class_counts": {
+        "bacterial_leaf_blight": 8,
+        "brown_spot": 8,
+        "leaf_smut": 8
+      },
+      "status_counts": {
+        "clean": 16,
+        "uncertain": 8,
+        "rejected": 0
+      },
+      "lesion_reliable": 24,
+      "lesion_unreliable": 0,
+      "cv_folds": []
+    }
+  },
+  "missing_values_by_group": {
+    "development": {
+      "colour": 0,
+      "texture": 0,
+      "shape": 0,
+      "lesion": 0,
+      "spatial": 0
+    },
+    "held_out_test": {
+      "colour": 0,
+      "texture": 0,
+      "shape": 0,
+      "lesion": 0,
+      "spatial": 0
+    }
+  },
+  "nan_policy": "Unreliable lesion/spatial features are real NaN cells (decision P-13) and are never replaced with 0.0; no row is dropped. Imputation, if any, must be fitted per training fold inside the scikit-learn pipeline.",
+  "segmentation_config_version": "seg-v2",
+  "segmentation_config_sha256": "c3784f11df53d13d4db515b1a11b36fd9b1bfbe34777de1d99ad2380a4a1bba1",
+  "quality_config_version": "quality-v1",
+  "quality_config_sha256": "c4cfe9e2f9110db2b13a021dc43ed860e19bdd33f65d64d3dece1e34ce3e062e",
+  "provenance": {
+    "split_version": "v1",
+    "seed": 42,
+    "dataset_version": "ds-cc74ed659044",
+    "dataset_checksum_sha256": "cc74ed659044a56034d02e96a9da47679a1164dfdc1ac7a3a980ff16964c7f79",
+    "dataset_manifest_sha256": "41335b8128a5ca656f5ac7da51ec06b072ce7a1d375041118843e90055f5df1d",
+    "duplicate_groups_sha256": "61081e774319bd2c95f95a3d02f5576b669279e7514c339125a30e200f692422",
+    "counts": {
+      "cv": 96,
+      "per_class_cv": {
+        "bacterial_leaf_blight": 32,
+        "brown_spot": 32,
+        "leaf_smut": 32
+      },
+      "per_class_test": {
+        "bacterial_leaf_blight": 8,
+        "brown_spot": 8,
+        "leaf_smut": 8
+      },
+      "per_class_total": {
+        "bacterial_leaf_blight": 40,
+        "brown_spot": 40,
+        "leaf_smut": 40
+      },
+      "test": 24,
+      "total": 120
+    },
+    "generated_by": "scripts/build_feature_matrix.py"
+  },
+  "artifacts": {
+    "matrix_csv": "feature_matrix.csv",
+    "report_json": "feature_matrix.json",
+    "summary_markdown": "feature_matrix_summary.md"
+  }
+}

@@ -50,6 +50,7 @@ DhanyaDrishti/
 ├── frontend/                React + Vite + TypeScript + Tailwind
 ├── backend/                 FastAPI application, configs, tests, artifacts
 ├── data/                    raw (git-ignored), processed, splits
+├── demo_images/             curated UI-only demo images + provenance README
 ├── notebooks/               dataset audit, segmentation, model comparison
 ├── scripts/                 audit / split / train / evaluate / export
 └── tests/end_to_end/        cross-stack tests
@@ -102,8 +103,34 @@ npm run dev
 - Production-preview E2E: `cd tests/end_to_end && npx playwright test --config=playwright.preview.config.ts` (built bundle)
 - E2E headed: `cd tests/end_to_end && npx playwright test --headed`
 
+## Local acceptance (real backend, real dataset images)
+
+```powershell
+python scripts/run_local_acceptance.py      # 38-check matrix, writes docs/local_acceptance/api_evidence.json
+python scripts/check_restart_cleanup.py     # two real processes, same RUNTIME_DIR
+```
+
+Both commands start their own `uvicorn` process with an explicit `RUNTIME_DIR`. The Playwright
+configs also set the backend `reuseExistingServer: false`, so a suite always owns its backend
+process — a restart/cleanup claim is only valid when a fresh process actually starts. Results are
+recorded in [`docs/LOCAL_ACCEPTANCE_REPORT.md`](./docs/LOCAL_ACCEPTANCE_REPORT.md).
+
+The three photographs in `data/local_acceptance_inputs/` (healthy-looking, multiple-leaf and
+non-rice wheat) are local-only fixtures: they are gitignored and must be present on disk for the
+full acceptance matrix. The approved raw dataset under `data/raw/` is likewise required and
+never committed.
+
 The backend URL comes from `VITE_API_BASE_URL` (copy `frontend/.env.example` to `frontend/.env`).
 If `localhost` resolves to IPv6 while the backend binds IPv4, use `http://127.0.0.1:8000`.
+
+## Demo images
+
+[`demo_images/`](./demo_images/) contains four curated files for UI demonstration only:
+three development-split dataset images (Bacterial Leaf Blight, Brown Spot, Leaf Smut) and
+one synthetic blank frame that must be rejected with `NO_CLEAR_LEAF_FOUND`. See
+[`demo_images/README.md`](./demo_images/README.md) for each file's source, expected
+behaviour and the warning that a training/development image is **not** evidence of
+generalization. No smartphone images are included or claimed.
 
 ## Environment
 
@@ -152,6 +179,8 @@ byte-identically.
 | `docs/FRONTEND.md` | Phase 5 dashboard contract, state matrix, honesty rules and tests |
 | `docs/AGENT_HANDOFF.md` | Procedure for the next AI-agent session |
 | `docs/QA_REPORT.md` | Phase 6 real-browser E2E results, contract checks, known limitations |
+| `docs/LOCAL_ACCEPTANCE_REPORT.md` | 2026-11-09 localhost acceptance matrix, restart-cleanup evidence, timings and limitations |
+| `docs/local_acceptance/api_evidence.json` | Machine-readable evidence from the 38-check local acceptance run |
 | `docs/DATASET_AUDIT.md` | Phase 1 audit, duplicate review and split protocol |
 | `docs/SEGMENTATION_NOTES.md` | Phase 2 segmentation audit, `seg-v1`→`seg-v2` calibration, limitations |
 | `docs/segmentation_audit/` | Curated 12-panel visual evidence + audit summary |

@@ -1,0 +1,187 @@
+path_a,path_b,label_a,label_b,same_class,dhash_hamming,hist_correlation,ssim,orb_keypoints_a,orb_keypoints_b,orb_matches,orb_inliers,orb_inlier_ratio,verdict
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Leaf smut,Leaf smut,True,18,0.9999,0.9606,224,216,122,119,0.9754,candidate
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,Bacterial leaf blight,Bacterial leaf blight,True,111,0.9987,0.7571,193,220,89,88,0.9888,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0312.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0313.JPG,Leaf smut,Leaf smut,True,100,0.9908,0.7469,149,182,85,78,0.9176,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0321.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0322.jpg,Leaf smut,Leaf smut,True,132,0.9457,0.7086,112,206,63,63,1.0,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0318.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0319.jpg,Leaf smut,Leaf smut,True,100,0.9566,0.7475,167,164,51,51,1.0,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0308.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0309.JPG,Leaf smut,Leaf smut,True,82,0.9652,0.6852,159,169,50,50,1.0,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0321.JPG,Leaf smut,Leaf smut,True,94,0.9519,0.7376,160,112,38,38,1.0,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0322.jpg,Leaf smut,Leaf smut,True,142,0.8876,0.7022,160,206,41,33,0.8049,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0338.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0339.jpg,Leaf smut,Leaf smut,True,83,0.9721,0.742,97,157,29,29,1.0,candidate
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG,Bacterial leaf blight,Bacterial leaf blight,True,72,0.9961,0.7468,114,137,32,27,0.8438,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0314.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0315.jpg,Leaf smut,Leaf smut,True,71,0.9726,0.7925,59,84,21,21,1.0,candidate
+data/raw/rice_leaf_diseases/Brown spot/DSC_0299.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0300.JPG,Brown spot,Brown spot,True,68,0.7829,0.8347,38,41,16,16,1.0,candidate
+data/raw/rice_leaf_diseases/Brown spot/DSC_0302.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0303.JPG,Brown spot,Brown spot,True,135,0.8763,0.7954,44,94,14,12,0.8571,candidate
+data/raw/rice_leaf_diseases/Brown spot/DSC_0306.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0307.JPG,Brown spot,Brown spot,True,96,0.9559,0.7725,38,35,9,8,0.8889,candidate
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0335.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg,Leaf smut,Leaf smut,True,79,0.8529,0.8383,18,16,5,5,1.0,candidate
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0395.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG,Bacterial leaf blight,Bacterial leaf blight,True,89,0.8439,0.5992,157,129,5,5,1.0,candidate
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0396.JPG,Bacterial leaf blight,Bacterial leaf blight,True,114,0.5656,0.573,212,70,5,5,1.0,candidate
+data/raw/rice_leaf_diseases/Brown spot/DSC_0109.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0110.jpg,Brown spot,Brown spot,True,122,0.5984,0.4628,234,83,13,10,0.7692,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Leaf smut,Leaf smut,True,64,0.9918,0.588,231,216,8,6,0.75,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG,Bacterial leaf blight,Bacterial leaf blight,True,109,0.2844,0.584,212,129,10,6,0.6,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0513.jpg,Bacterial leaf blight,Leaf smut,False,75,0.9272,0.5457,153,215,10,6,0.6,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,Bacterial leaf blight,Bacterial leaf blight,True,33,0.9977,0.7294,153,274,10,5,0.5,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Bacterial leaf blight,Leaf smut,False,36,0.9983,0.7116,153,231,7,5,0.7143,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Bacterial leaf blight,Brown spot,False,61,0.9952,0.6927,153,340,7,5,0.7143,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0395.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,Bacterial leaf blight,Bacterial leaf blight,True,59,-0.0031,0.6285,157,274,8,5,0.625,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,55,0.9906,0.5927,340,216,7,5,0.7143,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0337.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG,Brown spot,Leaf smut,False,67,0.6559,0.7866,49,187,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0316.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0317.JPG,Leaf smut,Leaf smut,True,81,0.5508,0.7704,49,62,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0383.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,84,0.8637,0.7326,132,73,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0389.JPG,Bacterial leaf blight,Bacterial leaf blight,True,130,0.1471,0.6946,220,96,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0381.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0389.JPG,Bacterial leaf blight,Bacterial leaf blight,True,94,0.8341,0.6889,98,96,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0402.JPG,Bacterial leaf blight,Bacterial leaf blight,True,114,0.8915,0.6805,193,136,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0401.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG,Bacterial leaf blight,Bacterial leaf blight,True,94,0.8719,0.6653,71,129,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,Bacterial leaf blight,Bacterial leaf blight,True,82,-0.0029,0.6546,129,274,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0395.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0399.JPG,Bacterial leaf blight,Bacterial leaf blight,True,78,0.8024,0.6535,157,56,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0402.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG,Bacterial leaf blight,Bacterial leaf blight,True,122,0.8865,0.6255,136,129,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0389.JPG,Bacterial leaf blight,Bacterial leaf blight,True,98,0.8853,0.6213,212,96,6,4,0.6667,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0399.JPG,Bacterial leaf blight,Bacterial leaf blight,True,84,0.2755,0.612,212,56,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0401.JPG,Bacterial leaf blight,Bacterial leaf blight,True,107,0.2959,0.6102,212,71,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0402.JPG,Bacterial leaf blight,Bacterial leaf blight,True,103,0.1724,0.6092,212,136,8,4,0.5,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0383.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0396.JPG,Bacterial leaf blight,Bacterial leaf blight,True,116,0.2905,0.6079,132,70,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,Bacterial leaf blight,Bacterial leaf blight,True,82,0.0102,0.5997,212,153,6,4,0.6667,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0379.JPG,Bacterial leaf blight,Bacterial leaf blight,True,92,0.9296,0.5949,212,105,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Brown spot,Leaf smut,False,55,0.9907,0.594,340,224,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,Bacterial leaf blight,Bacterial leaf blight,True,65,0.9917,0.5917,274,333,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0372.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0403.JPG,Bacterial leaf blight,Bacterial leaf blight,True,114,0.419,0.5912,212,147,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Leaf smut,Leaf smut,True,70,0.9918,0.5882,224,231,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0374.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0395.JPG,Bacterial leaf blight,Bacterial leaf blight,True,95,0.8531,0.5785,199,157,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0513.jpg,Leaf smut,Leaf smut,True,81,0.9274,0.563,231,215,7,4,0.5714,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0107.jpg,Bacterial leaf blight,Brown spot,False,69,0.9304,0.5614,274,331,8,4,0.5,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0513.jpg,Leaf smut,Leaf smut,True,79,0.935,0.5559,224,215,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0513.jpg,Leaf smut,Leaf smut,True,77,0.9343,0.5547,216,215,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0405.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,Bacterial leaf blight,Bacterial leaf blight,True,89,-0.0036,0.5529,129,333,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0513.jpg,Brown spot,Leaf smut,False,80,0.952,0.5525,340,215,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0112.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,114,0.9423,0.499,237,216,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0511.jpg,Leaf smut,Leaf smut,True,101,0.5909,0.4944,231,166,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0107.jpg,Bacterial leaf blight,Brown spot,False,90,0.9226,0.4938,333,331,5,4,0.8,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0110.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,124,0.0219,0.414,83,216,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0110.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Brown spot,Leaf smut,False,126,0.0206,0.4115,83,224,4,4,1.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg,Bacterial leaf blight,Leaf smut,False,77,0.9716,0.7968,73,16,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0382.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0331.JPG,Bacterial leaf blight,Leaf smut,False,98,0.9544,0.7962,46,60,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0300.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0293.JPG,Brown spot,Leaf smut,False,94,0.9527,0.7953,41,121,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG,Bacterial leaf blight,Leaf smut,False,82,0.9569,0.7902,73,187,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG,Bacterial leaf blight,Leaf smut,False,99,0.9766,0.7827,193,187,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0331.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0338.JPG,Leaf smut,Leaf smut,True,107,0.958,0.7804,60,97,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG,Brown spot,Leaf smut,False,106,0.956,0.7793,47,187,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,Bacterial leaf blight,Brown spot,False,106,0.9652,0.7787,73,47,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0308.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0335.JPG,Leaf smut,Leaf smut,True,80,0.9505,0.7785,159,18,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,Bacterial leaf blight,Brown spot,False,91,0.955,0.7755,44,47,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,Bacterial leaf blight,Brown spot,False,128,0.9717,0.7662,220,47,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,Bacterial leaf blight,Brown spot,False,106,0.9554,0.7642,115,47,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,Bacterial leaf blight,Brown spot,False,130,0.9765,0.7631,31,47,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,Bacterial leaf blight,Bacterial leaf blight,True,77,0.9638,0.7613,137,44,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Bacterial leaf blight,Leaf smut,False,39,0.9988,0.761,274,231,3,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,92,0.9586,0.7592,137,73,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG,Bacterial leaf blight,Leaf smut,False,114,0.9764,0.758,220,187,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0310.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0322.jpg,Leaf smut,Leaf smut,True,100,0.9603,0.7547,65,206,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0401.JPG,Bacterial leaf blight,Bacterial leaf blight,True,109,0.9746,0.75,137,71,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,Bacterial leaf blight,Brown spot,False,143,0.973,0.7489,193,47,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0386.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,104,0.9654,0.7488,38,73,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,Bacterial leaf blight,Bacterial leaf blight,True,77,0.9913,0.748,73,44,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,121,0.9735,0.748,193,73,3,0,0.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0313.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0318.JPG,Leaf smut,Leaf smut,True,119,0.9637,0.7466,182,167,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg,Bacterial leaf blight,Leaf smut,False,94,0.9589,0.7443,44,16,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,114,0.9506,0.7437,49,73,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,Bacterial leaf blight,Bacterial leaf blight,True,86,0.9602,0.7429,31,115,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0382.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0338.JPG,Bacterial leaf blight,Leaf smut,False,95,0.9544,0.7425,46,97,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg,Bacterial leaf blight,Leaf smut,False,81,0.9572,0.7423,115,16,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0327.JPG,Bacterial leaf blight,Leaf smut,False,94,0.9504,0.7396,49,187,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,86,0.9877,0.7372,115,73,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,136,0.9738,0.7364,220,73,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0398.JPG,Bacterial leaf blight,Bacterial leaf blight,True,104,0.9579,0.7322,31,73,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,Bacterial leaf blight,Brown spot,False,112,0.9608,0.7321,49,47,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG,Bacterial leaf blight,Bacterial leaf blight,True,119,0.9687,0.7318,193,49,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0386.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0401.JPG,Bacterial leaf blight,Bacterial leaf blight,True,113,0.9786,0.729,38,71,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,Bacterial leaf blight,Bacterial leaf blight,True,103,0.9927,0.7274,115,44,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0386.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,Bacterial leaf blight,Bacterial leaf blight,True,82,0.9763,0.7267,38,115,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG,Bacterial leaf blight,Bacterial leaf blight,True,83,0.9849,0.7244,193,31,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,Bacterial leaf blight,Bacterial leaf blight,True,129,0.9634,0.7231,220,44,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0401.JPG,Bacterial leaf blight,Bacterial leaf blight,True,95,0.9738,0.723,114,71,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0401.JPG,Bacterial leaf blight,Bacterial leaf blight,True,87,0.9527,0.7225,115,71,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,Bacterial leaf blight,Bacterial leaf blight,True,126,0.9688,0.7221,220,115,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG,Bacterial leaf blight,Bacterial leaf blight,True,130,0.965,0.7218,220,49,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0366.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG,Bacterial leaf blight,Bacterial leaf blight,True,112,0.9864,0.7212,220,31,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0301.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0339.jpg,Brown spot,Leaf smut,False,103,0.9738,0.7196,47,157,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0312.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG,Leaf smut,Leaf smut,True,135,0.9605,0.7194,149,160,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0402.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0336.jpg,Bacterial leaf blight,Leaf smut,False,100,0.9604,0.7192,136,16,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,Bacterial leaf blight,Bacterial leaf blight,True,120,0.9681,0.7167,137,115,3,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0386.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,Bacterial leaf blight,Bacterial leaf blight,True,121,0.9786,0.7149,38,44,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,Bacterial leaf blight,Bacterial leaf blight,True,104,0.9542,0.712,114,115,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0377.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0339.jpg,Bacterial leaf blight,Leaf smut,False,107,0.9524,0.7114,31,157,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0386.JPG,Bacterial leaf blight,Bacterial leaf blight,True,126,0.9792,0.71,137,38,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0386.JPG,Bacterial leaf blight,Bacterial leaf blight,True,114,0.9727,0.7082,114,38,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0313.JPG,data/raw/rice_leaf_diseases/Leaf smut/DSC_0320.JPG,Leaf smut,Leaf smut,True,149,0.9663,0.7069,182,160,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,Bacterial leaf blight,Bacterial leaf blight,True,107,0.9702,0.7056,193,115,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Bacterial leaf blight,Brown spot,False,48,0.9934,0.7048,274,340,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0365.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,Bacterial leaf blight,Bacterial leaf blight,True,142,0.9622,0.704,193,44,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0373.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0406.JPG,Bacterial leaf blight,Bacterial leaf blight,True,84,0.9706,0.7034,35,222,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Brown spot,Leaf smut,False,55,0.995,0.6993,340,231,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0370.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0375.JPG,Bacterial leaf blight,Bacterial leaf blight,True,110,0.964,0.6858,22,114,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0403.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0306.JPG,Bacterial leaf blight,Brown spot,False,114,0.9533,0.6845,147,38,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0383.JPG,data/raw/rice_leaf_diseases/Brown spot/DSC_0324.JPG,Bacterial leaf blight,Brown spot,False,125,0.9681,0.6844,132,46,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0381.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0384.JPG,Bacterial leaf blight,Bacterial leaf blight,True,126,0.9872,0.6841,98,100,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0370.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0376.JPG,Bacterial leaf blight,Bacterial leaf blight,True,118,0.9673,0.6791,22,137,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0397.JPG,Bacterial leaf blight,Bacterial leaf blight,True,114,0.9566,0.6788,49,115,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0367.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0703.JPG,Bacterial leaf blight,Bacterial leaf blight,True,123,0.9505,0.6697,49,44,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Brown spot,Leaf smut,False,57,0.9962,0.6635,362,231,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,Bacterial leaf blight,Brown spot,False,62,0.9959,0.6616,274,362,3,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,Bacterial leaf blight,Brown spot,False,67,0.9966,0.6475,153,362,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Brown spot,Brown spot,True,60,0.9911,0.6143,362,340,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0374.JPG,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0406.JPG,Bacterial leaf blight,Bacterial leaf blight,True,105,0.9513,0.6082,199,222,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Bacterial leaf blight,Leaf smut,False,73,0.9904,0.592,274,224,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Bacterial leaf blight,Leaf smut,False,67,0.9903,0.5917,274,216,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Bacterial leaf blight,Leaf smut,False,68,0.99,0.5905,333,231,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Bacterial leaf blight,Leaf smut,False,72,0.9908,0.5851,153,224,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Bacterial leaf blight,Leaf smut,False,66,0.9909,0.5846,153,216,5,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0385.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0391.jpg,Bacterial leaf blight,Brown spot,False,120,0.9544,0.5772,22,45,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,Bacterial leaf blight,Bacterial leaf blight,True,72,0.9909,0.5653,153,333,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,Bacterial leaf blight,Brown spot,False,69,0.9538,0.5558,274,363,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Brown spot,Leaf smut,False,81,0.9879,0.5531,362,224,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,73,0.9878,0.5512,362,216,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Brown spot,Leaf smut,False,70,0.9545,0.5503,363,231,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Bacterial leaf blight,Brown spot,False,83,0.9868,0.5371,333,340,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,Bacterial leaf blight,Brown spot,False,79,0.9886,0.5367,333,362,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Bacterial leaf blight,Leaf smut,False,88,0.9872,0.5214,333,224,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Bacterial leaf blight,Leaf smut,False,84,0.9873,0.5212,333,216,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,Bacterial leaf blight,Brown spot,False,81,0.9895,0.5178,274,345,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0107.jpg,Brown spot,Brown spot,True,76,0.9597,0.5176,345,331,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,Bacterial leaf blight,Brown spot,False,68,0.9542,0.5135,153,363,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Brown spot,Leaf smut,False,86,0.9926,0.5116,345,231,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,Brown spot,Brown spot,True,81,0.9535,0.4942,362,363,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Brown spot,Brown spot,True,83,0.9517,0.491,363,340,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Brown spot,Leaf smut,False,91,0.9736,0.4857,364,231,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,Bacterial leaf blight,Brown spot,False,84,0.97,0.4778,274,364,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,Bacterial leaf blight,Brown spot,False,89,0.9695,0.4714,153,364,3,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,Brown spot,Brown spot,True,86,0.9591,0.4696,345,363,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,Bacterial leaf blight,Brown spot,False,84,0.9817,0.4682,333,345,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,Bacterial leaf blight,Brown spot,False,80,0.99,0.4672,153,345,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,Brown spot,Brown spot,True,78,0.9674,0.4669,364,362,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,Brown spot,Brown spot,True,81,0.9877,0.4629,345,362,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0701.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,Bacterial leaf blight,Brown spot,False,74,0.9698,0.46,274,347,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,88,0.9581,0.4598,363,216,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Brown spot,Leaf smut,False,92,0.9575,0.4576,363,224,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0700.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,Bacterial leaf blight,Brown spot,False,91,0.9696,0.4546,153,347,3,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Brown spot,Brown spot,True,96,0.969,0.4527,364,340,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0509.jpg,Brown spot,Leaf smut,False,87,0.971,0.4513,347,231,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0112.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,Brown spot,Brown spot,True,118,0.9558,0.4419,237,363,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Brown spot,Brown spot,True,107,0.989,0.4407,345,340,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,Bacterial leaf blight,Brown spot,False,67,0.9635,0.4405,333,364,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,97,0.9813,0.4321,364,216,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0112.jpg,Brown spot,Brown spot,True,87,0.9568,0.4319,364,237,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Brown spot,Leaf smut,False,99,0.981,0.4297,364,224,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,Brown spot,Brown spot,True,89,0.975,0.4228,345,347,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0113.jpg,Brown spot,Brown spot,True,84,0.9693,0.4196,347,362,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,102,0.9933,0.4168,345,216,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Brown spot,Leaf smut,False,106,0.993,0.4166,345,224,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0121.jpg,Brown spot,Brown spot,True,96,0.968,0.4015,347,340,5,0,0.0,clear
+data/raw/rice_leaf_diseases/Bacterial leaf blight/DSC_0702.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,Bacterial leaf blight,Brown spot,False,75,0.9614,0.4001,333,347,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,Brown spot,Brown spot,True,89,0.9613,0.378,364,363,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0119.jpg,Brown spot,Brown spot,True,99,0.9562,0.3751,347,363,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0504.jpg,Brown spot,Leaf smut,False,111,0.9829,0.3749,347,224,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Leaf smut/DSC_0505.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0506.jpg,Leaf smut,Leaf smut,True,106,0.9662,0.3739,285,349,0,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,data/raw/rice_leaf_diseases/Leaf smut/DSC_0512.jpg,Brown spot,Leaf smut,False,109,0.9827,0.3739,347,216,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0107.jpg,Brown spot,Brown spot,True,101,0.953,0.3492,364,331,1,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0100.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,Brown spot,Brown spot,True,95,0.9888,0.3194,345,364,2,0,0.0,clear
+data/raw/rice_leaf_diseases/Brown spot/DSC_0101.jpg,data/raw/rice_leaf_diseases/Brown spot/DSC_0104.jpg,Brown spot,Brown spot,True,100,0.9752,0.3028,364,347,2,0,0.0,clear
