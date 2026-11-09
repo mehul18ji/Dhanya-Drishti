@@ -1,68 +1,145 @@
 # DhanyaDrishti
 
-Academic prototype dashboard for **rice-leaf disease analysis** using a fully **classical**
-computer-vision and machine-learning pipeline (no deep learning in Version 1).
+**Rice-leaf disease analysis with a classical computer-vision and machine-learning pipeline.**
 
-Upload one photograph of a diseased rice leaf and receive:
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-classical%20ML-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
+[![Status](https://img.shields.io/badge/status-Phase%206%20complete-2ea44f)](#project-status)
 
-- a predicted disease label — **Bacterial Leaf Blight**, **Brown Spot** or **Leaf Smut**;
-- per-class **decision-function margins** and a best-vs-second margin (**not** a confidence or
-  probability percentage);
-- a lesion-area estimate;
-- an *experimental* severity estimate (Mild / Moderate / Severe);
-- quality and uncertainty warnings when the result is unreliable;
-- temporary prediction history for the current backend session.
+DhanyaDrishti is an academic web dashboard that examines a single photograph of a diseased
+rice leaf and returns a supported disease label, decision-margin scores, a lesion-area
+estimate, and an experimental severity estimate. The complete pipeline is **classical
+computer vision and machine learning** — there is no deep learning in Version 1.
 
-> ⚠ This prototype supports only three diseased rice-leaf categories. Do not upload healthy
-> leaves. Results are academic estimates and must not be used as professional agricultural advice.
+> **Scope:** three diseased rice-leaf classes only — Bacterial Leaf Blight, Brown Spot and
+> Leaf Smut. The system does not detect healthy leaves, other diseases, or plant-level
+> conditions. Results are academic estimates, not agricultural advice.
 
 ---
 
-## Status
+## Live Demo
 
-**Current phase: Phase 6 — Integration, QA, model card: COMPLETE. Phase 7 (deployment) is next and has not started.**
+Phase 7 cloud deployment has not started yet. The public frontend URL will be added here
+after the Vercel deployment is complete.
 
-| Area | State |
+| Component | URL | Status |
+|---|---|---|
+| Frontend (Vercel) | _Placeholder — to be added after deployment_ | Pending |
+| Backend API | `http://localhost:8000` | Local development |
+
+<!-- VERCEL_FRONTEND_URL: replace the placeholder row above after Phase 7 deployment. -->
+
+---
+
+## Overview
+
+The project covers the full path from an uploaded leaf photograph to an honest,
+inspectable result:
+
+- **Disease prediction** — one of three supported classes.
+- **Decision-margin scores** — per-class SVM decision-function values and a best-vs-second
+  margin. These are **not** calibrated probabilities or confidence percentages.
+- **Lesion analysis** — estimated visible-lesion area with explicit reliability gating.
+- **Experimental severity** — Mild / Moderate / Severe from lesion-area thresholds, always
+  shown with its disclaimer.
+- **Quality and uncertainty warnings** — the UI reports when a result is unreliable instead
+  of presenting a false confirmation.
+- **Temporary history** — predictions and PNG artifacts last only for the current backend
+  session and are wiped on restart.
+
+The application is intentionally conservative: rejected inputs return no disease label, no
+severity and no history entry.
+
+---
+
+## How It Works
+
+```text
+Upload
+  → upload validation (type, size, decode, EXIF)
+  → preprocessing (aspect-preserving resize, letterbox, denoise)
+  → quality assessment
+  → leaf segmentation (HSV + Lab, K-Means, morphology)
+  → lesion segmentation inside the leaf mask
+  → 50-feature extraction (colour, GLCM texture, shape, lesion, spatial)
+  → SVM inference (decision-function margins, not probabilities)
+  → experimental severity estimate
+  → temporary history and artifact storage
+```
+
+| Stage | What happens |
 |---|---|
-| Repository foundation, docs, env templates | Done |
-| Frontend dashboard shell (routing, layout, pages) | Done |
-| Backend health API + typed config | Done |
-| Dataset audit and reproducible splits | Done (Phase 1) |
-| Classical CV pipeline (preprocessing, quality, leaf + lesion segmentation, audit) | Done (Phase 2) |
-| Features + SVM/RF/KNN comparison, production model bundle | Done (Phase 3) |
-| Inference service, lifespan load, `/health`, `/model-info`, upload validation, preprocessing orchestration, experimental severity, prediction composition | Done (Phase 4 M1–M6) |
-| `POST /predict`, temporary history, artifact serving, API docs | Done (Phase 4 M7–M9) |
-| Typed frontend API client, upload/preview/analyze flow, result states, history, About Model, component tests | Done (Phase 5 M1–M7) |
-| QA, real-browser E2E, model card | Complete (Phase 6) |
-| Deployment | Not started (Phase 7) |
+| Validation | File type, size, image decode, dimension limits and EXIF orientation are checked before analysis. |
+| Preprocessing | The image is resized without stretching, letterboxed to a square canvas, and denoised. |
+| Segmentation | A primary leaf mask is produced, followed by a lesion mask constrained to that leaf. |
+| Feature extraction | A versioned 50-feature schema captures colour, texture, shape, lesion and spatial measurements. |
+| Inference | The production bundle verifies its schema and config hashes, then predicts with an RBF SVM. |
+| Reporting | The API returns margins, lesion reliability, warnings, provenance, timings and artifact URLs. |
 
-The full phase-by-phase plan lives in [`PHASE_PLAN.txt`](./PHASE_PLAN.txt).
-Living status lives in [`PROJECT_STATUS.md`](./PROJECT_STATUS.md).
+The backend never retrains, recalibrates or reads held-out evaluation rows during a request.
 
-## Repository layout
+---
+
+## Model and Evaluation
+
+| Item | Value |
+|---|---|
+| Dataset | 120 approved diseased rice-leaf images, 3 classes |
+| Split protocol | 96 development images (group-aware 5-fold CV) / 24 held-out images (8 per class) |
+| Candidates compared | RBF SVM, Random Forest, K-Nearest Neighbours |
+| Selected model | RBF SVM (`C=1.0`, `gamma="scale"`) |
+| Cross-validation macro F1 | **0.8412 ± 0.0604** |
+| Held-out macro F1 | **0.7855** (n = 24) |
+| Held-out accuracy | **0.7917** |
+| Score type | Decision-function margin — not a probability |
+| Production bundle | `svm-v1.0.0`, feature set `1.0.0` |
+
+The held-out set was evaluated once after model selection and was not used for tuning. The
+24-image sample is small, so the final metric carries sampling uncertainty.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, Vite 6, TypeScript, Tailwind CSS 3 |
+| Backend | Python 3.11, FastAPI, Uvicorn, Pydantic |
+| Computer vision | OpenCV, Pillow, scikit-image, NumPy |
+| Machine learning | scikit-learn (RBF SVM), joblib |
+| Runtime storage | SQLite + local PNG artifacts, temporary only |
+| Testing | pytest, Vitest, Testing Library, Playwright |
+
+---
+
+## Repository Structure
 
 ```text
 DhanyaDrishti/
-├── PRD.txt                  approved product requirements (authority)
-├── PHASE_PLAN.txt           detailed phase-wise execution plan
-├── PROJECT_STATUS.md        current state and next exact task
-├── docs/                    PRD, decisions, architecture, handoff
-├── frontend/                React + Vite + TypeScript + Tailwind
-├── backend/                 FastAPI application, configs, tests, artifacts
-├── data/                    raw (git-ignored), processed, splits
-├── demo_images/             curated UI-only demo images + provenance README
-├── notebooks/               dataset audit, segmentation, model comparison
-├── scripts/                 audit / split / train / evaluate / export
-└── tests/end_to_end/        cross-stack tests
+├── backend/                 FastAPI app, vision/ML modules, configs, tests, production bundle
+├── frontend/                React + Vite + TypeScript dashboard
+├── data/                    Raw dataset (ignored), frozen splits, tracked reproducibility snapshots
+├── demo_images/             Curated UI-only demo images and provenance notes
+├── docs/                    Architecture, API, QA, acceptance evidence and model documentation
+├── notebooks/               Dataset audit, segmentation and model-comparison notebooks
+├── scripts/                 Audit, split, train, evaluate, export and acceptance scripts
+└── tests/end_to_end/        Cross-stack Playwright browser tests
 ```
 
-## Prerequisites
+---
+
+## Getting Started
+
+### Prerequisites
 
 - Python 3.11+
-- Node.js 20+ (LTS) and npm
+- Node.js 20+ and npm
 - Git
 
-## Backend — setup and run
+### Backend
 
 ```powershell
 cd backend
@@ -72,11 +149,10 @@ pip install -r requirements-dev.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-- API docs: <http://localhost:8000/docs>
-- Health: <http://localhost:8000/api/v1/health>
-- Tests: `python -m pytest`
+- API documentation: <http://localhost:8000/docs>
+- Health check: <http://localhost:8000/api/v1/health>
 
-Expected health response when the production bundle is loaded:
+Expected health response with the production bundle loaded:
 
 ```json
 {
@@ -87,7 +163,7 @@ Expected health response when the production bundle is loaded:
 }
 ```
 
-## Frontend — setup and run
+### Frontend
 
 ```powershell
 cd frontend
@@ -96,104 +172,116 @@ npm run dev
 ```
 
 - Dashboard: <http://localhost:5173>
-- Build check: `npm run build`
+- Build: `npm run build`
 - Type check: `npm run typecheck`
-- Component/API tests: `npm test` (Vitest + jsdom + Testing Library)
-- Real-browser E2E: `cd tests/end_to_end && npx playwright test` (dev server, Chrome + Edge)
-- Production-preview E2E: `cd tests/end_to_end && npx playwright test --config=playwright.preview.config.ts` (built bundle)
-- E2E headed: `cd tests/end_to_end && npx playwright test --headed`
 
-## Local acceptance (real backend, real dataset images)
+Set the backend URL through `VITE_API_BASE_URL` (copy `frontend/.env.example` to
+`frontend/.env`). If `localhost` resolves to IPv6 while the backend binds IPv4, use
+`http://127.0.0.1:8000`.
 
-```powershell
-python scripts/run_local_acceptance.py      # 38-check matrix, writes docs/local_acceptance/api_evidence.json
-python scripts/check_restart_cleanup.py     # two real processes, same RUNTIME_DIR
-```
+### Dataset and Local Inputs
 
-Both commands start their own `uvicorn` process with an explicit `RUNTIME_DIR`. The Playwright
-configs also set the backend `reuseExistingServer: false`, so a suite always owns its backend
-process — a restart/cleanup claim is only valid when a fresh process actually starts. Results are
-recorded in [`docs/LOCAL_ACCEPTANCE_REPORT.md`](./docs/LOCAL_ACCEPTANCE_REPORT.md).
+The approved 120-image dataset is **not committed**. Place it at
+`data/raw/rice_leaf_diseases/` before running the full pipeline, audits or acceptance
+matrix. The local acceptance photographs under `data/local_acceptance_inputs/` are also
+gitignored and must be present on disk for the 38-check acceptance run.
 
-The three photographs in `data/local_acceptance_inputs/` (healthy-looking, multiple-leaf and
-non-rice wheat) are local-only fixtures: they are gitignored and must be present on disk for the
-full acceptance matrix. The approved raw dataset under `data/raw/` is likewise required and
-never committed.
+See [`data/README.md`](./data/README.md) and [`docs/DATASET_AUDIT.md`](./docs/DATASET_AUDIT.md)
+for provenance and split rules.
 
-The backend URL comes from `VITE_API_BASE_URL` (copy `frontend/.env.example` to `frontend/.env`).
-If `localhost` resolves to IPv6 while the backend binds IPv4, use `http://127.0.0.1:8000`.
+---
 
-## Demo images
+## Testing and Quality
 
-[`demo_images/`](./demo_images/) contains four curated files for UI demonstration only:
-three development-split dataset images (Bacterial Leaf Blight, Brown Spot, Leaf Smut) and
-one synthetic blank frame that must be rejected with `NO_CLEAR_LEAF_FOUND`. See
-[`demo_images/README.md`](./demo_images/README.md) for each file's source, expected
-behaviour and the warning that a training/development image is **not** evidence of
-generalization. No smartphone images are included or claimed.
+Last verified on 2026-11-09:
 
-## Environment
+| Suite | Command | Result |
+|---|---|---|
+| Backend | `cd backend && python -m pytest -q` | **222 passed** |
+| Root split invariants | `python -m pytest tests -q` | **6 passed** |
+| Frontend component/API | `cd frontend && npm test` | **64 passed** |
+| Frontend typecheck | `npm run typecheck` | **clean** |
+| Frontend build | `npm run build` | **clean** |
+| Playwright — development | `cd tests/end_to_end && npx playwright test` | **22 passed** (Chrome + Edge) |
+| Playwright — production preview | `npx playwright test --config=playwright.preview.config.ts` | **11 passed** (Chrome) |
+| Local acceptance matrix | `python scripts/run_local_acceptance.py` | **38 / 38 checks** |
+| Restart cleanup | `python scripts/check_restart_cleanup.py` | **PASS** |
 
-Copy `.env.example` to `.env` in the repository root for backend settings.
-The frontend reads its own `frontend/.env` (see `frontend/.env.example`).
+The acceptance matrix uses a real backend process, real dataset images and a real model
+bundle. It covers upload validation, orientation handling, quality warnings, rejection
+behaviour, history, artifact serving, clear-history and a fresh-process restart with the
+same runtime directory.
 
-## Data
+---
 
-The approved 120-image dataset is placed at `data/raw/rice_leaf_diseases/` and is **not**
-committed. See [`data/README.md`](./data/README.md) for provenance, verified characteristics
-and split rules, and [`docs/DATASET_AUDIT.md`](./docs/DATASET_AUDIT.md) for the full audit.
+## Demo Images
 
-Regenerate the audit and frozen splits:
+[`demo_images/`](./demo_images/) contains four curated files for **UI demonstration only**:
+three development-split dataset images and one synthetic blank frame that must be rejected
+with `NO_CLEAR_LEAF_FOUND`.
 
-```powershell
-python scripts/audit_dataset.py
-python scripts/find_near_duplicates.py
-python scripts/build_duplicate_groups.py
-python scripts/make_splits.py
-python -m pytest tests -q
-```
+See [`demo_images/README.md`](./demo_images/README.md) for each file's source, expected
+behaviour and the warning that a training/development image is **not evidence of
+generalization**. No smartphone images are included or claimed.
 
-Run the Phase 2 segmentation audit (writes git-ignored panels + the committed
-`docs/segmentation_audit/` evidence set):
+---
 
-```powershell
-python scripts/run_segmentation_audit.py
-```
+## Documentation
 
-Segmentation results and the calibration record are in
-[`docs/SEGMENTATION_NOTES.md`](./docs/SEGMENTATION_NOTES.md).
-
-**Split protocol v1:** seed 42, 24-image held-out test set (8 per class, singleton images
-only), 96-image stratified group-aware 5-fold cross-validation. Verified to reproduce
-byte-identically.
-
-## Documentation map
-
-| File | Purpose |
+| Document | Purpose |
 |---|---|
-| `PRD.txt` / `docs/PRD.md` | Approved product requirements |
-| `PHASE_PLAN.txt` | Detailed phase plan, risks, acceptance criteria |
-| `PROJECT_STATUS.md` | What works, what does not, next exact task |
-| `docs/DECISIONS.md` | Locked decisions + rationale |
-| `docs/ARCHITECTURE.md` | System diagram and component boundaries |
-| `docs/FRONTEND.md` | Phase 5 dashboard contract, state matrix, honesty rules and tests |
-| `docs/AGENT_HANDOFF.md` | Procedure for the next AI-agent session |
-| `docs/QA_REPORT.md` | Phase 6 real-browser E2E results, contract checks, known limitations |
-| `docs/LOCAL_ACCEPTANCE_REPORT.md` | 2026-11-09 localhost acceptance matrix, restart-cleanup evidence, timings and limitations |
-| `docs/local_acceptance/api_evidence.json` | Machine-readable evidence from the 38-check local acceptance run |
-| `docs/DATASET_AUDIT.md` | Phase 1 audit, duplicate review and split protocol |
-| `docs/SEGMENTATION_NOTES.md` | Phase 2 segmentation audit, `seg-v1`→`seg-v2` calibration, limitations |
-| `docs/segmentation_audit/` | Curated 12-panel visual evidence + audit summary |
-| `data/README.md` | Dataset provenance and rules |
+| [`PRD.txt`](./PRD.txt) | Approved product requirements |
+| [`PHASE_PLAN.txt`](./PHASE_PLAN.txt) | Phase-wise plan, risks and acceptance criteria |
+| [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) | Current state and next exact task |
+| [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) | System boundaries and component flow |
+| [`docs/API.md`](./docs/API.md) | Endpoint contracts and response rules |
+| [`docs/DECISIONS.md`](./docs/DECISIONS.md) | Locked decisions and rationale |
+| [`docs/QA_REPORT.md`](./docs/QA_REPORT.md) | Browser E2E, contract checks and known limitations |
+| [`docs/LOCAL_ACCEPTANCE_REPORT.md`](./docs/LOCAL_ACCEPTANCE_REPORT.md) | Localhost acceptance evidence and timings |
+| [`docs/DATASET_AUDIT.md`](./docs/DATASET_AUDIT.md) | Dataset audit, duplicate review and split protocol |
 
-## Scope limits (Version 1)
+---
 
-No healthy-leaf classification, no other diseases, no plant-level diagnosis, no multi-leaf
-reports, no treatment advice, no accounts, no permanent image storage, no mobile app, and no
-MobileNetV2 in the production pipeline.
+## Project Status
+
+| Phase | State |
+|---|---|
+| 1 — Dataset audit and reproducible splits | Complete |
+| 2 — Classical vision pipeline and segmentation audit | Complete |
+| 3 — Features, model comparison and production bundle | Complete |
+| 4 — FastAPI service, prediction, history and artifacts | Complete |
+| 5 — React dashboard and component tests | Complete |
+| 6 — Integration, QA, local acceptance and model card | Complete |
+| 7 — Cloud deployment | **Not started** |
+
+The current repository is prepared for Phase 7 deployment preparation. No cloud
+deployment has been performed.
+
+---
+
+## Limitations
+
+- **Three classes only.** There is no healthy-leaf class and no out-of-distribution class.
+  Healthy-looking or non-rice inputs may return `uncertain` or `rejected`, never “healthy”.
+- **Academic prototype.** Results are not a substitute for expert plant-pathology
+  diagnosis, field inspection or treatment advice.
+- **Small held-out sample.** The final metric is based on 24 images; expect meaningful
+  sampling uncertainty.
+- **No smartphone or field validation.** Tests use the approved dataset and synthetic
+  fixtures. No smartphone result is claimed.
+- **Uncalibrated scores.** The SVM exposes decision-function margins, not probabilities.
+  The interface does not present confidence percentages.
+- **Experimental severity.** Severity is a visible-lesion-area estimate under provisional
+  thresholds, not an agronomic grade.
+- **Temporary storage only.** History and artifacts are wiped on restart, expiry or
+  explicit clear. Nothing is permanently stored.
+- **CPU-only, single-machine timings.** Performance figures are local observations, not a
+  production SLA.
+
+---
 
 ## Disclaimer
 
-DhanyaDrishti is an academic prototype trained on 120 diseased rice-leaf images. Its severity
-output is an experimental visible-lesion-area estimate. It is not a replacement for
-agricultural experts, field inspection or plant-pathology diagnosis.
+DhanyaDrishti is an academic prototype trained on 120 diseased rice-leaf images. Its
+severity output is an experimental visible-lesion-area estimate. It is not a replacement
+for agricultural experts, field inspection or plant-pathology diagnosis.
