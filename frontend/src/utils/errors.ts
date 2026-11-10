@@ -1,5 +1,5 @@
 import { API_BASE_URL, ApiError, DEFAULT_UPLOAD_LIMIT_MB } from '../services/api'
-import { apiTargetLabel, resolveApiTarget } from './apiTarget'
+import { resolveApiTarget } from './apiTarget'
 
 export type ErrorContext = 'predict' | 'history' | 'model' | 'health'
 
@@ -74,8 +74,7 @@ export function describeApiError(
   if (error.kind === 'timeout') {
     return {
       title: 'Analysis service is slow to respond',
-      message:
-        'The backend may be waking from sleep or CPU inference is taking longer than expected. This page retries automatically; if it persists, press Retry or check the service log.',
+      message: 'The backend is slow to respond — please wait up to a minute, then retry.',
       tone: 'warning',
       retryable: true,
       code: error.reasonCode,
@@ -84,13 +83,12 @@ export function describeApiError(
 
   if (error.kind === 'network') {
     const target = resolveApiTarget(API_BASE_URL)
-    const targetLabel = apiTargetLabel(target)
     return {
       title: 'Starting analysis service…',
       message:
         target === 'local'
           ? `Could not reach the local analysis service at ${API_BASE_URL}. Start the FastAPI backend, then retry.`
-          : `Could not reach the ${targetLabel} analysis service at ${API_BASE_URL}. A free-hosted backend can take up to a minute to wake from sleep. This page retries automatically; if the problem persists, check that the API URL and CORS origin match this deployment.`,
+          : `The hosted backend was asleep and is starting — please wait up to a minute.`,
       tone: 'warning',
       retryable: true,
       code: error.reasonCode,
@@ -171,8 +169,7 @@ export function describeApiError(
     return withDetail(
       {
         title: 'Analysis service is starting…',
-        message:
-          'The backend is online but the production model is not available yet. Wait a few seconds, then retry. If it persists, check the backend startup log.',
+        message: 'The model is still loading — please wait up to a minute, then retry.',
         tone: 'warning',
         retryable: true,
         code: error.reasonCode,
@@ -187,8 +184,7 @@ export function describeApiError(
   if (status === 502 || status === 503 || status === 504) {
     return {
       title: 'Analysis service is waking up…',
-      message:
-        'The hosted backend is restarting or waking from sleep. This is normal on a free instance and usually clears within a minute. The page retries automatically; press Retry if you do not want to wait.',
+      message: 'The hosted backend was asleep and is starting — please wait up to a minute.',
       tone: 'warning',
       retryable: true,
       code: error.reasonCode,

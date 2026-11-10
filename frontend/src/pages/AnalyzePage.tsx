@@ -156,18 +156,14 @@ export function AnalyzePage() {
             error={health.error}
             onRetry={health.refresh}
             retryLabel="Retry connection"
-            autoRetrying
           />
         </div>
       ) : null}
 
       {health.state === 'online' && !health.modelLoaded ? (
         <div data-testid="model-unavailable">
-          <Callout tone="warning" title="Backend online — model still starting">
-            <p>
-              The API is reachable but the production model bundle is not loaded yet. Uploading and
-              analysis are paused until the model is ready; the page checks again automatically.
-            </p>
+          <Callout tone="warning" title="Analysis service is starting…">
+            <p>The model is still loading — please wait up to a minute.</p>
             <button
               type="button"
               onClick={health.refresh}
@@ -182,7 +178,8 @@ export function AnalyzePage() {
       {modelReady ? (
         <p className="text-xs text-ink-500" data-testid="model-ready">
           Model ready
-          {health.modelVersion ? ` · ${health.modelVersion}` : ''} ·          Connected to the {apiLabel} API · images are processed in temporary runtime storage only.
+          {health.modelVersion ? ` · ${health.modelVersion}` : ''} · Connected to the {apiLabel} API
+          · images are processed in temporary runtime storage only.
         </p>
       ) : null}
 

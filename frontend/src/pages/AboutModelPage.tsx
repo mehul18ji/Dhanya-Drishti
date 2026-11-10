@@ -38,7 +38,7 @@ function modelDisplayName(name: string): string {
 }
 
 export function AboutModelPage() {
-  const { state, info, error, autoRetrying, reload } = useModelInfo()
+  const { state, info, error, reload } = useModelInfo()
 
   return (
     <div className="space-y-6">
@@ -60,7 +60,7 @@ export function AboutModelPage() {
 
       {state === 'error' && error ? (
         <div data-testid="model-info-error">
-          <ErrorNotice error={error} onRetry={reload} autoRetrying={autoRetrying} />
+          <ErrorNotice error={error} onRetry={reload} />
         </div>
       ) : null}
 

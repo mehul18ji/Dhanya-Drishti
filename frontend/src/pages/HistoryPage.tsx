@@ -155,11 +155,7 @@ export function HistoryPage() {
 
         {history.state === 'error' && history.error ? (
           <div className="p-5" data-testid="history-error">
-            <ErrorNotice
-              error={history.error}
-              onRetry={history.reload}
-              autoRetrying={history.autoRetrying}
-            />
+            <ErrorNotice error={history.error} onRetry={history.reload} />
           </div>
         ) : null}
 
