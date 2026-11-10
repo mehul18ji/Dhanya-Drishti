@@ -29,6 +29,36 @@ const SEVERITY_BUCKETS = [
   { range: '25% or greater', label: 'Severe' },
 ]
 
+/**
+ * Development-only comparison recorded in
+ * `data/processed/reproducibility/evaluation_report.json`.
+ * Selection used CV macro F1; the held-out set was scored once, on the
+ * selected SVM only, so it could not influence model choice.
+ */
+const CANDIDATE_RESULTS = [
+  {
+    name: 'RBF SVM',
+    cvMacroF1: '0.8412 ± 0.0604',
+    outOfFoldMacroF1: '0.8440',
+    heldOutMacroF1: '0.7855',
+    selected: true,
+  },
+  {
+    name: 'Random Forest',
+    cvMacroF1: '0.7935 ± 0.0387',
+    outOfFoldMacroF1: '0.8006',
+    heldOutMacroF1: null,
+    selected: false,
+  },
+  {
+    name: 'K-Nearest Neighbours',
+    cvMacroF1: '0.7507 ± 0.0853',
+    outOfFoldMacroF1: '0.7602',
+    heldOutMacroF1: null,
+    selected: false,
+  },
+]
+
 function modelDisplayName(name: string): string {
   const normalised = name.toLowerCase()
   if (normalised === 'svm') return 'Support Vector Machine (SVM)'
@@ -152,6 +182,80 @@ export function AboutModelPage() {
               Held-out status: {info.held_out_status}. The 24 held-out images are a single
               evaluation, not a tuning set; differences of roughly ±0.05–0.08 macro F1 are within
               sampling noise on a dataset this small.
+            </p>
+          </section>
+
+          <section className="card p-5" aria-labelledby="candidate-comparison-heading">
+            <h2
+              id="candidate-comparison-heading"
+              className="font-display text-xl font-medium tracking-tight text-ink-900"
+            >
+              Candidates compared during development
+            </h2>
+            <p className="mt-1 text-sm text-ink-600">
+              Three classical classifiers were trained on the same 50-feature vectors and the same
+              frozen folds. The selected model is the one with the highest cross-validation macro F1.
+            </p>
+            <div className="mt-3 overflow-x-auto rounded-lg border border-ink-200">
+              <table className="w-full min-w-[520px] text-sm">
+                <caption className="sr-only">
+                  Development cross-validation scores for the SVM, Random Forest and KNN candidates
+                </caption>
+                <thead>
+                  <tr className="bg-ink-50 text-left text-[11px] uppercase tracking-wide text-ink-500">
+                    <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
+                      Candidate
+                    </th>
+                    <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
+                      CV macro F1 (mean ± SD)
+                    </th>
+                    <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
+                      Out-of-fold macro F1
+                    </th>
+                    <th scope="col" className="px-3 py-2 font-semibold sm:px-4">
+                      Held-out macro F1
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {CANDIDATE_RESULTS.map((candidate) => (
+                    <tr
+                      key={candidate.name}
+                      className={`border-t border-ink-100 ${
+                        candidate.selected ? 'bg-accent-50/60' : ''
+                      }`}
+                    >
+                      <th scope="row" className="px-3 py-2 text-left font-semibold text-ink-900 sm:px-4">
+                        <span className="flex flex-wrap items-center gap-2">
+                          {candidate.name}
+                          {candidate.selected ? (
+                            <span className="rounded-full bg-accent-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                              Selected
+                            </span>
+                          ) : null}
+                        </span>
+                      </th>
+                      <td className="px-3 py-2 font-mono text-xs text-ink-700 sm:px-4">
+                        {candidate.cvMacroF1}
+                      </td>
+                      <td className="px-3 py-2 font-mono text-xs text-ink-700 sm:px-4">
+                        {candidate.outOfFoldMacroF1}
+                      </td>
+                      <td className="px-3 py-2 font-mono text-xs text-ink-700 sm:px-4">
+                        {candidate.heldOutMacroF1 ?? (
+                          <span className="font-sans text-ink-500">Not evaluated</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-ink-500">
+              Scores are development-only cross-validation results. Selection used CV macro F1
+              alone; the 24-image held-out set was evaluated once, after selection, on the chosen
+              SVM. Random Forest and KNN were therefore never scored on it, so the test set could
+              not influence which model was selected.
             </p>
           </section>
 

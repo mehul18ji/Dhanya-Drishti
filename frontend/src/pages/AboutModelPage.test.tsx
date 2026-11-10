@@ -31,6 +31,16 @@ describe('AboutModelPage', () => {
     expect(screen.getByText('50 features')).toBeInTheDocument()
     expect(screen.getByText('96')).toBeInTheDocument()
 
+    expect(
+      screen.getByRole('heading', { name: /candidates compared during development/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('0.7935 ± 0.0387')).toBeInTheDocument()
+    expect(screen.getByText('0.7507 ± 0.0853')).toBeInTheDocument()
+    expect(screen.getByText('0.8440')).toBeInTheDocument()
+    expect(screen.getByText('0.8006')).toBeInTheDocument()
+    expect(screen.getByText('0.7602')).toBeInTheDocument()
+    expect(screen.getAllByText('Not evaluated')).toHaveLength(2)
+
     expect(screen.getByText('Decision margins, not probabilities')).toBeInTheDocument()
     expect(screen.getByText(/calibrated probabilities: no/i)).toBeInTheDocument()
     expect(screen.getByText(/there is no healthy class/i)).toBeInTheDocument()

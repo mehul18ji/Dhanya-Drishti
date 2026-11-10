@@ -116,6 +116,22 @@ The backend never retrains, recalibrates or reads held-out evaluation rows durin
 The held-out set was evaluated once after model selection and was not used for tuning. The
 24-image sample is small, so the final metric carries sampling uncertainty.
 
+### Candidate comparison
+
+All three classifiers used the same 50-feature vectors and the same frozen folds. Selection used
+the development cross-validation macro F1 only.
+
+| Candidate | CV macro F1 (mean ± SD) | Out-of-fold macro F1 | Held-out macro F1 |
+|---|---|---|---|
+| **RBF SVM (selected)** | **0.8412 ± 0.0604** | 0.8440 | **0.7855** (accuracy 0.7917) |
+| Random Forest | 0.7935 ± 0.0387 | 0.8006 | Not evaluated |
+| K-Nearest Neighbours | 0.7507 ± 0.0853 | 0.7602 | Not evaluated |
+
+The held-out set was opened once, after selection, and scored only for the chosen SVM. Random
+Forest and KNN were never evaluated on it. This is deliberate: scoring every candidate on the
+test set would turn it into a second selection set and leak test information into the choice of
+model, invalidating the final held-out estimate.
+
 ## Technology
 
 | Layer | Technology |
