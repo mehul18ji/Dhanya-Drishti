@@ -1,7 +1,7 @@
 {
   "bundle_version": "1.0.0",
   "bundle_status": "approved_phase3_m5_export",
-  "exported_at": "2026-11-09T19:51:30+00:00",
+  "exported_at": "2026-11-10T06:57:58+00:00",
   "model": {
     "name": "svm",
     "estimator": "SVC(kernel='rbf', class_weight='balanced')",
@@ -133,5 +133,5 @@
     "Images whose lesion stage reports no healthy-green reference yield NaN lesion and spatial features; those values must stay missing (never 0.0) and must be imputed within a training fold only.",
     "The dataset is 120 visually similar images, so scores are optimistic and the single 24-image held-out result carries roughly +/-0.05-0.08 macro-F1 noise."
   ],
-  "severity_disclaimer": "Severity is an experimental estimate from lesion area and may not reflect the actual severity of the disease."
+  "severity_disclaimer": "Severity is an experimental estimate based on the visible lesion area in this image. It is not a validated agronomic severity grade."
 }

@@ -41,6 +41,7 @@ import numpy as np  # noqa: E402
 from app.vision.config import (  # noqa: E402
     load_quality_config,
     load_segmentation_config,
+    load_severity_config,
 )
 from app.vision.feature_extraction import (  # noqa: E402
     FEATURE_NAMES,
@@ -276,6 +277,7 @@ def build_manifest(
 ) -> dict[str, Any]:
     segmentation = load_segmentation_config()
     quality = load_quality_config()
+    severity = load_severity_config()
     estimator = pipeline.named_steps["model"]
     development = evaluation_report.get("development") or {}
     models = development.get("models") or {}
@@ -375,10 +377,7 @@ def build_manifest(
         },
         "artifacts": artifacts,
         "known_failure_cases": list(KNOWN_FAILURE_CASES),
-        "severity_disclaimer": (
-            "Severity is an experimental estimate from lesion area and may not reflect "
-            "the actual severity of the disease."
-        ),
+        "severity_disclaimer": severity.disclaimer,
     }
 
 

@@ -25,7 +25,11 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from app.vision.config import load_quality_config, load_segmentation_config  # noqa: E402
+from app.vision.config import (  # noqa: E402
+    load_quality_config,
+    load_segmentation_config,
+    load_severity_config,
+)
 from app.vision.feature_extraction import (  # noqa: E402
     FEATURE_NAMES,
     FEATURE_SET_VERSION,
@@ -42,6 +46,10 @@ BUNDLE_FILES = (
     "model_manifest.json",
 )
 CLASS_LABELS = ("bacterial_leaf_blight", "brown_spot", "leaf_smut")
+PRD_SEVERITY_DISCLAIMER = (
+    "Severity is an experimental estimate based on the visible lesion area in this image. "
+    "It is not a validated agronomic severity grade."
+)
 
 
 def _json(name: str) -> dict:
@@ -108,6 +116,8 @@ def test_manifest_records_the_approved_model_and_frozen_provenance() -> None:
     assert manifest["reproducibility"]["retrained_during_export"] is False
     assert manifest["reproducibility"]["identical_to_reference_pipeline"] is True
     assert manifest["known_failure_cases"], "known failure cases must be documented"
+    assert manifest["severity_disclaimer"] == load_severity_config().disclaimer
+    assert manifest["severity_disclaimer"] == PRD_SEVERITY_DISCLAIMER
 
     for name, record in manifest["artifacts"].items():
         path = BUNDLE_DIR / name

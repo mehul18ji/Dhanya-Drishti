@@ -20,6 +20,7 @@ if str(REPO_ROOT) not in sys.path:
 import app.main as main_module  # noqa: E402
 from app.services import inference_service  # noqa: E402
 from app.services.inference_service import BundleIntegrityError  # noqa: E402
+from app.vision.config import load_severity_config  # noqa: E402
 from app.vision.feature_extraction import FEATURE_NAMES  # noqa: E402
 
 BUNDLE_DIR = REPO_ROOT / "backend" / "app" / "artifacts" / "production"
@@ -60,7 +61,7 @@ def test_model_info_describes_the_loaded_bundle(client: TestClient) -> None:
     assert "confidence" not in body
     assert "probability" not in body
 
-    assert "experimental estimate" in body["severity_disclaimer"]
+    assert body["severity_disclaimer"] == load_severity_config().disclaimer
     assert body["known_failure_cases"], "limitations must be exposed to the UI"
 
 
