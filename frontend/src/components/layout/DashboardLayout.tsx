@@ -17,8 +17,8 @@ export function DashboardLayout() {
           className="paper-grain pointer-events-none fixed inset-0 -z-10 opacity-[0.035] dark:opacity-[0.05]"
         />
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute -left-32 top-24 h-64 w-64 rounded-full bg-accent-400/15 blur-3xl sm:h-80 sm:w-80" />
-          <div className="absolute -right-24 top-1/3 h-72 w-72 rounded-full bg-warn-300/10 blur-3xl sm:h-96 sm:w-96" />
+          <div className="absolute -left-32 top-24 hidden h-64 w-64 rounded-full bg-accent-400/15 blur-3xl sm:block sm:h-80 sm:w-80" />
+          <div className="absolute -right-24 top-1/3 hidden h-72 w-72 rounded-full bg-warn-300/10 blur-3xl sm:block sm:h-96 sm:w-96" />
           <svg
             viewBox="0 0 24 24"
             className="absolute right-8 top-40 hidden h-24 w-24 rotate-12 text-accent-700/10 dark:text-accent-300/10 lg:block"

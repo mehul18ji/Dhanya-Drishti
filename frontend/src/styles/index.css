@@ -22,7 +22,6 @@
       radial-gradient(circle at 6% -8%, rgba(16, 185, 129, 0.16), transparent 30rem),
       radial-gradient(circle at 94% 0%, rgba(252, 211, 77, 0.12), transparent 26rem),
       radial-gradient(circle at 50% 112%, rgba(4, 120, 87, 0.08), transparent 34rem);
-    background-attachment: fixed;
     transition: background-color 280ms ease, color 280ms ease;
   }
 
@@ -283,6 +282,31 @@
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile scroll performance: backdrop blur and oversized shadows are  */
+/* the two most expensive paint effects on phone GPUs. Surfaces become */
+/* opaque below the sm breakpoint so scrolling stays at the panel's    */
+/* native refresh rate (90/120/144 Hz).                               */
+/* ------------------------------------------------------------------ */
+@media (max-width: 639px) {
+  .card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 8px 20px -16px rgba(0, 0, 0, 0.5);
+  }
+
+  html.dark .card {
+    box-shadow: 0 8px 20px -16px rgba(0, 0, 0, 0.9);
+  }
+
+  /* The sticky header re-blurs every frame on phones; make it opaque. */
+  header.sticky {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: #0c1411;
+  }
 }
 
 /* Subtle paper grain used behind the dashboard content. */
