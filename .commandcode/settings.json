@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(npm:*)",
+      "Shell(node -v)",
+      "Shell(npx vitest --version)",
+      "Shell(npx vitest run src/utils/diseases.test.ts --reporter=verbose)",
+      "powershell",
+      "Shell(npx vitest run src/utils/diseases.test.ts --no-cache --pool=forks)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}
