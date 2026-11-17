@@ -122,7 +122,7 @@ export function AnalyzePage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="DhanyaDrishti · Diagnostic workspace"
+        eyebrow="DhanyaDrishti · An AI-Based Rice Leaf Disease Detection System"
         title="Rice-leaf analysis, with the evidence"
         description="Upload one rice-leaf photograph to receive a supported disease label, decision-function margins, an experimental lesion-area estimate, and the quality caveats behind the result."
       />
