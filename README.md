@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/public/favicon.svg" width="76" height="76" alt="DhanyaDrishti logo" />
+  <img src="frontend/public/dhanyadrishti-logo.png" width="76" alt="DhanyaDrishti logo" />
 </p>
 
 <h1 align="center">DhanyaDrishti</h1>
